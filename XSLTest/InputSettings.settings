@@ -14,5 +14,50 @@
     <Setting Name="inputFilesDir" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="HCID" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">2.16.840.1.113883.4.349.2</Value>
+    </Setting>
+    <Setting Name="_HomeCommunity_Address_StreetLine1" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">810 Vermont Avenue, NW</Value>
+    </Setting>
+    <Setting Name="_HomeCommunity_Address_City" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Washington</Value>
+    </Setting>
+    <Setting Name="_HomeCommunity_Address_State" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">DC</Value>
+    </Setting>
+    <Setting Name="_HomeCommunity_Address_Zip" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">20420</Value>
+    </Setting>
+    <Setting Name="_HomeCommunity_Address_Country" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">US</Value>
+    </Setting>
+    <Setting Name="_LegalAuthenticator_Address_StreetLine1" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">810 Vermont Avenue, NW</Value>
+    </Setting>
+    <Setting Name="_LegalAuthenticator_Address_City" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Washington</Value>
+    </Setting>
+    <Setting Name="_LegalAuthenticator_Address_State" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">DC</Value>
+    </Setting>
+    <Setting Name="_LegalAuthenticator_Address_Zip" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">20420</Value>
+    </Setting>
+    <Setting Name="_LegalAuthenticator_Address_Country" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">US</Value>
+    </Setting>
+    <Setting Name="_LegalAuthenticator_Name_Family" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">InterSystems</Value>
+    </Setting>
+    <Setting Name="_LegalAuthenticator_Name_Given" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">HealthShare... JK, LMAO. OMG</Value>
+    </Setting>
+    <Setting Name="_HomeCommunity_Telecom_WorkPhone" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">(800) 497-5428</Value>
+    </Setting>
+    <Setting Name="_LegalAuthenticator_Telecom_WorkPhone" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">(800) 583-8725</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

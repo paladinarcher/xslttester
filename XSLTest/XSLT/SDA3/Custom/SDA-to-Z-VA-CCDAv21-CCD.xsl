@@ -164,6 +164,8 @@
     <templateId root="{$ccda-ContinuityOfCareCCD}"/>
     <templateId root="{$ccda-ContinuityOfCareCCD}" extension="2015-08-01"/>
   </xsl:template>
+  <xsl:template match="Container" mode="fn-templateId-USRealmHeader">
+  </xsl:template>
 
   <!-- confidentialityCode may be overriden by stylesheets that import this one -->
   <xsl:template match="Container" mode="document-confidentialityCode">

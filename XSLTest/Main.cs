@@ -177,7 +177,7 @@ namespace XSLTest
         private void CheckCanTransform() { CheckCanTransform(false);  }
         private void CheckCanTransform(bool isMainEvent)
         {
-            button3.Enabled = richTextBox1.Text.Length > 10 && transformer != null && transformer.IsLoaded() && !bwTransformOpener.IsBusy;
+            button3.Enabled = richTextBox1.Text.Length > 10 && transformer != null && transformer.IsLoaded() && !bwTransform.IsBusy;
             if(isMainEvent)
             {
                 button3.Text = button3.Enabled ? "Start Transform" : "Transforming ...";

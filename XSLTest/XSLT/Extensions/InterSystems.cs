@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,571 +29,677 @@ namespace XSLTest.XSLT.Extensions
             }
             public string evaluate(string func, string code, string system, string def)
             {
+                string ret;
                 try
                 {
                     switch (func)
                     {
                         case "xmltimestamp":
-                            return xmltimestamp(code, system, def);
+                            ret =  xmltimestamp(code, system, def);
+                            break;
                         case "createGUID":
-                            return createGUID(code, system, def);
+                            ret =  createGUID(code, system, def);
+                            break;
                         case "currentDate":
-                            return currentDate(code, system, def);
+                            ret =  currentDate(code, system, def);
+                            break;
                         case "lookup":
-                            return lookup(code, system, def);
+                            ret =  lookup(code, system, def);
+                            break;
                         case "dateNoDash":
-                            return dateNoDash(code, system, def);
+                            ret =  dateNoDash(code, system, def);
+                            break;
                         case "stripapos":
-                            return stripapos(code, system, def);
+                            ret =  stripapos(code, system, def);
+                            break;
                         case "piece":
-                            return piece(code, system, def);
+                            ret =  piece(code, system, def);
+                            break;
                         case "pieceStrip":
-                            return pieceStrip(code, system, def);
+                            ret =  pieceStrip(code, system, def);
+                            break;
                         case "strip":
-                            return strip(code, system, def);
+                            ret =  strip(code, system, def);
+                            break;
                         case "encode":
-                            return encode(code, system, def);
+                            ret =  encode(code, system, def);
+                            break;
                         case "decode":
-                            return decode(code, system, def);
+                            ret =  decode(code, system, def);
+                            break;
                         case "timestamp":
-                            return timestamp(code, system, def);
+                            ret =  timestamp(code, system, def);
+                            break;
                         case "xmltimestampisbefore":
-                            return xmltimestampisbefore(code, system, def);
+                            ret =  xmltimestampisbefore(code, system, def);
+                            break;
                         case "dateDiff":
-                            return dateDiff(code, system, def);
+                            ret =  dateDiff(code, system, def);
+                            break;
                         case "GWtoOID":
-                            return GWtoOID(code, system, def);
+                            ret =  GWtoOID(code, system, def);
+                            break;
                         case "CodetoOID":
-                            return CodetoOID(code, system, def);
+                            ret =  CodetoOID(code, system, def);
+                            break;
                         case "OIDtoCode":
-                            return OIDtoCode(code, system, def);
+                            ret =  OIDtoCode(code, system, def);
+                            break;
                         case "OIDtoGW":
-                            return OIDtoGW(code, system, def);
+                            ret =  OIDtoGW(code, system, def);
+                            break;
                         case "OIDtoFacilityName":
-                            return OIDtoFacilityName(code, system, def);
+                            ret =  OIDtoFacilityName(code, system, def);
+                            break;
                         case "OIDtoFacilityContact":
-                            return OIDtoFacilityContact(code, system, def);
+                            ret =  OIDtoFacilityContact(code, system, def);
+                            break;
                         case "getHomeCommunityCode":
-                            return getHomeCommunityCode(code, system, def);
+                            ret =  getHomeCommunityCode(code, system, def);
+                            break;
                         case "getSystemOID":
-                            return getSystemOID(code, system, def);
+                            ret =  getSystemOID(code, system, def);
+                            break;
                         case "GetIdentifierType":
-                            return GetIdentifierType(code, system, def);
+                            ret =  GetIdentifierType(code, system, def);
+                            break;
                         case "lookupIHETransaction":
-                            return lookupIHETransaction(code, system, def);
+                            ret =  lookupIHETransaction(code, system, def);
+                            break;
                         case "resultFlag":
-                            return resultFlag(code, system, def);
+                            ret =  resultFlag(code, system, def);
+                            break;
                         case "getNumberType":
-                            return getNumberType(code, system, def);
+                            ret =  getNumberType(code, system, def);
+                            break;
                         case "debug":
-                            return debug(code, system, def);
+                            ret =  debug(code, system, def);
+                            break;
                         case "getOIDForCode":
-                            return getOIDForCode(code, system, def);
+                            ret =  getOIDForCode(code, system, def);
+                            break;
                         case "getCodeForOID":
-                            return getCodeForOID(code, system, def);
+                            ret =  getCodeForOID(code, system, def);
+                            break;
                         case "getDescriptionForOID":
-                            return getDescriptionForOID(code, system, def);
+                            ret =  getDescriptionForOID(code, system, def);
+                            break;
                         case "getURLForCode":
-                            return getURLForCode(code, system, def);
+                            ret =  getURLForCode(code, system, def);
+                            break;
                         case "getCodeForURL":
-                            return getCodeForURL(code, system, def);
+                            ret =  getCodeForURL(code, system, def);
+                            break;
                         case "getDescriptionForURL":
-                            return getDescriptionForURL(code, system, def);
+                            ret =  getDescriptionForURL(code, system, def);
+                            break;
                         case "hex2dec":
-                            return hex2dec(code, system, def);
+                            ret =  hex2dec(code, system, def);
+                            break;
                         case "uuid2oid":
-                            return uuid2oid(code, system, def);
+                            ret =  uuid2oid(code, system, def);
+                            break;
                         case "createUUID":
-                            return createUUID(code, system, def);
+                            ret =  createUUID(code, system, def);
+                            break;
                         case "createOID":
-                            return createOID(code, system, def);
+                            ret =  createOID(code, system, def);
+                            break;
                         case "createHL7Timestamp":
-                            return createHL7Timestamp(code, system, def);
+                            ret =  createHL7Timestamp(code, system, def);
+                            break;
                         case "createID":
-                            return createID(code, system, def);
+                            ret =  createID(code, system, def);
+                            break;
                         case "varReset":
-                            return varReset(code, system, def);
+                            ret =  varReset(code, system, def);
+                            break;
                         case "varSet":
-                            return varSet(code, system, def);
+                            ret =  varSet(code, system, def);
+                            break;
                         case "varGet":
-                            return varGet(code, system, def);
+                            ret =  varGet(code, system, def);
+                            break;
                         case "varInc":
-                            return varInc(code, system, def);
+                            ret =  varInc(code, system, def);
+                            break;
                         case "varKill":
-                            return varKill(code, system, def);
+                            ret =  varKill(code, system, def);
+                            break;
                         case "varData":
-                            return varData(code, system, def);
+                            ret =  varData(code, system, def);
+                            break;
                         case "varConcat":
-                            return varConcat(code, system, def);
+                            ret =  varConcat(code, system, def);
+                            break;
                         case "varDebug":
-                            return varDebug(code, system, def);
+                            ret =  varDebug(code, system, def);
+                            break;
                         case "getPreviousUUID":
-                            return getPreviousUUID(code, system, def);
+                            ret =  getPreviousUUID(code, system, def);
+                            break;
                         case "encodeURL":
-                            return encodeURL(code, system, def);
+                            ret =  encodeURL(code, system, def);
+                            break;
                         case "decodeURL":
-                            return decodeURL(code, system, def);
+                            ret =  decodeURL(code, system, def);
+                            break;
                         case "makeURL":
-                            return makeURL(code, system, def);
+                            ret =  makeURL(code, system, def);
+                            break;
                         case "encodeJS":
-                            return encodeJS(code, system, def);
+                            ret =  encodeJS(code, system, def);
+                            break;
                         case "decodeJS":
-                            return decodeJS(code, system, def);
+                            ret =  decodeJS(code, system, def);
+                            break;
                         case "getConfigValue":
-                            return getConfigValue(code, system, def);
+                            ret =  getConfigValue(code, system, def);
+                            break;
                         case "getHierarchicalConfigValue":
-                            return getHierarchicalConfigValue(code, system, def);
+                            ret =  getHierarchicalConfigValue(code, system, def);
+                            break;
                         case "getCodedEntryConfig":
-                            return getCodedEntryConfig(code, system, def);
+                            ret =  getCodedEntryConfig(code, system, def);
+                            break;
                         case "getCID":
-                            return getCID(code, system, def);
+                            ret =  getCID(code, system, def);
+                            break;
                         case "getUniqueTime":
-                            return getUniqueTime(code, system, def);
+                            ret =  getUniqueTime(code, system, def);
+                            break;
                         case "toUpper":
-                            return toUpper(code, system, def);
+                            ret =  toUpper(code, system, def);
+                            break;
                         case "toLower":
-                            return toLower(code, system, def);
+                            ret =  toLower(code, system, def);
+                            break;
                         case "getServiceNameFromOID":
-                            return getServiceNameFromOID(code, system, def);
+                            ret =  getServiceNameFromOID(code, system, def);
+                            break;
                         case "getServiceHostFromOID":
-                            return getServiceHostFromOID(code, system, def);
+                            ret =  getServiceHostFromOID(code, system, def);
+                            break;
                         case "getServiceURLFromOID":
-                            return getServiceURLFromOID(code, system, def);
+                            ret =  getServiceURLFromOID(code, system, def);
+                            break;
                         case "getServiceNameFromURL":
-                            return getServiceNameFromURL(code, system, def);
+                            ret =  getServiceNameFromURL(code, system, def);
+                            break;
                         case "getServiceOIDFromURL":
-                            return getServiceOIDFromURL(code, system, def);
+                            ret =  getServiceOIDFromURL(code, system, def);
+                            break;
                         case "addFilterEntity":
-                            return addFilterEntity(code, system, def);
+                            ret =  addFilterEntity(code, system, def);
+                            break;
                         case "includeEntity":
-                            return includeEntity(code, system, def);
+                            ret =  includeEntity(code, system, def);
+                            break;
                         case "generateVisitNumber":
-                            return generateVisitNumber(code, system, def);
+                            ret =  generateVisitNumber(code, system, def);
+                            break;
                         case "addStreamletType":
-                            return addStreamletType(code, system, def);
+                            ret =  addStreamletType(code, system, def);
+                            break;
                         case "recordSDAData":
-                            return recordSDAData(code, system, def);
+                            ret =  recordSDAData(code, system, def);
+                            break;
                         case "xmltimestampToUTC":
-                            return xmltimestampToUTC(code, system, def);
+                            ret =  xmltimestampToUTC(code, system, def);
+                            break;
                         case "getQuickStream":
-                            return getQuickStream(code, system, def);
+                            ret =  getQuickStream(code, system, def);
+                            break;
                         case "getMeasuresTemplates":
-                            return getMeasuresTemplates(code, system, def);
+                            ret =  getMeasuresTemplates(code, system, def);
+                            break;
                         case "getMeasuresHeaderInfo":
-                            return getMeasuresHeaderInfo(code, system, def);
+                            ret =  getMeasuresHeaderInfo(code, system, def);
+                            break;
                         case "getMeasuresSetIds":
-                            return getMeasuresSetIds(code, system, def);
+                            ret =  getMeasuresSetIds(code, system, def);
+                            break;
                         case "getValueSetOIDs":
-                            return getValueSetOIDs(code, system, def);
+                            ret =  getValueSetOIDs(code, system, def);
+                            break;
                         case "setHSValueSetEntry":
-                            return setHSValueSetEntry(code, system, def);
+                            ret =  setHSValueSetEntry(code, system, def);
+                            break;
                         case "addUTCtoDateTime":
-                            return addUTCtoDateTime(code, system, def);
+                            ret =  addUTCtoDateTime(code, system, def);
+                            break;
                         case "xmltimestampToLocal":
-                            return xmltimestampToLocal(code, system, def);
+                            ret =  xmltimestampToLocal(code, system, def);
+                            break;
                         default:
                             throw new NotImplementedException(func + " is an unknown function");
                     }
                 }
                 catch (Exception er)
                 {
-                    return func + "(" + code + ", " + system + ", " + def + ")";
+                    ret = func + "(" + code + ", " + system + ", " + def + ")";
                 }
+                //System.Diagnostics.Debug.WriteLine(func + "(" + code + ", " + system + ", " + def + ") == "+ret);
+                return ret;
             }
 
             private string xmltimestampToLocal(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string addUTCtoDateTime(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string setHSValueSetEntry(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getValueSetOIDs(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getMeasuresSetIds(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getMeasuresHeaderInfo(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getMeasuresTemplates(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getQuickStream(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string xmltimestampToUTC(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string recordSDAData(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string addStreamletType(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string includeEntity(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string generateVisitNumber(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string addFilterEntity(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getServiceOIDFromURL(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getServiceNameFromURL(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getServiceURLFromOID(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getServiceHostFromOID(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getServiceNameFromOID(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string toLower(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string toUpper(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getUniqueTime(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getCID(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getCodedEntryConfig(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getHierarchicalConfigValue(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getConfigValue(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                object ret = InputSettings.Default[code.Replace('\\', '_')];
+                if(ret == null)
+                {
+                    throw new NotImplementedException(MethodBase.GetCurrentMethod().Name + " doesn't exist yet.");
+                }
+                return ret as string;
             }
 
             private string decodeJS(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string encodeJS(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string makeURL(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string decodeURL(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string encodeURL(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getPreviousUUID(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string varDebug(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string varConcat(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string varData(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string varKill(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string varInc(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string varGet(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string varSet(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string varReset(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string createID(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string createHL7Timestamp(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string createOID(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string createUUID(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return Guid.NewGuid().ToString();
             }
 
             private string uuid2oid(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string hex2dec(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getDescriptionForURL(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getCodeForURL(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getURLForCode(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getDescriptionForOID(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getCodeForOID(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getOIDForCode(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string debug(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getNumberType(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string resultFlag(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string lookupIHETransaction(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string GetIdentifierType(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getSystemOID(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string getHomeCommunityCode(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return (string)InputSettings.Default.HCID;
             }
 
             private string OIDtoFacilityContact(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string OIDtoFacilityName(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string OIDtoGW(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string OIDtoCode(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string CodetoOID(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string GWtoOID(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string dateDiff(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                DateTime start;
+                DateTime end;
+                try
+                {
+                    start = DateTime.Parse(system);
+                }
+                catch
+                {
+                    start = DateTime.Now;
+                }
+                try
+                {
+                    end = DateTime.Parse(def);
+                }
+                catch
+                {
+                    end = DateTime.Now;
+                }
+                //System.Diagnostics.Debug.WriteLine("DateDiff "+end.ToString()+" - "+start.ToString()+" = "+((end - start).Days.ToString())+" [" + MethodBase.GetCurrentMethod().Name + "([" + code + "],[" + system + "],[" + def + "])]");
+                return (end - start).Days.ToString();
             }
 
             private string xmltimestampisbefore(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string timestamp(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return DateTime.Now.ToString("yyyyMMddHHmmss");
             }
 
             private string decode(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string encode(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string strip(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string pieceStrip(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string piece(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string stripapos(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string dateNoDash(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string lookup(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string currentDate(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
 
             private string createGUID(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return Guid.NewGuid().ToString();
             }
 
             private string xmltimestamp(string code, string system, string def)
             {
-                throw new NotImplementedException();
+                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
             }
         }
     }

@@ -68,5 +68,140 @@ namespace XSLTest {
                 this["inputFilesDir"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2.16.840.1.113883.4.349.2")]
+        public string HCID {
+            get {
+                return ((string)(this["HCID"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("810 Vermont Avenue, NW")]
+        public string _HomeCommunity_Address_StreetLine1 {
+            get {
+                return ((string)(this["_HomeCommunity_Address_StreetLine1"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Washington")]
+        public string _HomeCommunity_Address_City {
+            get {
+                return ((string)(this["_HomeCommunity_Address_City"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("DC")]
+        public string _HomeCommunity_Address_State {
+            get {
+                return ((string)(this["_HomeCommunity_Address_State"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20420")]
+        public string _HomeCommunity_Address_Zip {
+            get {
+                return ((string)(this["_HomeCommunity_Address_Zip"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("US")]
+        public string _HomeCommunity_Address_Country {
+            get {
+                return ((string)(this["_HomeCommunity_Address_Country"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("810 Vermont Avenue, NW")]
+        public string _LegalAuthenticator_Address_StreetLine1 {
+            get {
+                return ((string)(this["_LegalAuthenticator_Address_StreetLine1"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Washington")]
+        public string _LegalAuthenticator_Address_City {
+            get {
+                return ((string)(this["_LegalAuthenticator_Address_City"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("DC")]
+        public string _LegalAuthenticator_Address_State {
+            get {
+                return ((string)(this["_LegalAuthenticator_Address_State"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20420")]
+        public string _LegalAuthenticator_Address_Zip {
+            get {
+                return ((string)(this["_LegalAuthenticator_Address_Zip"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("US")]
+        public string _LegalAuthenticator_Address_Country {
+            get {
+                return ((string)(this["_LegalAuthenticator_Address_Country"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("InterSystems")]
+        public string _LegalAuthenticator_Name_Family {
+            get {
+                return ((string)(this["_LegalAuthenticator_Name_Family"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("HealthShare... JK, LMAO. OMG")]
+        public string _LegalAuthenticator_Name_Given {
+            get {
+                return ((string)(this["_LegalAuthenticator_Name_Given"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("(800) 497-5428")]
+        public string _HomeCommunity_Telecom_WorkPhone {
+            get {
+                return ((string)(this["_HomeCommunity_Telecom_WorkPhone"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("(800) 583-8725")]
+        public string _LegalAuthenticator_Telecom_WorkPhone {
+            get {
+                return ((string)(this["_LegalAuthenticator_Telecom_WorkPhone"]));
+            }
+        }
     }
 }
