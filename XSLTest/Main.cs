@@ -11,19 +11,29 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using XSLTest.XSLT;
+using XSLTest.Query;
 
 namespace XSLTest
 {
     public partial class Main : Form
     {
         private Transformer transformer;
+        private QueryManager queryManager;
         public Main()
         {
             InitializeComponent();
+            queryManager = new QueryManager();
+            queryManager.OnQueryChange += QueryManager_OnQueryChange;
+            dataGridView1.AutoGenerateColumns = true;
             openFileDialog1.Filter = "XSLT Translation Files (*.xslt;*.xsl)|*.xslt;*.xsl|All files (*.*)|*.*";
             openFileDialog1.FileName = "";
             openFileDialog2.Filter = "XML Files (*.xml)|*.xml|All files (*.*)|*.*";
             openFileDialog2.FileName = "";
+        }
+
+        private void QueryManager_OnQueryChange(object sender, QueryChangedEventArgs e)
+        {
+            bindingSource1.DataSource = e.Table;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -43,6 +53,8 @@ namespace XSLTest
                 button1.Enabled = false;
                 comboBox1.Enabled = false;
                 transformer = new Transformer();
+                queryManager.ChangeQuery(comboBox1.Text);
+                transformer.AddArguments(queryManager.CurrentTable);
                 bwTransformOpener.RunWorkerAsync(comboBox1.Text);
                 if(!comboBox1.Items.Contains(comboBox1.Text))
                 {
@@ -80,6 +92,7 @@ namespace XSLTest
                 comboBox2.Enabled = false;
                 richTextBox1.Text = "";
                 worker.RunWorkerAsync(comboBox2.Text);
+
             }
             catch (InvalidOperationException er)
             {
@@ -156,6 +169,7 @@ namespace XSLTest
             try
             {
                 richTextBox2.Text = "";
+                transformer.AddArguments(queryManager.CurrentTable);
                 bwTransform.RunWorkerAsync(richTextBox1.Text);
                 CheckCanTransform(true);
             }
@@ -231,7 +245,7 @@ namespace XSLTest
                 }
             }
             InputSettings.Default.inputFiles = sc2;
-            InputSettings.Default.Save();
+            queryManager.SaveState();
         }
 
         private void SaveDirectorySetting(string prefix, string filename)
@@ -338,6 +352,16 @@ namespace XSLTest
             button1.Enabled = true;
             comboBox1.Enabled = true;
             CheckCanTransform();
+        }
+
+        private void dataGridView1_DataSourceChanged(object sender, EventArgs e)
+        {
+            dataGridView1.Invalidate();
+        }
+
+        private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            
         }
     }
 }

@@ -575,7 +575,7 @@ namespace XSLTest.XSLT.Extensions
 
             private string getSystemOID(string code, string system, string def)
             {
-                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
+                return (string)InputSettings.Default.AssigningAuthority;
             }
 
             private string getHomeCommunityCode(string code, string system, string def)
@@ -619,7 +619,7 @@ namespace XSLTest.XSLT.Extensions
                 DateTime end;
                 try
                 {
-                    start = DateTime.Parse(system);
+                    start = system.Length > 0 ? DateTime.Parse(system) : DateTime.Now;
                 }
                 catch
                 {
@@ -627,7 +627,7 @@ namespace XSLTest.XSLT.Extensions
                 }
                 try
                 {
-                    end = DateTime.Parse(def);
+                    end = def.Length > 0 ? DateTime.Parse(def) : DateTime.Now;
                 }
                 catch
                 {

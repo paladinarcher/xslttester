@@ -59,5 +59,8 @@
     <Setting Name="_LegalAuthenticator_Telecom_WorkPhone" Type="System.String" Scope="Application">
       <Value Profile="(Default)">(800) 583-8725</Value>
     </Setting>
+    <Setting Name="AssigningAuthority" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">2.16.840.1.113883.4.349</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

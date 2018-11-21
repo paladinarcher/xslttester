@@ -2,7 +2,7 @@
 <xsl:stylesheet version="1.0" xmlns="urn:hl7-org:v3" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sdtc="urn:hl7-org:sdtc" xmlns:isc="http://extension-functions.intersystems.com"
   xmlns:exsl="http://exslt.org/common" xmlns:set="http://exslt.org/sets" exclude-result-prefixes="isc xsi sdtc exsl set">
-  <xsl:variable name="documentPatientSetting">Ambulatory</xsl:variable>
+  <xsl:param name="documentPatientSetting" select="'Ambulatory'" />
   <xsl:include href="SDA-to-Z-BASE-CCDAv21-CCD.xsl"/>
 	
   <xsl:variable name="flavor" select="'VA'"/>
@@ -39,6 +39,8 @@
       <effectiveTime value="{$currentDateTime}"/>
       <xsl:apply-templates mode="document-confidentialityCode" select="."/>
       <languageCode code="en-US"/>
+
+      <versionNumber value="1" />
 
       <!-- Person Information module -->
       <xsl:apply-templates select="Patient" mode="ePI-personInformation"/>
@@ -164,12 +166,10 @@
     <templateId root="{$ccda-ContinuityOfCareCCD}"/>
     <templateId root="{$ccda-ContinuityOfCareCCD}" extension="2015-08-01"/>
   </xsl:template>
-  <xsl:template match="Container" mode="fn-templateId-USRealmHeader">
-  </xsl:template>
 
   <!-- confidentialityCode may be overriden by stylesheets that import this one -->
   <xsl:template match="Container" mode="document-confidentialityCode">
-    <confidentialityCode nullFlavor="{$confidentialityNullFlavor}"/>
+    <confidentialityCode code="N" codeSystem="2.16.840.1.113883.5.25" /> <!-- nullFlavor="{$confidentialityNullFlavor}"-->
   </xsl:template>
 
   <!-- This empty template may be overridden with custom logic. -->

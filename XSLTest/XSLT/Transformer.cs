@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
+using System.Data;
 
 namespace XSLTest.XSLT
 {
@@ -59,6 +60,15 @@ namespace XSLTest.XSLT
         public void AddExtension(Extensions.Extension e)
         {
             xslArgs.AddExtensionObject(e.NameSpace, e.Object);
+        }
+
+        public void AddArguments(Query.QueryParamsTable table)
+        {
+            foreach(DataRow r in table.Rows)
+            {
+                xslArgs.RemoveParam((string)r["Name"], "");
+                xslArgs.AddParam((string)r["Name"], "", (string)r["Value"]);
+            }
         }
 
         public void TransformXML(Stream instream, Stream outstream)

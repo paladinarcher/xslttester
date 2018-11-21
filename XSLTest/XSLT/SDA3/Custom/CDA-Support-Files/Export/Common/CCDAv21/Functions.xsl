@@ -1407,7 +1407,7 @@
 										</xsl:apply-templates>
 									</xsl:variable>
 									<id>
-										<xsl:attribute name="root"><xsl:value-of select="$facilityOID"/></xsl:attribute>
+										<xsl:attribute name="root"><xsl:value-of select="$assigningAuthorityOID"/></xsl:attribute>
 									</id>
 								</xsl:when>
 								<xsl:otherwise>
@@ -1424,7 +1424,8 @@
 								</xsl:otherwise>
 							</xsl:choose>
 							
-							<xsl:apply-templates select="." mode="fn-telecom"/>
+							<!--<xsl:apply-templates select="." mode="fn-telecom"/> -->
+              <telecom nullFlavor="{$telecomNullFlavor}" />
 							<xsl:apply-templates select="." mode="fn-address-WorkPrimary"/>
 						</representedCustodianOrganization>
 					</xsl:when>
@@ -2221,10 +2222,10 @@
 	<xsl:template match="Patient" mode="fn-id-Document">
 		<xsl:choose>
 			<xsl:when test="string-length($documentUniqueId)">
-				<id root="{$documentUniqueId}"/>
+				<id extension="{$documentUniqueId}" root="{isc:evaluate('getSystemOID')}" />
 			</xsl:when>
 			<xsl:otherwise>
-				<id root="{isc:evaluate('createUUID')}"/>
+				<id extension="{isc:evaluate('createUUID')}" root="{isc:evaluate('getSystemOID')}" />
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>

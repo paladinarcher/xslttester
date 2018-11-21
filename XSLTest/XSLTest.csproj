@@ -62,6 +62,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>InputSettings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Query\QueryManager.cs" />
+    <Compile Include="Query\QueryParamsTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="XSLT\Extensions\EXSLT\Common.cs" />
     <Compile Include="XSLT\Extensions\EXSLT\Sets.cs" />
     <Compile Include="XSLT\Extensions\Extension.cs" />

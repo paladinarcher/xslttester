@@ -11,7 +11,7 @@
 	<xsl:variable name="currentDateTime" select="isc:evaluate('timestamp')"/>
 	
 	<!-- Global variable to hold the configuration found in the site's export profile -->
-	<xsl:variable name="exportConfiguration" select="document('../../../Site/ExportProfile.xml')/exportConfiguration"/>
+	<xsl:variable name="exportConfiguration" select="document('../../Site/ExportProfile.xml')/exportConfiguration"/>
 	
 	<!-- Global variables to hold lower case string and upper case string -->
 	<xsl:variable name="lowerCase" select="'abcdefghijklmnopqrstuvwxyz'"/>
@@ -20,11 +20,8 @@
 	<!-- Global variables to hold required nullFlavor values -->
 	<xsl:variable name="idNullFlavor" select="'UNK'"/>
 	<xsl:variable name="addrNullFlavor" select="'UNK'"/>
-  <xsl:variable name="telecomNullFlavor" select="'NA'"/>
 	<xsl:variable name="confidentialityNullFlavor" select="'NI'"/>
 	
 	<!-- Global variable to hold valid LOINC vital sign codes. -->
-	<xsl:variable name="loincVitalSignCodes">|9279-1|8867-4|2710-2|8480-6|8462-4|8310-5|8302-2|8306-3|8287-5|3141-9|39156-5|59408-5|29463-7|</xsl:variable>
-	<xsl:variable name="loincSmokingStatus">72166-2</xsl:variable>
-	<xsl:variable name="loincTobaccoUse">11367-0</xsl:variable>
+	<xsl:variable name="loincVitalSignCodes">|9279-1|8867-4|2710-2|8480-6|8462-4|8310-5|8302-2|8306-3|8287-5|3141-9|</xsl:variable>
 </xsl:stylesheet>

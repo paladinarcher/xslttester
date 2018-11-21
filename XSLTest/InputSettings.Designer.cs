@@ -203,5 +203,14 @@ namespace XSLTest {
                 return ((string)(this["_LegalAuthenticator_Telecom_WorkPhone"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2.16.840.1.113883.4.349")]
+        public string AssigningAuthority {
+            get {
+                return ((string)(this["AssigningAuthority"]));
+            }
+        }
     }
 }
