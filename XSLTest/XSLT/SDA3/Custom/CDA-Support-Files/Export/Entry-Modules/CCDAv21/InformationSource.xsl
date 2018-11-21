@@ -60,13 +60,14 @@
 			  <xsl:apply-templates select="../CarePlans/CarePlan[1]/Organizations/DocumentOrganization/Organization" mode="eIS-organization" />				
 		  </xsl:when>
       <xsl:otherwise>
-        <xsl:apply-templates select="SupportContacts" mode="eIS-participant-SupportContact" />
+        <xsl:apply-templates select="SupportContacts/SupportContact" mode="eIS-participant-SupportContact" />
       </xsl:otherwise>
     </xsl:choose>
 	</xsl:template>
 
  	<xsl:template match="*" mode="eIS-participant-SupportContact">
 		<participant typeCode="IND">
+      <time nullFlavor="UNK" />
 			<xsl:apply-templates select="." mode="fn-associatedEntity">
 				<xsl:with-param name="contactType" select="ContactType/Code/text()"/>
 			</xsl:apply-templates>

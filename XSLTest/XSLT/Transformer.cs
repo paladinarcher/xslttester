@@ -17,6 +17,10 @@ namespace XSLTest.XSLT
         private readonly XmlWriterSettings settings;
         private XsltArgumentList xslArgs;
         private bool loaded;
+        private string tmpWrapperFilename;
+        private Dictionary<string, string> args;
+
+        public event OnParameterEmergencyAddEventHandler OnParameterEmergencyAdd;
 
         public Transformer()
         {
@@ -28,33 +32,52 @@ namespace XSLTest.XSLT
             };
 
             xslArgs = new XsltArgumentList();
+            args = new Dictionary<string, string>();
             loaded = false;
-        }
-        public Transformer(XmlReader xsl) : this()
-        {
-            SetSourceXSLT(xsl);
-        }
-        public Transformer(XmlReader xsl, Extensions.Extension[] extensions) : this(xsl)
-        {
-            foreach(Extensions.Extension e in extensions)
-            {
-               AddExtension(e);
-            }
+
+            tmpWrapperFilename = Path.GetTempPath() + "XSLTbaseStub.xsl";
         }
 
         public void SetSourceXSLT(string filePath)
         {
-            //FileInfo f = new FileInfo(filePath);
-            //Directory.SetCurrentDirectory(f.DirectoryName);
-            //FileStream fs = new FileStream(filePath, FileMode.Open);
-            SetSourceXSLT(new XmlTextReader(filePath));
+            filloutTmpFile(filePath);
+            SetSourceXSLT(new XmlTextReader(tmpWrapperFilename), filePath);
         }
-        public void SetSourceXSLT(XmlReader xsl)
+        public void SetSourceXSLT(XmlReader xsl, string originalFilePath)
         {
             loaded = false;
             XsltSettings s = new XsltSettings(true, true);
-            xslt.Load(xsl, s, new XmlUrlResolver());
+            setSourceXSLT(xsl, s, new XmlUrlResolver(), originalFilePath);
             loaded = true;
+        }
+
+        private void setSourceXSLT(XmlReader x, XsltSettings s, XmlResolver r, string originalFilePath)
+        {
+            try
+            {
+                xslt.Load(x, s, r);
+            }
+            catch (System.Xml.Xsl.XsltException e)
+            {
+                string msg = e.Message;
+                if (msg.IndexOf("variable or parameter ") < 0)
+                {
+                    throw e;
+                }
+                x.Close();
+                int st = msg.IndexOf("'")+1;
+                int en = msg.IndexOf("'", st);
+                string variable = msg.Substring(st, en - st);
+                string newVal = "UNKNOWN_VARIABLE";
+                AddParameter(variable, newVal);
+                OnParameterEmergencyAdded(new OnParameterEmergencyArgs(variable, newVal, e));
+                filloutTmpFile(originalFilePath);
+                setSourceXSLT(new XmlTextReader(tmpWrapperFilename), s, r, originalFilePath);
+            }
+        }
+        protected void OnParameterEmergencyAdded(OnParameterEmergencyArgs args)
+        {
+            OnParameterEmergencyAdd?.Invoke(this, args);
         }
 
         public void AddExtension(Extensions.Extension e)
@@ -66,9 +89,18 @@ namespace XSLTest.XSLT
         {
             foreach(DataRow r in table.Rows)
             {
-                xslArgs.RemoveParam((string)r["Name"], "");
-                xslArgs.AddParam((string)r["Name"], "", (string)r["Value"]);
+                string n = (string)r["Name"];
+                string v = (string)r["Value"];
+                AddParameter(n, v);
             }
+        }
+
+        public void AddParameter(string name, string value)
+        {
+            xslArgs.RemoveParam(name, "");
+            xslArgs.AddParam(name, "", value);
+            if (args.ContainsKey(name)) { args[name] = value; }
+            else { args.Add(name, value); }
         }
 
         public void TransformXML(Stream instream, Stream outstream)
@@ -81,5 +113,34 @@ namespace XSLTest.XSLT
         {
             return loaded;
         }
+        private void filloutTmpFile(String filename)
+        {
+            List<string> buffer = new List<string>();
+            buffer.Add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            buffer.Add("<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" >");
+            foreach(KeyValuePair<string, string> nv in args)
+            {
+                buffer.Add("  <xsl:param name=\""+nv.Key+"\" select=\"'"+nv.Value+"'\" />");
+            }
+            buffer.Add("  <xsl:include href=\"" + filename + "\"/>");
+            buffer.Add("</xsl:stylesheet>");
+
+            File.WriteAllLines(tmpWrapperFilename, buffer.ToArray());
+        }
     }
+
+    public class OnParameterEmergencyArgs : EventArgs
+    {
+        public OnParameterEmergencyArgs(string name, string value, Exception e)
+        {
+            Name = name;
+            Value = value;
+            CausingError = e;
+        }
+        public string Name { get; set; }
+        public string Value { get; set; }
+        public Exception CausingError { get; set; }
+    }
+
+    public delegate void OnParameterEmergencyAddEventHandler(Object sender, OnParameterEmergencyArgs e);
 }

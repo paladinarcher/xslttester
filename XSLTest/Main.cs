@@ -55,6 +55,7 @@ namespace XSLTest
                 transformer = new Transformer();
                 queryManager.ChangeQuery(comboBox1.Text);
                 transformer.AddArguments(queryManager.CurrentTable);
+                transformer.OnParameterEmergencyAdd += Transformer_OnParameterEmergencyAdd;
                 bwTransformOpener.RunWorkerAsync(comboBox1.Text);
                 if(!comboBox1.Items.Contains(comboBox1.Text))
                 {
@@ -72,6 +73,20 @@ namespace XSLTest
                 button1.Text = "Browse";
                 comboBox1.Enabled = true;
                 richTextBox2.Text = er.ToString();
+            }
+        }
+
+        private void Transformer_OnParameterEmergencyAdd(object sender, OnParameterEmergencyArgs e)
+        {
+            object s = bindingSource1.DataSource;
+            if(s != null)
+            {
+                QueryParamsTable t = (QueryParamsTable)s;
+                DataRow row  = t.NewRow();
+                row["Name"]  = e.Name;
+                row["Value"] = e.Value;
+                t.Rows.Add(row);
+                dataGridView1.Invalidate();
             }
         }
 
