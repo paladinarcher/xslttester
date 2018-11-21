@@ -669,7 +669,17 @@ namespace XSLTest.XSLT.Extensions
 
             private string piece(string code, string system, string def)
             {
-                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
+                try
+                {
+                    string[] res = code.Split(system.ToCharArray());
+                    int ind = int.Parse(def);
+                    if(ind > res.Length) { return ""; }
+                    return res[ind - 1];
+                }
+                catch (Exception e)
+                {
+                    return " UNKNOWN_FUNC[" + MethodBase.GetCurrentMethod().Name + "([" + code + "],[" + system + "],[" + def + "])]";
+                }
             }
 
             private string stripapos(string code, string system, string def)
