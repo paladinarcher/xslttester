@@ -435,12 +435,12 @@ namespace XSLTest.XSLT.Extensions
 
             private string decodeURL(string code, string system, string def)
             {
-                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
+                return System.Web.HttpUtility.UrlDecode(code);
             }
 
             private string encodeURL(string code, string system, string def)
             {
-                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
+                return System.Web.HttpUtility.UrlEncode(code);
             }
 
             private string getPreviousUUID(string code, string system, string def)
@@ -639,7 +639,26 @@ namespace XSLTest.XSLT.Extensions
 
             private string xmltimestampisbefore(string code, string system, string def)
             {
-                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
+                DateTime start;
+                DateTime end;
+                try
+                {
+                    start = system.Length > 0 ? DateTime.Parse(system) : DateTime.Now;
+                }
+                catch
+                {
+                    start = DateTime.Now;
+                }
+                try
+                {
+                    end = def.Length > 0 ? DateTime.Parse(def) : DateTime.Now;
+                }
+                catch
+                {
+                    end = DateTime.Now;
+                }
+                System.Diagnostics.Debug.WriteLine("timestamp "+end.ToString()+" is before "+start.ToString()+" [" + MethodBase.GetCurrentMethod().Name + "([" + code + "],[" + system + "],[" + def + "])]");
+                return (end < start ? "1" : "0");
             }
 
             private string timestamp(string code, string system, string def)
@@ -649,12 +668,14 @@ namespace XSLTest.XSLT.Extensions
 
             private string decode(string code, string system, string def)
             {
-                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
+                var plainTextBytes = Encoding.UTF8.GetBytes(code);
+                return Convert.ToBase64String(plainTextBytes);
             }
 
             private string encode(string code, string system, string def)
             {
-                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
+                var base64EncodedBytes = Convert.FromBase64String(code);
+                return Encoding.UTF8.GetString(base64EncodedBytes);
             }
 
             private string strip(string code, string system, string def)
@@ -709,7 +730,8 @@ namespace XSLTest.XSLT.Extensions
 
             private string xmltimestamp(string code, string system, string def)
             {
-                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
+                DateTime d = DateTime.ParseExact(code, "yyyyMMddHHmm", System.Globalization.CultureInfo.InvariantCulture);
+                return d.ToString("yyyy-MM-ddTHH:mm:ssZ");
             }
         }
     }
