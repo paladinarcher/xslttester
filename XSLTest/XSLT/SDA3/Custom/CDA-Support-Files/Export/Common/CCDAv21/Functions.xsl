@@ -1323,23 +1323,40 @@
 					<xsl:apply-templates select="Code" mode="fn-code-to-description">
 						<xsl:with-param name="identityType" select="'HomeCommunity'"/>
 						<xsl:with-param name="defaultDescription" select="Description/text()"/>
-					</xsl:apply-templates>
+        </xsl:apply-templates>
 				</xsl:variable>
 				
 				<representedOrganization>
 					<xsl:apply-templates select="." mode="fn-id-Facility"/>
 					
 					<xsl:choose>
-						<xsl:when test="string-length($organizationName)">
-							<name><xsl:value-of select="$organizationName"/></name>
-						</xsl:when>
-						<xsl:otherwise>
-							<name nullFlavor="UNK"/>
-						</xsl:otherwise>
-					</xsl:choose>
+								<xsl:when test="string-length(Code/text())">
+									<xsl:variable name="facilityOID">
+										<xsl:apply-templates select="Code" mode="fn-oid-for-code">
+											<xsl:with-param name="Code" select="Code/text()"/>
+										</xsl:apply-templates>
+									</xsl:variable>
+									<id>
+										<xsl:attribute name="root"><xsl:value-of select="$assigningAuthorityOID"/></xsl:attribute>
+									</id>
+								</xsl:when>
+								<xsl:otherwise>
+									<id nullFlavor="{$idNullFlavor}"/>
+								</xsl:otherwise>
+							</xsl:choose>
+							
+							<xsl:choose>
+								<xsl:when test="string-length($organizationName)">
+									<name><xsl:value-of select="$organizationName"/></name>
+								</xsl:when>
+								<xsl:otherwise>
+									<name nullFlavor="UNK"/>
+								</xsl:otherwise>
+							</xsl:choose>
 					
-					<xsl:apply-templates select="." mode="fn-telecom"/>
-					<xsl:apply-templates select="." mode="fn-address-WorkPrimary"/>
+					<!--<xsl:apply-templates select="." mode="fn-telecom"/>-->
+          <telecom nullFlavor="NA" />
+					<!--<xsl:apply-templates select="." mode="fn-address-WorkPrimary"/>-->
 					
 				</representedOrganization>
 			</xsl:when>
@@ -2313,7 +2330,9 @@
 	</xsl:template>
 	
 	<xsl:template match="*" mode="fn-id-HealthShare">
-		<id root="{$healthShareOID}"/>
+		<!--<id root="{$healthShareOID}"/>-->
+    <id nullFlavor="NA" />
+    <code nullFlavor="UNK" />
 	</xsl:template>
 
 	<xsl:template match="HealthFund" mode="fn-id-PayerGroup">
