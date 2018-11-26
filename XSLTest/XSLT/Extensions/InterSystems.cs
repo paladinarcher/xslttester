@@ -380,12 +380,12 @@ namespace XSLTest.XSLT.Extensions
 
             private string toLower(string code, string system, string def)
             {
-                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
+                return code.ToLower();
             }
 
             private string toUpper(string code, string system, string def)
             {
-                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
+                return code.ToUpper();
             }
 
             private string getUniqueTime(string code, string system, string def)
