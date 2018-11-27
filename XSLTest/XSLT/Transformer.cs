@@ -41,7 +41,9 @@ namespace XSLTest.XSLT
         public void SetSourceXSLT(string filePath)
         {
             filloutTmpFile(filePath);
-            SetSourceXSLT(new XmlTextReader(tmpWrapperFilename), filePath);
+            XmlTextReader tmp = new XmlTextReader(tmpWrapperFilename);
+            SetSourceXSLT(tmp, filePath);
+            tmp.Close();
         }
         public void SetSourceXSLT(XmlReader xsl, string originalFilePath)
         {
@@ -72,7 +74,9 @@ namespace XSLTest.XSLT
                 AddParameter(variable, newVal);
                 OnParameterEmergencyAdded(new OnParameterEmergencyArgs(variable, newVal, e));
                 filloutTmpFile(originalFilePath);
-                setSourceXSLT(new XmlTextReader(tmpWrapperFilename), s, r, originalFilePath);
+                XmlTextReader tmp = new XmlTextReader(tmpWrapperFilename);
+                setSourceXSLT(tmp, s, r, originalFilePath);
+                tmp.Close();
             }
         }
         protected void OnParameterEmergencyAdded(OnParameterEmergencyArgs args)

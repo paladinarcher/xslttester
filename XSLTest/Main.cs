@@ -51,6 +51,7 @@ namespace XSLTest
             {
                 button1.Text = "Loading...";
                 button1.Enabled = false;
+                button4.Enabled = false;
                 comboBox1.Enabled = false;
                 transformer = new Transformer();
                 queryManager.ChangeQuery(comboBox1.Text);
@@ -365,6 +366,7 @@ namespace XSLTest
         {
             button1.Text = "Browse";
             button1.Enabled = true;
+            button4.Enabled = true;
             comboBox1.Enabled = true;
             CheckCanTransform();
         }
@@ -377,6 +379,11 @@ namespace XSLTest
         private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
             
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            UpdateXSLTSelection();
         }
     }
 }
