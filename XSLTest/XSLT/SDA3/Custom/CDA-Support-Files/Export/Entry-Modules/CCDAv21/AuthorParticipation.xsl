@@ -146,7 +146,11 @@
 			<xsl:apply-templates select="." mode="fn-id-HealthShare"/>
 			
 			<xsl:apply-templates select="." mode="fn-address-WorkPrimary"/>
-			<xsl:apply-templates select="." mode="fn-telecom"/>
+			<!--<xsl:apply-templates select="." mode="fn-telecom"/>-->
+      <telecom nullFlavor="NA" />
+      <assignedPerson>
+        <name>Department of Veterans Affairs</name>
+      </assignedPerson>
 			
 			<!-- Software Device -->
 			<xsl:apply-templates select="." mode="fn-assignedAuthoringDevice"/>
