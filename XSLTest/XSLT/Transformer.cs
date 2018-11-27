@@ -68,7 +68,7 @@ namespace XSLTest.XSLT
                 int st = msg.IndexOf("'")+1;
                 int en = msg.IndexOf("'", st);
                 string variable = msg.Substring(st, en - st);
-                string newVal = "UNKNOWN_VARIABLE";
+                string newVal = "UNKNOWN_VARIABLE_"+variable;
                 AddParameter(variable, newVal);
                 OnParameterEmergencyAdded(new OnParameterEmergencyArgs(variable, newVal, e));
                 filloutTmpFile(originalFilePath);
