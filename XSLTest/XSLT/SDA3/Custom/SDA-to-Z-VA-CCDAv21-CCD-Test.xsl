@@ -45,25 +45,20 @@
           </xsl:apply-templates>
           
           <!-- 1.04 PERSON PHONE/EMAIL/URL, REQUIRED -->
-          <telecom />
+          <xsl:apply-templates select="Patient" mode="standard-contact-info" />
           
           <patient>
             <!-- 1.05 PERSON NAME LEGAL, REQUIRED -->
-            <name use="L">
-              <prefix />
-              <given />
-              <given MAP_ID="middle" />
-              <family />
-              <suffix />
-            </name>
+            <xsl:apply-templates select="Patient/Name" mode="standard-name">
+              <xsl:with-param name="use">L</xsl:with-param>
+            </xsl:apply-templates>
+
             <!-- 1.05 PERSON NAME Alias Name, Optional -->
-            <name use="A">
-              <prefix />
-              <given />
-              <family />
-              <suffix />
-            </name>
+            <xsl:apply-templates select="Patient/Aliases/Name" mode="standard-name">
+              <xsl:with-param name="use">A</xsl:with-param>
+            </xsl:apply-templates>
             <!-- 1.06 GENDER, REQUIRED, HL7 Administrative Gender -->
+            <!-- TODO: find SDA mapping post ESR/Terms Integration -->
             <administrativeGenderCode codeSystem="2.16.840.1.113883.5.1" codeSystemName="AdministrativeGenderCode">
               <originalText>
                 <reference />
@@ -71,16 +66,18 @@
             </administrativeGenderCode>
             <!-- 1.07 PERSON DATE OF BIRTH, REQUIRED -->
             <birthTime value="{$patientBirthDate}" />
+            <!-- TODO: find SDA mapping post ESR/Terms Integration -->
             <maritalStatusCode code='maritalCode' codeSystem='2.16.840.1.113883.5.2' codeSystemName='MaritalStatusCode' >
               <originalText />
               <!-- 1.08 MARITAL STATUS, Optional-R2 -->
             </maritalStatusCode>
-            <!-- 1.09 RELIGIOUS AFFILIATION, Optional, Removed b/c data not yet available 
-                via VA VIstA RPCs -->
+            <!-- 1.09 RELIGIOUS AFFILIATION, Optional, Removed b/c data not yet available via VA VIstA RPCs -->
+            <!-- TODO: find SDA mapping post ESR/Terms Integration -->
             <religiousAffiliationCode codeSystem='2.16.840.1.113883.5.1076' codeSystemName='HL7 Religious Affiliation' >
               <originalText>religiousAffiliation</originalText>
             </religiousAffiliationCode>
             <!-- 1.10 RACE, Optional -->
+            <!-- TODO: find SDA mapping post ESR/Terms Integration -->
             <raceCode codeSystem='2.16.840.1.113883.6.238' codeSystemName='Race &amp; Ethnicity - CDC'>
               <originalText>race</originalText>
             </raceCode>
@@ -88,25 +85,36 @@
               <originalText>race</originalText>
             </sdtc:raceCode>
             <!-- 1.11 ETHNICITY, Optional -->
+            <!-- TODO: find SDA mapping post ESR/Terms Integration -->
             <ethnicGroupCode codeSystem='2.16.840.1.113883.6.238' codeSystemName='Race &amp; Ethnicity - CDC'>
               <originalText>ethnicity</originalText>
             </ethnicGroupCode>
-            <!-- ********************************************************** LANGUAGE 
-                SPOKEN CONTENT MODULE, R2 ********************************************************** -->
-            <languageCommunication MAP_ID="PL">
+            <!-- ********************************************************** LANGUAGE SPOKEN CONTENT MODULE, R2 ********************************************************** -->
+            <languageCommunication>
               <!-- 2.01 LANGUAGE, REQUIRED, languageCode ISO 639-1 -->
-              <languageCode nullFlavor="NA" />
-              <modeCode nullFlavor="NA" />
-              <proficiencyLevelCode nullFlavor="NA" />
-              <preferenceInd value="true" />
+              <xsl:choose>
+                <xsl:when test="boolean(Patient/PrimaryLanguage/Code)">
+                  <languageCode code="{Patient/PrimaryLanguage/Code/text()}" />
+                  <modeCode code="ESP" displayName="Expressed spoken" codeSystem="2.16.840.1.113883.5.60" codeSystemName="LanguageAbilityMode" />
+                  <proficiencyLevelCode nullFlavor="NA" />
+                  <preferenceInd value="true" />
+                </xsl:when>
+                <xsl:otherwise>
+                  <languageCode nullFlavor="UNK" />
+                  <modeCode nullFlavor="NA" />
+                  <proficiencyLevelCode nullFlavor="NA" />
+                  <preferenceInd nullFlavor="NA" />
+                </xsl:otherwise>
+              </xsl:choose>
             </languageCommunication>
+            <!-- TODO: find out if there will be secondary languages in the SDA, not seeing them in test data
             <languageCommunication MAP_ID="OL">
-              <!-- 2.01 LANGUAGE, REQUIRED, languageCode ISO 639-1 -->
+              <- 2.01 LANGUAGE, REQUIRED, languageCode ISO 639-1 ->
               <languageCode nullFlavor="NA" />
               <modeCode nullFlavor="NA" />
               <proficiencyLevelCode nullFlavor="NA" />
               <preferenceInd value="false" />
-            </languageCommunication>
+            </languageCommunication> -->
           </patient>
         </patientRole>
       </recordTarget>
@@ -129,6 +137,12 @@
           <assignedPerson>
             <name>Department of Veterans Affairs</name>
           </assignedPerson>
+          
+          <assignedAuthoringDevice>
+           <manufacturerModelName>InterSystems</manufacturerModelName>
+           <softwareName>InterSystems HealthShare</softwareName>
+          </assignedAuthoringDevice>
+          
           <!-- 10.02 AUTHOR NAME REQUIRED as representedOrganization -->
           <representedOrganization>
             <!-- 10.02 AUTHORING DEVICE ORGANIZATION OID (VA OID) (deviceOrgOID), 
@@ -139,7 +153,13 @@
             <!-- Assigned Author Telecom Required, but VA VistA data not yet available -->
             <telecom nullFlavor="NA" />
             <!-- Assigned Author Address Required, but VA VistA data not yet available -->
-            <addr nullFlavor="NA" />
+            <addr use="WP">
+              <streetAddressLine>810 Vermont Avenue, NW</streetAddressLine>
+              <city>Washington</city>
+              <state>DC</state>
+              <postalCode>20420</postalCode>
+              <country>US</country>            
+            </addr>
           </representedOrganization>
         </assignedAuthor>
       </author>
@@ -187,7 +207,13 @@
         <assignedEntity>
           <id nullFlavor="NI" />
           <code nullFlavor="NI" />
-          <addr nullFlavor="NA" />
+          <addr>
+            <streetAddressLine>810 Vermont Avenue NW</streetAddressLine>
+            <city>Washington</city>
+            <state>DC</state>
+            <postalCode>20420</postalCode>
+            <country>US</country>
+          </addr>
           <telecom nullFlavor="NA" />
           <assignedPerson>
             <name>Department of Veterans Affairs</name>
@@ -207,38 +233,7 @@
       </legalAuthenticator>
       <!-- ******************************************************************** 
     SUPPORT INFORMATION CONTENT MODULE, Optional ******************************************************************** -->
-      <participant typeCode="IND">
-        <!-- 3.01 DATE, REQUIRED -->
-        <!-- 3.01 DATE date as nullFlavor b/c data not yet available via VA VistA 
-        RPCs -->
-        <time nullFlavor="UNK" />
-        <!-- 3.02 CONTACT TYPE, REQUIRED, classCode value determined by VistA value 
-        in contactType -->
-        <associatedEntity classCode="contactType">
-          <code codeSystem='2.16.840.1.113883.5.111' codeSystemName='RoleCode'>
-            <originalText>relationshipType</originalText>
-          </code>
-          <!-- 3.04 CONTACT Addresss, Home Permanent, Optional-R2 -->
-          <addr use="HP">
-            <streetAddressLine>homeAddressLine</streetAddressLine>
-            <city>homeCity</city>
-            <state>homeState</state>
-            <postalCode>homePostal</postalCode>
-          </addr>
-          <!-- 3.05 CONTACT PHONE/EMAIL/URL, Optional-R2, Removed b/c data not yet 
-            available via VA VistA RPCs -->
-          <telecom />
-          <associatedPerson>
-            <!-- 3.06 CONTACT NAME, REQUIRED -->
-            <name>
-              <prefix />
-              <given>nameGiven</given>
-              <family>nameFamily</family>
-              <suffix>nameSuffix</suffix>
-            </name>
-          </associatedPerson>
-        </associatedEntity>
-      </participant>
+      <xsl:apply-templates select="Patient/SupportContacts/SupportContact" mode="header-participant" />
 
       <!-- ******************************************************************************* 
     DOCUMENTATION OF MODULE - QUERY META DATA, Optional ******************************************************************************* -->
@@ -248,91 +243,12 @@
             <low value="{$patientBirthDate}" />
             <high value="{$documentCreatedOn}" />
           </effectiveTime>
-          <performer typeCode="PRF" MAP_ID="PCP">
-            <!-- ****** PRIMARY HEALTHCARE PROVIDER MODULE, Optional ********* -->
-            <!-- 4.02 PROVIDER ROLE CODED, optional -->
-            <templateId root="2.16.840.1.113883.10.20.6.2.1" extension="2014-06-09" />
-            <functionCode code="PCP" codeSystem="2.16.840.1.113883.5.88" codeSystemName="HL7 particiationFunction" displayName="Primary Care Provider">
-              <originalText>Primary Care Physician</originalText>
-            </functionCode>
-            <assignedEntity>
-              <!-- Provider ID from Problems Module (7.05Treating Provider ID) -->
-              <!-- <id extension="providerN" root="2.16.840.1.113883.4.349" /> -->
-              <id nullFlavor="NI"/>
-              <!--4.04 PROVIDER TYPE, optional, NUCC -->
-              <code code="provTypeCode" codeSystem="2.16.840.1.113883.6.101" codeSystemName="NUCC" displayName="provTypeCodeName ">
-                <originalText />
-              </code>
-              <!-- Address Required for assignedEntity -->
-              <addr use="WP">
-                <streetAddressLine />
-                <city />
-                <state />
-                <postalCode />
-              </addr>
-              <!-- Telecom Required for iassignedEntity, but VA VistA data not yet 
-                    available -->
-              <telecom MAP_ID="TELEPHONE" />
-              <telecom MAP_ID="EMAIL" />
-              <!-- 4.07-PROVIDER NAME, REQUIRED -->
-              <assignedPerson>
-                <name />
-              </assignedPerson>
-              <representedOrganization>
-                <!-- INFORMATION SOURCE FOR FACILITY ID=VA OID, EXT= VAMC TREATING 
-						FACILITY NBR -->
-                <id root="2.16.840.1.113883.4.349" />
-                <!-- INFORMATION SOURCE FACILITY NAME (facilityName) -->
-                <name />
-                <!-- Telecom Required for representedOrganization, but VA VistA data 
-						not yet available -->
-                <telecom nullFlavor="UNK" />
-                <!-- Address Required for representedOrganization, but VA VistA data 
-						not yet available -->
-                <addr nullFlavor="UNK" />
-              </representedOrganization>
-            </assignedEntity>
-          </performer>
-          <performer typeCode="PRF" MAP_ID="PC_TEAM">
-            <!-- ****** PRIMARY HEALTHCARE PROVIDER MODULE, Optional ********* -->
-            <!-- 4.02 PROVIDER ROLE CODED, optional -->
-            <templateId root="2.16.840.1.113883.10.20.6.2.1" extension="2014-06-09" />
-            <functionCode nullFlavor="NI">
-              <originalText/>
-            </functionCode>
-            <assignedEntity>
-              <!-- Provider ID from Problems Module (7.05Treating Provider ID) -->
-              <!-- <id extension="providerN" root="2.16.840.1.113883.4.349" /> -->
-              <id nullFlavor = "NI"/>
-              <!--4.04 PROVIDER TYPE, optional, NUCC -->
-              <code code="provTypeCode" codeSystem="2.16.840.1.113883.6.101" codeSystemName="NUCC" displayName="provTypeCodeName">
-                <originalText />
-              </code>
-              <!-- Address NOT Required for Care team  -->
-              <addr nullFlavor="UNK" />
-
-              <!-- Telecom Required for iassignedEntity, but VA VistA data not yet 
-                    available -->
-              <telecom nullFlavor="NI" />
-              <!-- 4.07-PROVIDER NAME, REQUIRED -->
-              <assignedPerson>
-                <name />
-              </assignedPerson>
-              <representedOrganization>
-                <!-- INFORMATION SOURCE FOR FACILITY ID=VA OID, EXT= VAMC TREATING 
-                        FACILITY NBR -->
-                <id extension="facilityNumber" root="2.16.840.1.113883.4.349" />
-                <!-- INFORMATION SOURCE FACILITY NAME (facilityName) -->
-                <name />
-                <!-- Telecom Required for representedOrganization, but VA VistA data 
-                        not yet available -->
-                <telecom nullFlavor="UNK" />
-                <!-- Address Required for representedOrganization, but VA VistA data 
-                        not yet available -->
-                <addr nullFlavor="UNK" />
-              </representedOrganization>
-            </assignedEntity>
-          </performer>
+          <xsl:apply-templates select="Patient/Extension/CareTeamMembers/CareTeamMember[1]" mode="header-careteammembers">
+            <xsl:with-param name="number" select="'1'" />
+          </xsl:apply-templates>
+          <xsl:apply-templates select="Patient/Extension/CareTeamMembers/CareTeamMember[preceding::CareTeamMember]" mode="header-careteammembers">
+            <xsl:with-param name="number" select="'2'" />
+          </xsl:apply-templates>
         </serviceEvent>
       </documentationOf>
       <!-- ******************************************************** CDA BODY ******************************************************** -->
@@ -4223,5 +4139,139 @@
         <addr nullFlavor="NI" />      
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+  <xsl:template match="*" mode="standard-contact-info">
+    <xsl:choose>
+      <xsl:when test="boolean(ContactInfo) and (boolean(ContactInfo/HomePhoneNumber) or boolean(ContactInfo/WorkPhoneNumber) or boolean(ContactInfo/MobilePhoneNumber) or boolean(ContactInfo/EmailAddress))">
+        <xsl:if test="boolean(ContactInfo/HomePhoneNumber)">
+          <telecom use="HP" value="{concat('tel:',ContactInfo/HomePhoneNumber)}" />        
+        </xsl:if>
+        <xsl:if test="boolean(ContactInfo/WorkPhoneNumber)">
+          <telecom use="WP" value="{concat('tel:',ContactInfo/WorkPhoneNumber)}" />        
+        </xsl:if>
+        <xsl:if test="boolean(ContactInfo/MobilePhoneNumber)">
+          <telecom use="MC" value="{concat('tel:',ContactInfo/MobilePhoneNumber)}" />        
+        </xsl:if>
+        <xsl:if test="boolean(ContactInfo/EmailAddress)">
+          <telecom value="{concat('mailto:',ContactInfo/EmailAddress)}" />        
+        </xsl:if>
+      </xsl:when>
+      <xsl:otherwise>
+        <telecom nullFlavor="NI" />      
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <xsl:template match="Name" mode="standard-name">
+    <xsl:param name="use" />
+    <xsl:choose>
+      <xsl:when test="boolean(FamilyName) or boolean(GivenName) or boolean(MiddleName)">
+        <name>
+          <xsl:if test="boolean($use)">
+            <xsl:attribute name="use"><xsl:value-of select="$use" /></xsl:attribute>
+          </xsl:if>
+          <xsl:if test="boolean(FamilyName)">
+            <family>
+              <xsl:value-of select="FamilyName/text()" />
+            </family>
+          </xsl:if>
+          <xsl:if test="boolean(GivenName)">
+            <given>
+              <xsl:value-of select="GivenName/text()" />
+            </given>
+          </xsl:if>
+          <xsl:if test="boolean(MiddleName)">
+            <given>
+              <xsl:value-of select="MiddleName/text()" />
+            </given>
+          </xsl:if>
+        </name> 
+      </xsl:when>
+      <xsl:otherwise>
+        <name>
+          <xsl:if test="boolean($use)">
+            <xsl:attribute name="use"><xsl:value-of select="$use" /></xsl:attribute>
+          </xsl:if>        
+        </name>      
+      </xsl:otherwise>
+    </xsl:choose> 
+  </xsl:template>
+  <xsl:template match="SupportContact" mode="header-participant">
+    <participant typeCode="IND">
+        <!-- 3.01 DATE, REQUIRED -->
+        <!-- 3.01 DATE date as nullFlavor b/c data not yet available via VA VistA 
+        RPCs -->
+        <time nullFlavor="UNK" />
+        <!-- 3.02 CONTACT TYPE, REQUIRED, classCode value determined by VistA value 
+        in contactType -->
+        <associatedEntity classCode="{ContactType/Code/text()}">
+          <code codeSystem='2.16.840.1.113883.5.111' codeSystemName='{isc:evaluate("getCodeForOID","2.16.840.1.113883.5.111","","2.16.840.1.113883.5.111")}' nullFlavor='NA'>
+            <originalText><xsl:value-of select='Relationship/Code/text()' /></originalText>
+          </code>
+          <!-- 3.04 CONTACT Addresss, Home Permanent, Optional-R2 -->
+          <xsl:apply-templates select='.' mode='standard-address'>
+            <xsl:with-param name='use'>HP</xsl:with-param>
+          </xsl:apply-templates>
+          <!-- 3.05 CONTACT PHONE/EMAIL/URL, Optional-R2, Removed b/c data not yet 
+            available via VA VistA RPCs -->
+          <xsl:apply-templates select='.' mode='standard-contact-info' />
+          <associatedPerson>
+            <!-- 3.06 CONTACT NAME, REQUIRED -->
+            <xsl:apply-templates select='Name' mode='standard-name' />
+          </associatedPerson>
+        </associatedEntity>
+      </participant>
+  </xsl:template>
+  <xsl:template match='CareTeamMember' mode='header-careteammembers' >
+    <xsl:param name="number" />
+    <performer typeCode="PRF" testing="{$number}">
+      <!-- ****** PRIMARY HEALTHCARE PROVIDER MODULE, Optional ********* -->
+      <!-- 4.02 PROVIDER ROLE CODED, optional -->
+      <templateId root="2.16.840.1.113883.10.20.6.2.1" extension="2014-06-09" />
+      <xsl:choose>
+        <xsl:when test="$number=1">
+          <functionCode code="PCP" codeSystem="2.16.840.1.113883.5.88" codeSystemName="{isc:evaluate('getCodeForOID','2.16.840.1.113883.5.88','CodeSystem','ParticipationFunction')}" displayName="{Description/text()}">
+            <originalText><xsl:value-of select="Description/text()" /></originalText>
+          </functionCode>
+        </xsl:when>
+        <xsl:otherwise>
+          <functionCode nullFlavor="NI">
+            <originalText><xsl:value-of select="concat('Care Team:  ', ../../CareTeamName/text())" /></originalText>
+          </functionCode>
+        </xsl:otherwise>
+      </xsl:choose>
+      <assignedEntity>
+        <!-- Provider ID from Problems Module (7.05Treating Provider ID) -->
+        <!-- <id extension="providerN" root="2.16.840.1.113883.4.349" /> -->
+        <id nullFlavor="NI"/>
+        <!--4.04 PROVIDER TYPE, optional, NUCC -->
+        <code code="provTypeCode" codeSystem="2.16.840.1.113883.6.101" codeSystemName="NUCC" displayName="provTypeCodeName ">
+          <originalText />
+        </code>
+        <!-- Address Required for assignedEntity -->
+        <addr use="WP">
+          <streetAddressLine />
+          <city />
+          <state />
+          <postalCode />
+        </addr>
+        <!-- Telecom Required for iassignedEntity, but VA VistA data not yet available -->
+        <telecom MAP_ID="TELEPHONE" />
+        <telecom MAP_ID="EMAIL" />
+        <!-- 4.07-PROVIDER NAME, REQUIRED -->
+        <assignedPerson>
+          <name />
+        </assignedPerson>
+        <representedOrganization>
+          <!-- INFORMATION SOURCE FOR FACILITY ID=VA OID, EXT= VAMC TREATING FACILITY NBR -->
+          <id root="2.16.840.1.113883.4.349" />
+          <!-- INFORMATION SOURCE FACILITY NAME (facilityName) -->
+          <name />
+          <!-- Telecom Required for representedOrganization, but VA VistA data not yet available -->
+          <telecom nullFlavor="UNK" />
+          <!-- Address Required for representedOrganization, but VA VistA data not yet available -->
+          <addr nullFlavor="UNK" />
+        </representedOrganization>
+      </assignedEntity>
+    </performer>  
   </xsl:template>
 </xsl:stylesheet>
