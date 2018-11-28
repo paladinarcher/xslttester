@@ -190,18 +190,32 @@
 		<assignedEntity>
 			<!-- Contact Identifier -->
 			<xsl:apply-templates select="." mode="fn-id-Clinician"/>
+      <code nullFlavor="NI" />
 			
 			<!-- Entity Address -->
 			<xsl:apply-templates select="." mode="fn-address-WorkPrimary"/>
 			
-			<!-- Entity Telecom -->
-			<xsl:apply-templates select="." mode="fn-telecom"/>			
+			<!-- Entity Telecom 
+			<xsl:apply-templates select="." mode="fn-telecom"/>		-->
+      <telecom nullFlavor="NI" />
 
 			<!-- Assigned Person -->
 			<xsl:apply-templates select="." mode="fn-assignedPerson"/>
 			
-			<!-- Represented Organization -->
-			<xsl:apply-templates select="." mode="fn-representedOrganization"/>
+			<!-- Represented Organization 
+			<xsl:apply-templates select="." mode="fn-representedOrganization"/>-->
+      <representedOrganization>
+        <id nullFlavor="NI"/>
+        <name>Department of Veterans Affairs</name>
+        <addr>
+          <streetAddressLine>810 Vermont Avenue NW</streetAddressLine>
+          <city>Washington</city>
+          <state>DC</state>
+          <postalCode>20420</postalCode>
+          <country>US</country>
+        </addr>
+        <telecom nullFlavor="NA" />
+      </representedOrganization>
 			
 			<!-- HITSP-specific patient extension, available today only for encountered data -->
 			<!--<xsl:if test="($includePatientIdentifier = true())"><xsl:apply-templates select="." mode="fn-id-sdtcPatient"><xsl:with-param name="xpathContext" select="."/></xsl:apply-templates></xsl:if>-->
@@ -434,11 +448,17 @@
 		<associatedEntity classCode="{$contactType}">
 		
 			<xsl:apply-templates select="." mode="fn-id-Clinician"/>
-			
+			<!--
 			<xsl:apply-templates select="Relationship" mode="fn-generic-Coded">
 				<xsl:with-param name="requiredCodeSystemOID" select="$roleCodeOID"/>
 				<xsl:with-param name="isCodeRequired" select="'1'"/>
 			</xsl:apply-templates>
+      -->
+      <code codeSystem="{$roleCodeOID}" codeSystemName="{isc:evaluate('getCodeForOID', $roleCodeOID, '', $roleCodeOID)}" nullFlavor="NA" >
+        <originalText>
+          <xsl:value-of select="./Relationship/Code/text()"/>
+        </originalText>
+      </code>
 		
 			<xsl:apply-templates select="." mode="fn-address-WorkPrimary"/>
 			

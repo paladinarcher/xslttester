@@ -18,18 +18,25 @@
 	</xsl:variable>
   
   <xsl:template match="/Container">
+    <xsl:processing-instruction name="xml-stylesheet">
+      <xsl:value-of select="'type=&#34;text/xsl&#34; href=&#34;cda.xsl&#34;'"/>
+    </xsl:processing-instruction>
+    <xsl:comment>
+*********************** C-CDA R2.1 CONTINUITY OF CARE DOCUMENT (CCD) VDIF Build 1  ************************************************    
+    </xsl:comment>
     <ClinicalDocument xmlns="urn:hl7-org:v3" xmlns:sdtc="urn:hl7-org:sdtc">
       <!-- Begin CDA Header -->
       <realmCode code="US"/>
-      <typeId root="2.16.840.1.113883.1.3" extension="POCD_HD000040 oops"/>
 
       <xsl:apply-templates select="." mode="fn-templateId-USRealmHeader"/>
 
       <xsl:apply-templates select="." mode="templateId-CCDHeader"/>
+      
+      <typeId root="2.16.840.1.113883.1.3" extension="POCD_HD000040"/>
 
       <xsl:apply-templates select="Patient" mode="fn-id-Document"/>
 
-      <code code="34133-9" codeSystem="{$loincOID}" codeSystemName="{$loincName}" displayName="Summarization of Episode Note"/>
+      <code code="34133-9" codeSystem="{$loincOID}" codeSystemName="{$loincName}" displayName="{isc:evaluate('lookup', '34133-9', 'Summarization of Episode Note')}"/>
 
       <xsl:apply-templates select="." mode="fn-title-forDocument">
         <xsl:with-param name="title1">Department of Veterans Affairs Health Summary</xsl:with-param>

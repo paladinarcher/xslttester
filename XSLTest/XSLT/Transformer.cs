@@ -75,8 +75,14 @@ namespace XSLTest.XSLT
                 OnParameterEmergencyAdded(new OnParameterEmergencyArgs(variable, newVal, e));
                 filloutTmpFile(originalFilePath);
                 XmlTextReader tmp = new XmlTextReader(tmpWrapperFilename);
-                setSourceXSLT(tmp, s, r, originalFilePath);
-                tmp.Close();
+                try
+                {
+                    setSourceXSLT(tmp, s, r, originalFilePath);
+                }
+                finally
+                {
+                    tmp.Close();
+                }
             }
         }
         protected void OnParameterEmergencyAdded(OnParameterEmergencyArgs args)
@@ -110,8 +116,14 @@ namespace XSLTest.XSLT
         public void TransformXML(Stream instream, Stream outstream)
         {
             XmlWriter writer = XmlWriter.Create(outstream, settings);
-            xslt.Transform(XmlReader.Create(instream), xslArgs, writer);
-            writer.Close();
+            try
+            {
+                xslt.Transform(XmlReader.Create(instream), xslArgs, writer);
+            }
+            finally
+            {
+                writer.Close();
+            }
         }
         public bool IsLoaded()
         {

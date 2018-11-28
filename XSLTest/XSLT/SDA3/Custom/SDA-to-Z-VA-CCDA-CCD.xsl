@@ -21,7 +21,7 @@
 		<ClinicalDocument xmlns="urn:hl7-org:v3" xmlns:sdtc="urn:hl7-org:sdtc">
 			<!-- Begin CDA Header -->
 			<realmCode code="US"/>
-			<typeId root="2.16.840.1.113883.1.3" extension="POCD_HD000040whatever"/>
+			<typeId root="2.16.840.1.113883.1.3" extension="POCD_HD000040"/>
 			<!-- What the heck... yo!-->
 			<xsl:apply-templates select="." mode="templateIds-documentHeader"/>
 				

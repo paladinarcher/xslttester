@@ -106,7 +106,7 @@
     <EmbeddedResource Include="GotDotNet.Exslt.dll" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Refresh.ico" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
