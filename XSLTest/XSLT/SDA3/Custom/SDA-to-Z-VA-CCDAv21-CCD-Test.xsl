@@ -23,60 +23,60 @@
       <templateId root="2.16.840.1.113883.10.20.22.1.2" extension="2015-08-01"/>
       <xsl:comment> CCD Document Identifer, id=VA OID, extension=system-generated </xsl:comment>
       <id extension="{isc:evaluate('createUUID')}" root="2.16.840.1.113883.4.349" />
-      <xsl:comment> CCD Document Code </xsl:comment>
+      <xsl:comment>CCD Document Code</xsl:comment>
       <code code="34133-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="{isc:evaluate('lookup', '34133-9','Summarization of Episode Note')}" />
       <xsl:comment> CCD Document Title </xsl:comment>
       <title>Department of Veterans Affairs Health Summary</title>
-      <!-- 1.01 DOCUMENT TIMESTAMP, REQUIRED -->
+      <xsl:comment> 1.01 DOCUMENT TIMESTAMP, REQUIRED </xsl:comment>
       <effectiveTime value="{$documentCreatedOn}" />
-      <!-- CCD Confidentiality Code, REQUIRED -->
+      <xsl:comment>CCD Confidentiality Code, REQUIRED </xsl:comment> 
       <confidentialityCode code="R" codeSystem="2.16.840.1.113883.5.25" codeSystemName="ConfidentialityCode" />
-      <!-- CCD DOCUMENT LANGUAGE, REQUIRED -->
+      <xsl:comment>CCD DOCUMENT LANGUAGE, REQUIRED</xsl:comment> 
       <languageCode code="en-US" />
       <versionNumber value="2"/>
       <recordTarget>
         <patientRole>
-          <!-- 1.02 PERSON ID, REQUIRED, id=VA OID, extension=GUID -->
+          <xsl:comment>1.02 PERSON ID, REQUIRED, id=VA OID, extension=GUID</xsl:comment> 
           <id root="2.16.840.1.113883.4.349" extension="{Patient/MPIID/text()}" />
           
           <xsl:comment> 1.03 PERSON ADDRESS-HOME PERMANENT, REQUIRED </xsl:comment>
           <xsl:apply-templates select="Patient/Addresses" mode="standard-address">
             <xsl:with-param name="use">HP</xsl:with-param>
           </xsl:apply-templates>
-          
-          <!-- 1.04 PERSON PHONE/EMAIL/URL, REQUIRED -->
+
+          <xsl:comment>1.04 PERSON PHONE/EMAIL/URL, REQUIRED</xsl:comment> 
           <xsl:apply-templates select="Patient" mode="standard-contact-info" />
           
           <patient>
-            <!-- 1.05 PERSON NAME LEGAL, REQUIRED -->
+            <xsl:comment>1.05 PERSON NAME LEGAL, REQUIRED</xsl:comment> 
             <xsl:apply-templates select="Patient/Name" mode="standard-name">
               <xsl:with-param name="use">L</xsl:with-param>
             </xsl:apply-templates>
 
-            <!-- 1.05 PERSON NAME Alias Name, Optional -->
+            <xsl:comment>1.05 PERSON NAME Alias Name, Optional</xsl:comment>
             <xsl:apply-templates select="Patient/Aliases/Name" mode="standard-name">
               <xsl:with-param name="use">A</xsl:with-param>
             </xsl:apply-templates>
-            <!-- 1.06 GENDER, REQUIRED, HL7 Administrative Gender -->
+            <xsl:comment> 1.06 GENDER, REQUIRED, HL7 Administrative Gender </xsl:comment>
             <!-- TODO: find SDA mapping post ESR/Terms Integration -->
             <administrativeGenderCode codeSystem="2.16.840.1.113883.5.1" codeSystemName="AdministrativeGenderCode">
               <originalText>
                 <reference />
               </originalText>
             </administrativeGenderCode>
-            <!-- 1.07 PERSON DATE OF BIRTH, REQUIRED -->
+            <xsl:comment>1.07 PERSON DATE OF BIRTH, REQUIRED</xsl:comment> 
             <birthTime value="{$patientBirthDate}" />
             <!-- TODO: find SDA mapping post ESR/Terms Integration -->
             <maritalStatusCode code='maritalCode' codeSystem='2.16.840.1.113883.5.2' codeSystemName='MaritalStatusCode' >
               <originalText />
-              <!-- 1.08 MARITAL STATUS, Optional-R2 -->
+              <xsl:comment>1.08 MARITAL STATUS, Optional-R2</xsl:comment> 
             </maritalStatusCode>
-            <!-- 1.09 RELIGIOUS AFFILIATION, Optional, Removed b/c data not yet available via VA VIstA RPCs -->
+            <xsl:comment> 1.09 RELIGIOUS AFFILIATION, Optional, Removed b/c data not yet available via VA VIstA RPCs </xsl:comment>
             <!-- TODO: find SDA mapping post ESR/Terms Integration -->
             <religiousAffiliationCode codeSystem='2.16.840.1.113883.5.1076' codeSystemName='HL7 Religious Affiliation' >
               <originalText>religiousAffiliation</originalText>
             </religiousAffiliationCode>
-            <!-- 1.10 RACE, Optional -->
+            <xsl:comment>1.10 RACE, Optional</xsl:comment> 
             <!-- TODO: find SDA mapping post ESR/Terms Integration -->
             <raceCode codeSystem='2.16.840.1.113883.6.238' codeSystemName='Race &amp; Ethnicity - CDC'>
               <originalText>race</originalText>
@@ -84,14 +84,14 @@
             <sdtc:raceCode codeSystem='2.16.840.1.113883.6.238' codeSystemName='Race &amp; Ethnicity - CDC'>
               <originalText>race</originalText>
             </sdtc:raceCode>
-            <!-- 1.11 ETHNICITY, Optional -->
+            <xsl:comment>1.11 ETHNICITY, Optional</xsl:comment> 
             <!-- TODO: find SDA mapping post ESR/Terms Integration -->
             <ethnicGroupCode codeSystem='2.16.840.1.113883.6.238' codeSystemName='Race &amp; Ethnicity - CDC'>
               <originalText>ethnicity</originalText>
             </ethnicGroupCode>
-            <!-- ********************************************************** LANGUAGE SPOKEN CONTENT MODULE, R2 ********************************************************** -->
+            <xsl:comment>********************************************************** LANGUAGE SPOKEN CONTENT MODULE, R2 **********************************************************</xsl:comment>
             <languageCommunication>
-              <!-- 2.01 LANGUAGE, REQUIRED, languageCode ISO 639-1 -->
+              <xsl:comment>2.01 LANGUAGE, REQUIRED, languageCode ISO 639-1</xsl:comment> 
               <xsl:choose>
                 <xsl:when test="boolean(Patient/PrimaryLanguage/Code)">
                   <languageCode code="{Patient/PrimaryLanguage/Code/text()}" />
@@ -118,22 +118,23 @@
           </patient>
         </patientRole>
       </recordTarget>
-      <!-- ********************************************************************** 
-    INFORMATION SOURCE CONTENT MODULE, REQUIRED ********************************************************************** -->
-      <!-- AUTHOR SECTION (REQUIRED) OF INFORMATION SOURCE CONTENT MODULE -->
+      <xsl:comment>
+        **********************************************************************
+        INFORMATION SOURCE CONTENT MODULE, REQUIRED **********************************************************************</xsl:comment>
+      <xsl:comment>AUTHOR SECTION (REQUIRED) OF INFORMATION SOURCE CONTENT MODULE </xsl:comment> 
       <author>
         <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-        <!-- 10.01 AUTHOR TIME (=Document Creation Date), REQUIRED -->
+        <xsl:comment>10.01 AUTHOR TIME (=Document Creation Date), REQUIRED </xsl:comment> 
         <time value="{$documentCreatedOn}" />
         <assignedAuthor>
-          <!-- 10.02 AUTHOR ID (VA OID) (authorOID), REQUIIRED -->
+          <xsl:comment>10.02 AUTHOR ID (VA OID) (authorOID), REQUIIRED </xsl:comment> 
           <!--<id root="2.16.840.1.113883.4.349" /> -->
           <id nullFlavor="NA"/>
           <code nullFlavor="UNK"/>
-          <!-- Assigned Author Telecom Required, but VA VistA data not yet available -->
+          <xsl:comment>Assigned Author Telecom Required, but VA VistA data not yet available </xsl:comment> 
           <telecom nullFlavor="NA" />
-          <!-- 10.02 AUTHOR NAME REQUIRED -->
-          <!-- assignedPerson/Author Name REQUIRED but provided as representedOrganization -->
+          <xsl:comment>10.02 AUTHOR NAME REQUIRED assignedPerson/Author Name REQUIRED but provided as representedOrganization
+          </xsl:comment>
           <assignedPerson>
             <name>Department of Veterans Affairs</name>
           </assignedPerson>
@@ -142,17 +143,18 @@
            <manufacturerModelName>InterSystems</manufacturerModelName>
            <softwareName>InterSystems HealthShare</softwareName>
           </assignedAuthoringDevice>
-          
-          <!-- 10.02 AUTHOR NAME REQUIRED as representedOrganization -->
+
+          <xsl:comment>10.02 AUTHOR NAME REQUIRED as representedOrganization </xsl:comment> 
           <representedOrganization>
-            <!-- 10.02 AUTHORING DEVICE ORGANIZATION OID (VA OID) (deviceOrgOID), 
-                REQUIIRED -->
+            <xsl:comment>
+              10.02 AUTHORING DEVICE ORGANIZATION OID (VA OID) (deviceOrgOID),
+              REQUIRED </xsl:comment> 
             <id nullFlavor="NI" />
-            <!-- 10.02 AUTHORING DEVICE ORGANIZATION NAME (deviceOrgName), REQUIIRED -->
+            <xsl:comment>10.02 AUTHORING DEVICE ORGANIZATION NAME (deviceOrgName), REQUIRED </xsl:comment>
             <name>Department of Veterans Affairs</name>
-            <!-- Assigned Author Telecom Required, but VA VistA data not yet available -->
+            <xsl:comment>Assigned Author Telecom Required, but VA VistA data not yet available</xsl:comment> 
             <telecom nullFlavor="NA" />
-            <!-- Assigned Author Address Required, but VA VistA data not yet available -->
+            <xsl:comment>Assigned Author Address Required, but VA VistA data not yet available </xsl:comment> 
             <addr use="WP">
               <streetAddressLine>810 Vermont Avenue, NW</streetAddressLine>
               <city>Washington</city>
@@ -163,30 +165,32 @@
           </representedOrganization>
         </assignedAuthor>
       </author>
-      <!-- ******************************************************************************************* 
-    INFORMANT SECTION (AS AN ORGANIZATION), Optional ******************************************************************************************* -->
+      <xsl:comment>
+        *******************************************************************************************
+        INFORMANT SECTION (AS AN ORGANIZATION), Optional *******************************************************************************************
+      </xsl:comment> 
       <informant>
         <assignedEntity>
           <id nullFlavor="NI" />
           <addr nullFlavor="NA" />
           <telecom nullFlavor="NA" />
           <assignedPerson>
-            <!-- Name Required for informant/assignedEntity/assignedPerson -->
+            <xsl:comment>Name Required for informant/assignedEntity/assignedPerson </xsl:comment> 
             <name>Department of Veterans Affairs</name>
           </assignedPerson>
         </assignedEntity>
       </informant>
-      <!-- ********************************************************************************* 
-    CUSTODIAN AS AN ORGANIZATION, REQUIRED ********************************************************************************** -->
+      <xsl:comment>
+        *********************************************************************************
+        CUSTODIAN AS AN ORGANIZATION, REQUIRED ********************************************************************************** </xsl:comment> 
       <custodian>
         <assignedCustodian>
           <representedCustodianOrganization>
-            <!-- CUSTODIAN OID (VA OID) -->
+            <xsl:comment>CUSTODIAN OID (VA OID)</xsl:comment> 
             <id root="2.16.840.1.113883.4.349" />
-            <!-- CUSTODIAN NAME -->
+            <xsl:comment>CUSTODIAN NAME</xsl:comment> 
             <name>Department of Veterans Affairs</name>
-            <!-- Telecom Required for representedOrganization, but VA VistA data 
-                not yet available -->
+            <xsl:comment>Telecom Required for representedOrganization, but VA VistA data not yet available </xsl:comment> 
             <telecom nullFlavor="NA" />
             <addr>
               <streetAddressLine>810 Vermont Avenue NW</streetAddressLine>
@@ -198,10 +202,12 @@
           </representedCustodianOrganization>
         </assignedCustodian>
       </custodian>
-      <!-- *************************************************************************** 
-    LEGAL AUTHENTICATOR (AS AN ORGANIZATION), Optional *************************************************************************** -->
+      <xsl:comment>
+        ***************************************************************************
+        LEGAL AUTHENTICATOR (AS AN ORGANIZATION), Optional *************************************************************************** 
+      </xsl:comment> 
       <legalAuthenticator>
-        <!-- TIME OF AUTHENTICATION -->
+        <xsl:comment>TIME OF AUTHENTICATION </xsl:comment> 
         <time value="{$documentCreatedOn}" />
         <signatureCode code="S" />
         <assignedEntity>
@@ -231,12 +237,16 @@
           </representedOrganization>
         </assignedEntity>
       </legalAuthenticator>
-      <!-- ******************************************************************** 
-    SUPPORT INFORMATION CONTENT MODULE, Optional ******************************************************************** -->
+      <xsl:comment>
+        ********************************************************************
+        SUPPORT INFORMATION CONTENT MODULE, Optional ******************************************************************** 
+      </xsl:comment> 
       <xsl:apply-templates select="Patient/SupportContacts/SupportContact" mode="header-participant" />
 
-      <!-- ******************************************************************************* 
-    DOCUMENTATION OF MODULE - QUERY META DATA, Optional ******************************************************************************* -->
+      <xsl:comment>
+        *******************************************************************************
+        DOCUMENTATION OF MODULE - QUERY META DATA, Optional *******************************************************************************
+      </xsl:comment> 
       <documentationOf>
         <serviceEvent classCode="PCPR">
           <effectiveTime>
@@ -251,13 +261,15 @@
           </xsl:apply-templates>
         </serviceEvent>
       </documentationOf>
-      <!-- ******************************************************** CDA BODY ******************************************************** -->
+      <xsl:comment>******************************************************** CDA BODY ******************************************************** </xsl:comment> 
       <component>
         <structuredBody>
-          <!--Insurance Providers -->
+          <xsl:comment>Insurance Providers </xsl:comment>
           <component>
-            <!-- ********************************************************************************** 
-                INSURANCE PROVIDERS (PAYERS) SECTION, Optional ********************************************************************************** -->
+            <xsl:comment>
+              **********************************************************************************
+              INSURANCE PROVIDERS (PAYERS) SECTION, Optional ********************************************************************************** 
+            </xsl:comment> 
             <xsl:choose>
               <xsl:when test="not(boolean(MemberEnrollments/MemberEnrollment))">
                 <section nullFlavor="NI">
@@ -272,12 +284,12 @@
                   <templateId root="2.16.840.1.113883.10.20.22.2.18" extension = "2015-08-01"/>
                   <code code="48768-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Payment sources" />
                   <title>Insurance Providers: All on record at VA</title>
-                  <!-- PAYERS NARRATIVE BLOCK -->
+                  <xsl:comment>PAYERS NARRATIVE BLOCK </xsl:comment> 
                   <text>
                     <paragraph>
                       <content ID="payersTime">Section Date Range: From patient's date of birth to the date document was created.</content>
                     </paragraph>
-                    <!-- VA Insurance Providers Business Rules for Medical Content -->
+                    <xsl:comment>VA Insurance Providers Business Rules for Medical Content </xsl:comment> 
                     <paragraph>This section includes the names of all active insurance providers for the patient.</paragraph>
                     <table>
                       <thead>
@@ -365,7 +377,7 @@
                       </tbody>
                     </table>
                   </text>
-                  <!-- C-CDA R2.1 Section Time Range, Optional -->
+                  <xsl:comment>C-CDA R2.1 Section Time Range, Optional </xsl:comment> 
                   <entry typeCode="DRIV" >
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
@@ -380,31 +392,31 @@
                       </value>
                     </observation>
                   </entry >
-                  <!-- PAYERS STRUCTURED DATA -->
+                  <xsl:comment>PAYERS STRUCTURED DATA</xsl:comment> 
                   <xsl:for-each select="MemberEnrollments/MemberEnrollment">
-                    <!-- CCD Coverage Activity -->
+                    <xsl:comment>CCD Coverage Activity</xsl:comment> 
                     <entry typeCode="DRIV">
                       <act classCode="ACT" moodCode="EVN">
                         <templateId root="2.16.840.1.113883.10.20.22.4.60" extension="2015-08-01"/>
                         <id nullFlavor="NA" />
                         <code code="48768-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Payment Sources" />
                         <statusCode code="completed" />
-                        <!-- CCD Payment Provider Event Entry -->
+                        <xsl:comment>CCD Payment Provider Event Entry</xsl:comment> 
                         <entryRelationship typeCode="COMP">
                           <act classCode="ACT" moodCode="EVN">
                             <templateId root="2.16.840.1.113883.10.20.22.4.61" extension = "2015-08-01" />
-                            <!-- 5.01 GROUP NUMBER, REQUIRED -->
+                            <xsl:comment>5.01 GROUP NUMBER, REQUIRED</xsl:comment> 
                             <id extension="{HealthFund/GroupNumber/text()}" root="2.16.840.1.113883.4.349" />
-                            <!-- 5.02 HEALTH INSURANCE TYPE, REQURIED -->
+                            <xsl:comment>5.02 HEALTH INSURANCE TYPE, REQURIED</xsl:comment> 
                             <code codeSystem="2.16.840.1.113883.6.255.1336" codeSystemName="X12N-1336" > <!-- TODO: Determine where the VETS translated code goes -->
                               <originalText />
                             </code>
                             <statusCode code="completed" />
-                            <!-- 5.07 - Health Plan Coverage Dates, R2-Optional  -->
+                            <xsl:comment>5.07 - Health Plan Coverage Dates, R2-Optional </xsl:comment> 
                             <effectiveTime>
-                              <!-- 5.07 VistA Policy Effective Date -->
+                              <xsl:comment>5.07 VistA Policy Effective Date</xsl:comment> 
                               <low value="{HealthFund/FromTime/text()}"/>
-                              <!-- 5.07 VistA Policy Expiration  Date -->
+                              <xsl:comment>5.07 VistA Policy Expiration  Date</xsl:comment> 
                               <xsl:choose>
                                 <xsl:when test="boolean(HealthFund/ExpTime)"> <!-- TODO: Where is the exp date really? -->
                                   <high value="{HealthFund/ExpTime/text()}" />
@@ -416,19 +428,21 @@
                             </effectiveTime>
                             <performer typeCode="PRF">
                               <templateId root="2.16.840.1.113883.10.20.22.4.87" />
-                              <!-- CCD Payer Info -->
+                              <xsl:comment>CCD Payer Info</xsl:comment> 
                               <assignedEntity>
                                 <id nullFlavor="NI" />
-                                <!-- 5.03 HEALTH PLAN INSURANCE INFO SOURCE ID, REQUIRED -->
-                                <!-- 5.04 HEALTH PLAN INSURANCE INFO SOURCE ADDRESS, Optional -->
+                                <xsl:comment>5.03 HEALTH PLAN INSURANCE INFO SOURCE ID, REQUIRED </xsl:comment>
+                                <xsl:comment>5.04 HEALTH PLAN INSURANCE INFO SOURCE ADDRESS, Optional </xsl:comment> 
                                 <xsl:apply-templates select="HealthFund/HealthFund" mode="standard-address" >
                                   <xsl:with-param name="use">WP</xsl:with-param>
                                 </xsl:apply-templates>
-                                <!-- 5.05 HEALTH PLAN INSURANCE INFO SOURCE PHONE/EMAIL/URL, Optional -->
+                                <xsl:comment>5.05 HEALTH PLAN INSURANCE INFO SOURCE PHONE/EMAIL/URL, Optional </xsl:comment> 
                                 <xsl:apply-templates select="HealthFund/HealthFund" mode="standard-contact-info" />
                                 <representedOrganization>
-                                  <!-- 5.06 HEALTH PLAN INSURANCE INFO SOURCE NAME ( Insurance 
-                                                Company Name), R2 -->
+                                  <xsl:comment>
+                                    5.06 HEALTH PLAN INSURANCE INFO SOURCE NAME ( Insurance
+                                    Company Name), R2 
+                                    </xsl:comment> 
                                   <name><xsl:value-of select="HealthFund/HealthFund/Description/text()"/></name>
                                 </representedOrganization>
                               </assignedEntity>
@@ -440,7 +454,7 @@
                                 <id nullFlavor="NI" />
                                 <representedOrganization>
                                   <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
-                                  <!-- INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME -->
+                                  <xsl:comment>INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME</xsl:comment> 
                                   <name><xsl:value-of select="EnteredAt/Description/text()"/></name>
                                   <telecom nullFlavor="NA" />
                                   <addr nullFlavor="NA" />
@@ -451,8 +465,8 @@
                               <templateId root="2.16.840.1.113883.10.20.22.4.89" />
                               <participantRole classCode="PAT">
                                 <id root="2.16.840.1.113883.4.349" extension="{HealthFund/MembershipNumber/text()}" />
-                                <!-- 5.09 PATIENT RELATIONSHIP TO SUBSCRIBER, REQUIRED, HL7 Coverage 
-                                          Role Type -->
+                                <xsl:comment>5.09 PATIENT RELATIONSHIP TO SUBSCRIBER, REQUIRED, HL7 Coverage Role Type 
+                                </xsl:comment>
                                 <code nullFlavor="UNK" codeSystem="2.16.840.1.113883.5.111" codeSystemName="RoleCode">
                                   <!-- TODO: um, what? -->
                                   <originalText>
@@ -466,20 +480,20 @@
                                 <templateId root="2.16.840.1.113883.10.20.22.4.90" />
                                 <participantRole>
                                   <id root="2.16.840.1.113883.4.349" extension="{HealthFund/MembershipNumber/text()}" />
-                                  <!-- 5.11 SUBSCRIBER ADDRESS -->
+                                  <xsl:comment>5.11 SUBSCRIBER ADDRESS </xsl:comment> 
                                   <addr use="HP" nullFlavor="NA" />
-                                  <!--  5.17 SUBSCRIBER PHONE -->
+                                  <xsl:comment>5.17 SUBSCRIBER PHONE </xsl:comment>  
                                   <telecom nullFlavor="NA" />
                                   <playingEntity>
-                                    <!-- 5.18 SUBSCRIBER NAME, REQUIRED -->
+                                    <xsl:comment>5.18 SUBSCRIBER NAME, REQUIRED </xsl:comment> 
                                     <name><xsl:value-of select="HealthFund/MembershipNumber/text()" /></name>
-                                    <!-- 5.19 SUBSCRIBER DATE OF BIRTH, R2 -->
+                                    <xsl:comment> 5.19 SUBSCRIBER DATE OF BIRTH, R2 </xsl:comment>
                                     <sdtc:birthTime nullFlavor="UNK"/>
                                   </playingEntity>
                                 </participantRole>
                               </participant>
                             </xsl:if>
-                            <!-- 5.24 HEALTH PLAN NAME, optional -->
+                            <xsl:comment>5.24 HEALTH PLAN NAME, optional </xsl:comment>
                             <entryRelationship typeCode="REFR">
                               <act classCode="ACT" moodCode="DEF">
                                 <id root="2.16.840.1.113883.4.349" extension="{InsuredGroupOrPolicyNumber/text()}" />
@@ -497,28 +511,28 @@
             </xsl:choose>
           </component>
           <component>
-            <!-- ******************************************************** ADVANCED 
-                DIRECTIVE SECTION, REQUIRED ******************************************************** -->
+            <xsl:comment> ******************************************************** ADVANCED 
+                DIRECTIVE SECTION, REQUIRED ******************************************************** </xsl:comment>
             <xsl:choose>
               <xsl:when test="not(boolean(AdvanceDirectives/AdvanceDirective))">
                 <section nullFlavor="NI">
-                  <!-- C-CDA Advanced Directive Section Template Entries REQUIRED -->
+                  <xsl:comment> C-CDA Advanced Directive Section Template Entries REQUIRED </xsl:comment>
                   <templateId root="2.16.840.1.113883.10.20.22.2.21.1" extension="2015-08-01"/>
                   <templateId root="2.16.840.1.113883.10.20.22.2.21" />
                   <code code="42348-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Advance Directives" />
                   <title>Advance Directives: All on record at VA</title>
-                  <!-- ADVANCED DIRECTIVES NARRATIVE BLOCK -->
-                  <text>No Data Provided for This Section</text>
+                  <xsl:comment>ADVANCED DIRECTIVES NARRATIVE BLOCK </xsl:comment>
+                    <text>No Data Provided for This Section</text>
                 </section>
                 </xsl:when>
               <xsl:otherwise>
                 <section>
-                  <!-- C-CDA Advanced Directive Section Template Entries REQUIRED -->
+                  <xsl:comment> C-CDA Advanced Directive Section Template Entries REQUIRED </xsl:comment>
                   <templateId root="2.16.840.1.113883.10.20.22.2.21.1" extension="2015-08-01"/>
                   <templateId root="2.16.840.1.113883.10.20.22.2.21" />
                   <code code="42348-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Advance Directives" />
                   <title>Advance Directives: All on record at VA</title>
-                  <!-- ADVANCED DIRECTIVES NARRATIVE BLOCK -->
+                  <xsl:comment> ADVANCED DIRECTIVES NARRATIVE BLOCK </xsl:comment>
                   <text>
                     <paragraph>
                       <content ID="advanceDirectiveTime">Section Date Range: From patient's date of birth to the date document was created.</content>
@@ -562,7 +576,7 @@
                       </tbody>
                     </table>
                   </text>
-                  <!-- C-CDA R2.1 Section Time Range, Optional -->
+                  <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
                   <entry typeCode="DRIV" >
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
@@ -577,25 +591,25 @@
                       </value>
                     </observation>
                   </entry>
-                  <!-- ADVANCED DIRECTIVES STRUCTURED DATA -->
+                  <xsl:comment> ADVANCED DIRECTIVES STRUCTURED DATA </xsl:comment>
                   <xsl:for-each select="AdvanceDirectives/AdvanceDirective">
                     <entry typeCode="DRIV">
-                      <!-- CCD Advanced Directive Observation, R2 -->
+                      <xsl:comment> CCD Advanced Directive Observation, R2 </xsl:comment>
                       <observation classCode="OBS" moodCode="EVN">
                         <templateId root="2.16.840.1.113883.10.20.22.4.48" extension="2015-08-01"/>
                         <id nullFlavor="NI" />
-                        <!-- 12.01 ADVANCED DIRECTIVE TYPE, REQUIRED, SNOMED CT -->
+                        <xsl:comment> 12.01 ADVANCED DIRECTIVE TYPE, REQUIRED, SNOMED CT </xsl:comment>
                         <code xsi:type="CD" nullFlavor="UNK">
                           <originalText>
                             <reference value="{concat('#advanceDirective',position())}"/>
                           </originalText>
                         </code>
                         <statusCode code="completed" />
-                        <!-- 12.03 ADVANCED DIRECTIVE EFFECTIVE DATE, REQUIRED -->
+                        <xsl:comment>12.03 ADVANCED DIRECTIVE EFFECTIVE DATE, REQUIRED </xsl:comment>
                         <effectiveTime>
-                          <!-- ADVANCED DIRECTIVE EFFECTIVE DATE low = starting time, REQUIRED -->
+                          <xsl:comment> ADVANCED DIRECTIVE EFFECTIVE DATE low = starting time, REQUIRED </xsl:comment>
                           <low value="{FromTime/text()}"/>
-                          <!-- ADVANCED DIRECTIVE EFFECTIVE DATE high= ending time, REQUIRED -->
+                          <xsl:comment> ADVANCED DIRECTIVE EFFECTIVE DATE high= ending time, REQUIRED </xsl:comment>
                           <high nullFlavor="NA" />
                         </effectiveTime>
                         <value xsi:type="CD">
@@ -603,7 +617,7 @@
                             <reference value="{concat('#advanceDirective',position())}"/>
                           </originalText>
                         </value>
-                        <!-- ADVANCED DIRECTIVE REFERENCE, R2, not provided by VA -->
+                        <xsl:comment> ADVANCED DIRECTIVE REFERENCE, R2, not provided by VA </xsl:comment>
                         <author>
                           <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                           <time nullFlavor="UNK" />
@@ -623,23 +637,23 @@
                           <participantRole>
                             <code nullFlavor="NA" />
                             <addr nullFlavor="NA" />
-                            <!-- VERIFIER PHONE/EMAIL/URL, R2 -->
+                            <xsl:comment> VERIFIER PHONE/EMAIL/URL, R2 </xsl:comment>
                             <telecom nullFlavor="NA" />
                             <playingEntity>
-                              <!-- VERIFIER NAME, REQUIRED  -->
+                              <xsl:comment> VERIFIER NAME, REQUIRED  </xsl:comment>
                               <name>Department of Veterans Affairs</name>
                             </playingEntity>
                           </participantRole>
                         </participant>
-                        <!-- CUSTODIAN OF DOCUMENT, REQUIRED -->
+                        <xsl:comment> CUSTODIAN OF DOCUMENT, REQUIRED </xsl:comment>
                         <participant typeCode="CST">
                           <participantRole classCode="AGNT">
-                            <!-- CUSTODIAN ADDRESS, R2 -->
+                            <xsl:comment> CUSTODIAN ADDRESS, R2 </xsl:comment>
                             <addr nullFlavor="NA" />
-                            <!-- CUSTODIAN PHONE?EMAIL/URL, R2 -->
+                            <xsl:comment> CUSTODIAN PHONE?EMAIL/URL, R2 </xsl:comment>
                             <telecom nullFlavor="NA" />
                             <playingEntity>
-                              <!-- CUSTODIAN NAME, REQUIRED -->
+                              <xsl:comment> CUSTODIAN NAME, REQUIRED </xsl:comment>
                               <name>
                                 <xsl:value-of select="EnteredBy/Description/text()"/>
                               </name>
@@ -654,20 +668,20 @@
             </xsl:choose>
           </component>
           <component>
-            <!-- ************************************************************* ALLERGY/DRUG 
-                SECTION SECTION, REQUIRED ************************************************************* -->
+            <xsl:comment> ************************************************************* ALLERGY/DRUG 
+                SECTION SECTION, REQUIRED ************************************************************* </xsl:comment>
             <section>
-              <!-- ALLERGY/DRUG Section Template Entries REQUIRED -->
+              <xsl:comment>ALLERGY/DRUG Section Template Entries REQUIRED </xsl:comment>
               <templateId root="2.16.840.1.113883.10.20.22.2.6.1" extension="2015-08-01"/>
               <templateId root="2.16.840.1.113883.10.20.22.2.6" />
               <code code="48765-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Allergies and/or Adverse Reactions" />
               <title>Allergies and Adverse Reactions (ADRs): All on record at VA</title>
-              <!-- ALLERGIES NARRATIVE BLOCK -->
+              <xsl:comment> ALLERGIES NARRATIVE BLOCK </xsl:comment>
               <text>
                 <paragraph>
                   <content ID="allergiesTime">Section Date Range: From patient's date of birth to the date document was created.</content>
                 </paragraph>
-                <!-- VA Allergies/Drug Business Rules for Medical Content -->
+                <xsl:comment>VA Allergies/Drug Business Rules for Medical Content </xsl:comment>
                 <paragraph>
                   This section includes Allergies and Adverse Reactions (ADRs) on record with VA for the patient.
                   The data comes from all VA treatment facilities. It does not list Allergies/ADRs that were removed or entered in error.
@@ -712,7 +726,7 @@
                   </tbody>
                 </table>
               </text>
-              <!-- C-CDA R2.1 Section Time Range, Optional -->
+              <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
               <entry typeCode="DRIV">
                 <observation classCode="OBS" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
@@ -728,11 +742,11 @@
                 </observation>
               </entry>
 
-              <!-- ALLERGIES STRUCTURED DATA -->
+              <xsl:comment> ALLERGIES STRUCTURED DATA </xsl:comment>
               <entry typeCode="DRIV">
                 <act classCode="ACT" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.30" extension="2015-08-01"/>
-                  <!-- CCD Allergy Act ID as nullFlavor -->
+                  <xsl:comment> CCD Allergy Act ID as nullFlavor </xsl:comment>
                   <id nullFlavor="NA" />
                   <!--<code code="48765-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Allergies, adverse reactions, alerts" /> -->
                   <code code="CONC" codeSystem="2.16.840.1.113883.5.6" displayName="Concern" />
@@ -740,7 +754,7 @@
                   <effectiveTime>
                     <low nullFlavor="NA" />
                   </effectiveTime>
-                  <!-- INFORMATION SOURCE FOR ALLERGIES/DRUG, Optional -->
+                  <xsl:comment> INFORMATION SOURCE FOR ALLERGIES/DRUG, Optional </xsl:comment>
                   <author>
                     <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                     <time nullFlavor="NA" />
@@ -748,10 +762,9 @@
                       <id nullFlavor="NA" />
                       <code nullFlavor="NA" />
                       <representedOrganization>
-                        <!-- INFORMATION SOURCE ID, root=VA OID, extension= VAMC TREATING 
-                                        FACILITY NBR -->
+                        <xsl:comment> INFORMATION SOURCE ID, root=VA OID, extension= VAMC TREATING FACILITY NBR </xsl:comment>
                         <id root="2.16.840.1.113883.4.349" />
-                        <!-- INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME -->
+                        <xsl:comment> INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME </xsl:comment>
                         <name />
                         <telecom nullFlavor="NA" />
                         <addr nullFlavor="NA" />
@@ -759,17 +772,17 @@
                     </assignedAuthor>
                   </author>
                   <entryRelationship typeCode="SUBJ">
-                    <!-- Allergy Intolerance Observation Entry -->
+                    <xsl:comment> Allergy Intolerance Observation Entry </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.7" extension="2014-06-09"/>
                       <id nullFlavor="NA" />
                       <code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="HL7ActCode" />
                       <statusCode code="completed" />
-                      <!-- 6.01 ADVERSE EVENT DATE, REQUIRED -->
+                      <xsl:comment> 6.01 ADVERSE EVENT DATE, REQUIRED </xsl:comment>
                       <effectiveTime>
                         <low />
                       </effectiveTime>
-                      <!-- 6.02 ADVERSE EVENT TYPE, REQUIRED; SNOMED CT -->
+                        <xsl:comment> 6.02 ADVERSE EVENT TYPE, REQUIRED; SNOMED CT </xsl:comment>
                       <value xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
                         <originalText>
                           <reference />
@@ -778,9 +791,9 @@
                       <participant typeCode="CSM">
                         <participantRole classCode="MANU">
                           <playingEntity classCode="MMAT">
-                            <!-- 6.04 PRODUCT CODED,REQUIRED -->
+                            <xsl:comment> 6.04 PRODUCT CODED,REQUIRED </xsl:comment>
                             <code codeSystem="2.16.840.1.113883.6.88"  codeSystemName="RxNorm">
-                              <!-- 6.03 PRODUCT FREE TEXT, R2 -->
+                              <xsl:comment> 6.03 PRODUCT FREE TEXT, R2 </xsl:comment>
                               <originalText>
                                 <reference />
                               </originalText>
@@ -789,7 +802,7 @@
                           </playingEntity>
                         </participantRole>
                       </participant>
-                      <!-- REACTION ENTRY RELATIONSHIP BLOCK R2, repeatable -->
+                      <xsl:comment> REACTION ENTRY RELATIONSHIP BLOCK R2, repeatable </xsl:comment>
                       <entryRelationship typeCode="MFST" inversionInd="true">
                         <observation classCode="OBS" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.9" extension="2014-06-09" />
@@ -798,10 +811,10 @@
                           <statusCode code="completed" />
                           <effectiveTime nullFlavor="UNK" />
 
-                          <!-- 6.06 REACTION CODED, REQUIRED -->
+                          <xsl:comment> 6.06 REACTION CODED, REQUIRED </xsl:comment>
 
                           <value   xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
-                            <!-- 6.05 REACTION-FREE TEXT, optional, -->
+                            <xsl:comment> 6.05 REACTION-FREE TEXT, optional, </xsl:comment>
                             <originalText>
                               <reference />
                             </originalText>
@@ -809,17 +822,17 @@
                           </value>
                         </observation>
                       </entryRelationship>
-                      <!-- SEVERITY ENTRY RELATIONSHIP BLOCK R2, 0 or 1 per Allergy -->
+                      <xsl:comment> SEVERITY ENTRY RELATIONSHIP BLOCK R2, 0 or 1 per Allergy </xsl:comment>
                       <entryRelationship typeCode="SUBJ" inversionInd="true">
                         <observation classCode="OBS" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.8" extension="2014-06-09"/>
                           <code code="SEV" displayName="Severity" codeSystem="2.16.840.1.113883.5.4" codeSystemName="HL7ActCode" />
-                          <!-- 6.07 SEVERITY FREE TEXT, Optional-R2 Removed b/c removed in template -->
+                          <xsl:comment> 6.07 SEVERITY FREE TEXT, Optional-R2 Removed b/c removed in template </xsl:comment>
                           <text>
                             <reference />
                           </text>
                           <statusCode code="completed" />
-                          <!-- 6.08 SEVERITY CODED, REQUIRED, SNOMED CT -->
+                          <xsl:comment> 6.08 SEVERITY CODED, REQUIRED, SNOMED CT </xsl:comment>
                           <value xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
                         </observation>
                       </entryRelationship>
@@ -830,8 +843,8 @@
             </section>
           </component>
           <component>
-            <!-- ******************************************************** ENCOUNTER 
-                SECTION, Optional ******************************************************** -->
+            <xsl:comment> ******************************************************** ENCOUNTER 
+                SECTION, Optional ******************************************************** </xsl:comment>
             <section>
               <templateId root="2.16.840.1.113883.10.20.22.2.22.1" extension="2015-08-01"/>
               <templateId root="2.16.840.1.113883.10.20.22.2.22" />
@@ -850,7 +863,7 @@
                   The list of VA Outpatient Encounters shows all Encounter dates within the requested date range. If no date range was provided, the list of VA Outpatient Encounters shows all Encounter dates within the last 18 months. Follow-up visits related to the VA Encounter are not included. The data comes from all VA treatment facilities.
                 </paragraph>
                 <content MAP_ID="encounterStuff" styleCode="Bold">Encounter</content>
-                <!-- VA Encounter Business Rules for Medical Content -->
+                <xsl:comment> VA Encounter Business Rules for Medical Content </xsl:comment>
                 <table MAP_ID="encounterNarrative">
                   <thead>
                     <tr>
@@ -888,7 +901,7 @@
                       <td />
                       <td colspan="5">
                         <content styleCode="Bold">Encounter Notes</content>
-                        <!-- Start Associated Notes Narrative-->
+                        <xsl:comment> Start Associated Notes Narrative</xsl:comment>
                         <paragraph MAP_ID="anTitle">
                           The list of Encounter Notes shows the 5 most recent notes associated to the Outpatient Encounter. The data comes from all VA treatment facilities.
                         </paragraph>
@@ -922,10 +935,10 @@
                     </tr>
                   </tbody>
                 </table>
-                <!-- CDA Observation Text as a Reference tag -->
+                <xsl:comment> CDA Observation Text as a Reference tag </xsl:comment>
                 <content ID='encNote-1' revised="delete">IHE Encounter Template Text not used by VA</content>
               </text>
-              <!-- C-CDA R2.1 Section Time Range, Optional -->
+              <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
               <entry typeCode="DRIV" >
                 <observation classCode="OBS" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
@@ -945,14 +958,14 @@
                   <templateId root="2.16.840.1.113883.10.20.22.4.49" extension="2015-08-01"/>
                   <templateId root="2.16.840.1.113883.10.20.22.4.49" />
                   <id nullFlavor="NI" />
-                  <!-- 16.02 ENCOUNTER TYPE. R2, CPT-4 -->
+                  <xsl:comment> 16.02 ENCOUNTER TYPE. R2, CPT-4 </xsl:comment>
                   <code code="encCode" displayName="encDisplay" codeSystem="2.16.840.1.113883.6.12" codeSystemName="CPT-4">
-                    <!-- 16.03 ENCOUNTER FREE TEXT TYPE. R2 -->
+                    <xsl:comment> 16.03 ENCOUNTER FREE TEXT TYPE. R2 </xsl:comment>
                     <originalText>
                       <reference />
                     </originalText>
                   </code>
-                  <!-- 16.04 ENCOUNTER DATE/TIME, REQUIRED -->
+                    <xsl:comment> 16.04 ENCOUNTER DATE/TIME, REQUIRED </xsl:comment>
                   <effectiveTime xsi:type="IVL_TS">
                     <low />
                   </effectiveTime>
@@ -960,20 +973,19 @@
                     <assignedEntity>
                       <id nullFlavor="NA" />
                       <assignedPerson>
-                        <!-- 16.05 ENCOUNTER PROVIDER NAME, REQUIRED -->
+                        <xsl:comment> 16.05 ENCOUNTER PROVIDER NAME, REQUIRED </xsl:comment>
                         <name />
                       </assignedPerson>
                     </assignedEntity>
                   </performer>
-                  <!--16.06 - ADMISSION SOURCE, Optional, Not Yet Available from VA 
-                            VistA -->
-                  <!--16.11 - FACILITY LOCATION, Optional -->
+                  <xsl:comment>16.06 - ADMISSION SOURCE, Optional, Not Yet Available from VA VistA </xsl:comment>
+                  <xsl:comment>16.11 - FACILITY LOCATION, Optional </xsl:comment>
                   <participant typeCode="LOC">
-                    <!--16.20 - IN FACILITY LOCATION DURATION, Optional -->
+                    <xsl:comment>16.20 - IN FACILITY LOCATION DURATION, Optional </xsl:comment>
                     <time>
-                      <!--16.12 - ARRIVAL DATE/TIME, Optional -->
+                      <xsl:comment>16.12 - ARRIVAL DATE/TIME, Optional </xsl:comment>
                       <low  />
-                      <!-- 16.12 - DEPARTURE DATE/TIME, Optional -->
+                      <xsl:comment> 16.12 - DEPARTURE DATE/TIME, Optional </xsl:comment>
                       <high  />
                     </time>
                     <participantRole classCode="SDLOC">
@@ -986,15 +998,15 @@
                       </playingEntity>
                     </participantRole>
                   </participant>
-                  <!-- Encounter Reason for Visit -->
+                        <xsl:comment> Encounter Reason for Visit </xsl:comment>
                   <entryRelationship typeCode="RSON">
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.19" extension="2014-06-09" />
                       <id nullFlavor="NI" />
-                      <!-- CCD Reason for Visit Code, REQUIRED, SNOMED CT -->
+                      <xsl:comment> CCD Reason for Visit Code, REQUIRED, SNOMED CT </xsl:comment>
                       <code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" />
-                      <!-- 16.13 REASON FOR VISIT TEXT, Optional -->
-                      <!-- Is this for only outpatient? -->
+                      <xsl:comment> 16.13 REASON FOR VISIT TEXT, Optional </xsl:comment>
+                      <xsl:comment> Is this for only outpatient? </xsl:comment>
                       <statusCode code="completed" />
                       <value xsi:type="CD" >
                         <originalText>
@@ -1004,7 +1016,7 @@
                       </value>
                     </observation>
                   </entryRelationship>
-                  <!-- CCD ENCOUNTER DIAGNOSIS, Optional -->
+                  <xsl:comment> CCD ENCOUNTER DIAGNOSIS, Optional </xsl:comment>
                   <entryRelationship typeCode="REFR">
                     <act classCode="ACT" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.80" extension="2015-08-01" />
@@ -1014,11 +1026,11 @@
                         <low nullFlavor="UNK"/>
                       </effectiveTime>
 
-                      <!-- CCD ENCOUNTER DIAGNOSIS PROBLEM CODE, REQURIED, SNOMED CT -->
+                      <xsl:comment> CCD ENCOUNTER DIAGNOSIS PROBLEM CODE, REQURIED, SNOMED CT </xsl:comment>
                       <entryRelationship typeCode="SUBJ" inversionInd="false">
                         <observation classCode="OBS" moodCode="EVN" negationInd="false">
                           <templateId root="2.16.840.1.113883.10.20.22.4.4" extension="2015-08-01" />
-                          <!-- Problem Observation -->
+                          <xsl:comment> Problem Observation </xsl:comment>
                           <id nullFlavor="UNK" />
                           <code nullFlavor="UNK">
                             <originalText>Encounter Diagnosis Type Not Available</originalText>
@@ -1028,7 +1040,7 @@
                             <low nullFlavor="UNK" />
                             <high nullFlavor="UNK" />
                           </effectiveTime>
-                          <!-- CCD ENCOUNTER DIAGNOSIS PROBLEM CODE, REQUIRED, SNOMED CT -->
+                          <xsl:comment> CCD ENCOUNTER DIAGNOSIS PROBLEM CODE, REQUIRED, SNOMED CT </xsl:comment>
                           <value xsi:type="CD" codeSystemName="SNOMED CT" codeSystem="2.16.840.1.113883.6.96">
                             <originalText>
                               <reference />
@@ -1039,11 +1051,11 @@
                       </entryRelationship>
                     </act>
                   </entryRelationship>
-                  <!-- 16.09 DISCHARGE DISPOSITION CODE, Optional, Not provided by VA 
-                            b/c data not yet available via VA VistA RPCs -->
-                  <!-- Associated Encounter Notes -->
+                        <xsl:comment> 16.09 DISCHARGE DISPOSITION CODE, Optional, Not provided by VA 
+                            b/c data not yet available via VA VistA RPCs </xsl:comment>
+                  <xsl:comment> Associated Encounter Notes </xsl:comment>
                   <entryRelationship typeCode="COMP">
-                    <!-- CCD Results Organizer = VA Associated Encounter Notes , REQUIRED -->
+                    <xsl:comment> CCD Results Organizer = VA Associated Encounter Notes , REQUIRED </xsl:comment>
                     <act classCode="ACT" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
                       <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
@@ -1053,11 +1065,11 @@
                         <reference />
                       </text>
                       <statusCode code="completed" />
-                      <!-- Clinically relevant time of the note -->
+                      <xsl:comment> Clinically relevant time of the note </xsl:comment>
                       <effectiveTime />
                       <author>
                         <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                        <!-- Time note was actually written -->
+                        <xsl:comment> Time note was actually written </xsl:comment>
                         <time />
                         <assignedAuthor>
                           <id nullFlavor="NI" />
@@ -1077,7 +1089,7 @@
               </entry>
             </section>
           </component>
-          <!-- ***** FUNCTIONAL STATUS, OMIT from SES ************ -->
+          <xsl:comment>  ***** FUNCTIONAL STATUS, OMIT from SES ************ </xsl:comment>
           <component>
             <section>
               <templateId root="2.16.840.1.113883.10.20.22.2.14" extension="2014-06-09" />
@@ -1378,8 +1390,8 @@
                   </tbody>
                 </table>
               </text>
-              <!-- Date Range -->
-              <entry typeCode="DRIV">
+              <xsl:comment>Date Range </xsl:comment>
+                <entry typeCode="DRIV">
                 <observation classCode="OBS" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01" />
                   <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range" />
@@ -1393,20 +1405,20 @@
                   </value>
                 </observation>
               </entry>
-              <!--  FUNCTIONAL STATUS STRUCTURED ENTRIES -->
+              <xsl:comment>  FUNCTIONAL STATUS STRUCTURED ENTRIES </xsl:comment>
               <entry typeCode="DRIV">
                 <organizer classCode="CLUSTER" moodCode="EVN">
-                  <!-- **** Functional Status Result Organizer template **** -->
+                  <xsl:comment> **** Functional Status Result Organizer template **** </xsl:comment>
                   <templateId root="2.16.840.1.113883.10.20.22.4.66" extension="2014-06-09" />
                   <id nullFlavor="NI"/>
-                  <!-- Functional Status Result Organizer Code, ICF or SNOMED CT,  FIM Assessment Type -->
+                  <xsl:comment> Functional Status Result Organizer Code, ICF or SNOMED CT,  FIM Assessment Type </xsl:comment>
                   <code nullFlavor="UNK">
                     <originalText>
                       <reference value="#fimAssessment"/>
                     </originalText>
                   </code>
                   <statusCode code="completed"/>
-                  <!-- * Information Source for Functional Status, VA Facility  -->
+                  <xsl:comment> * Information Source for Functional Status, VA Facility  </xsl:comment>
                   <author>
                     <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                     <time nullFlavor="NA"/>
@@ -1421,22 +1433,22 @@
                     </assignedAuthor>
                   </author>
                   <component>
-                    <!-- Functional Status Result Observation  -->
+                    <xsl:comment> Functional Status Result Observation  </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
-                      <!-- Functional Status Result Observation ID  -->
+                      <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                       <id nullFlavor="NI" />
-                      <!--  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  -->
+                      <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
                       <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
                       <text>
                         <reference value="#fimEatName"/>
                       </text>
                       <statusCode code="completed"/>
-                      <!-- Functional Status Result Observation Date/Time, FIM Assessment Date/Time -->
+                      <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                       <effectiveTime>
                         <low value="skillTime"/>
                       </effectiveTime>
-                      <!--  Functional Status Result Observation Date/Time, FIM Skill Score -->
+                      <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                       <value nullFlavor="NA" xsi:type="CD">
                         <translation nullFlavor="UNK">
                           <originalText>
@@ -1444,7 +1456,7 @@
                           </originalText>
                         </translation>
                       </value>
-                      <!--  Functional Status Result Observation Comment, FIM Details -->
+                      <xsl:comment>   Functional Status Result Observation Comment, FIM Details </xsl:comment>
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -1457,22 +1469,22 @@
                     </observation>
                   </component>
                   <component>
-                    <!-- Functional Status Result Observation  -->
+                    <xsl:comment>  Functional Status Result Observation  </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
-                      <!-- Functional Status Result Observation ID  -->
+                      <xsl:comment>  Functional Status Result Observation ID  </xsl:comment>
                       <id nullFlavor="NI" />
-                      <!--  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  -->
+                      <xsl:comment>   Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
                       <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
                       <text>
                         <reference value="#fimGroomName"/>
                       </text>
                       <statusCode code="completed"/>
-                      <!-- Functional Status Result Observation Date/Time, FIM Assessment Date/Time -->
+                      <xsl:comment>  Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                       <effectiveTime>
                         <low value="skillTime"/>
                       </effectiveTime>
-                      <!--  Functional Status Result Observation Date/Time, FIM Skill Score -->
+                      <xsl:comment>   Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                       <value nullFlavor="NA" xsi:type="CD">
                         <translation nullFlavor="UNK">
                           <originalText>
@@ -1480,7 +1492,7 @@
                           </originalText>
                         </translation>
                       </value>
-                      <!--  Functional Status Result Observation Comment, FIM Details -->
+                      <xsl:comment>Functional Status Result Observation Comment, FIM Details </xsl:comment>
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -1493,22 +1505,22 @@
                     </observation>
                   </component>
                   <component>
-                    <!-- Functional Status Result Observation  -->
+                    <xsl:comment> Functional Status Result Observation  </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
-                      <!-- Functional Status Result Observation ID  -->
+                      <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                       <id nullFlavor="NI" />
-                      <!--  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  -->
+                      <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
                       <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
                       <text>
                         <reference value="#fimBathName"/>
                       </text>
                       <statusCode code="completed"/>
-                      <!-- Functional Status Result Observation Date/Time, FIM Assessment Date/Time -->
+                      <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                       <effectiveTime>
                         <low value="skillTime"/>
                       </effectiveTime>
-                      <!--  Functional Status Result Observation Date/Time, FIM Skill Score -->
+                      <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                       <value nullFlavor="NA" xsi:type="CD">
                         <translation nullFlavor="UNK">
                           <originalText>
@@ -1516,7 +1528,7 @@
                           </originalText>
                         </translation>
                       </value>
-                      <!--  Functional Status Result Observation Comment, FIM Details -->
+                      <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -1529,22 +1541,22 @@
                     </observation>
                   </component>
                   <component>
-                    <!-- Functional Status Result Observation  -->
+                    <xsl:comment> Functional Status Result Observation  </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
-                      <!-- Functional Status Result Observation ID  -->
+                      <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                       <id nullFlavor="NI" />
-                      <!--  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  -->
+                      <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
                       <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
                       <text>
                         <reference value="#fimDressUpName"/>
                       </text>
                       <statusCode code="completed"/>
-                      <!-- Functional Status Result Observation Date/Time, FIM Assessment Date/Time -->
+                      <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                       <effectiveTime>
                         <low value="skillTime"/>
                       </effectiveTime>
-                      <!--  Functional Status Result Observation Date/Time, FIM Skill Score -->
+                      <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                       <value nullFlavor="NA" xsi:type="CD">
                         <translation nullFlavor="UNK">
                           <originalText>
@@ -1552,7 +1564,7 @@
                           </originalText>
                         </translation>
                       </value>
-                      <!--  Functional Status Result Observation Comment, FIM Details -->
+                      <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -1565,22 +1577,22 @@
                     </observation>
                   </component>
                   <component>
-                    <!-- Functional Status Result Observation  -->
+                    <xsl:comment> Functional Status Result Observation  </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
-                      <!-- Functional Status Result Observation ID  -->
+                      <xsl:comment> Functional Status Result Observation ID </xsl:comment>
                       <id nullFlavor="NI" />
-                      <!--  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  -->
+                      <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
                       <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
                       <text>
                         <reference value="#fimDressLoName"/>
                       </text>
                       <statusCode code="completed"/>
-                      <!-- Functional Status Result Observation Date/Time, FIM Assessment Date/Time -->
+                      <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                       <effectiveTime>
                         <low value="skillTime"/>
                       </effectiveTime>
-                      <!--  Functional Status Result Observation Date/Time, FIM Skill Score -->
+                      <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                       <value nullFlavor="NA" xsi:type="CD">
                         <translation nullFlavor="UNK">
                           <originalText>
@@ -1588,7 +1600,7 @@
                           </originalText>
                         </translation>
                       </value>
-                      <!--  Functional Status Result Observation Comment, FIM Details -->
+                      <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -1601,22 +1613,22 @@
                     </observation>
                   </component>
                   <component>
-                    <!-- Functional Status Result Observation  -->
+                    <xsl:comment> Functional Status Result Observation  </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
-                      <!-- Functional Status Result Observation ID  -->
+                      <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                       <id nullFlavor="NI" />
-                      <!--  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  -->
+                      <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
                       <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
                       <text>
                         <reference value="#fimToiletName"/>
                       </text>
                       <statusCode code="completed"/>
-                      <!-- Functional Status Result Observation Date/Time, FIM Assessment Date/Time -->
+                      <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                       <effectiveTime>
                         <low value="skillTime"/>
                       </effectiveTime>
-                      <!--  Functional Status Result Observation Date/Time, FIM Skill Score -->
+                      <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                       <value nullFlavor="NA" xsi:type="CD">
                         <translation nullFlavor="UNK">
                           <originalText>
@@ -1624,7 +1636,7 @@
                           </originalText>
                         </translation>
                       </value>
-                      <!--  Functional Status Result Observation Comment, FIM Details -->
+                      <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -1637,22 +1649,22 @@
                     </observation>
                   </component>
                   <component>
-                    <!-- Functional Status Result Observation  -->
+                    <xsl:comment> Functional Status Result Observation  </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
-                      <!-- Functional Status Result Observation ID  -->
+                      <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                       <id nullFlavor="NI" />
-                      <!--  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  -->
+                      <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
                       <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
                       <text>
                         <reference value="#fimBladderName"/>
                       </text>
                       <statusCode code="completed"/>
-                      <!-- Functional Status Result Observation Date/Time, FIM Assessment Date/Time -->
+                      <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                       <effectiveTime>
                         <low value="skillTime"/>
                       </effectiveTime>
-                      <!--  Functional Status Result Observation Date/Time, FIM Skill Score -->
+                      <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                       <value nullFlavor="NA" xsi:type="CD">
                         <translation nullFlavor="UNK">
                           <originalText>
@@ -1660,7 +1672,7 @@
                           </originalText>
                         </translation>
                       </value>
-                      <!--  Functional Status Result Observation Comment, FIM Details -->
+                      <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -1673,22 +1685,22 @@
                     </observation>
                   </component>
                   <component>
-                    <!-- Functional Status Result Observation  -->
+                    <xsl:comment> Functional Status Result Observation  </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
-                      <!-- Functional Status Result Observation ID  -->
+                      <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                       <id nullFlavor="NI" />
-                      <!--  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  -->
+                      <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
                       <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
                       <text>
                         <reference value="#fimBowelName"/>
                       </text>
                       <statusCode code="completed"/>
-                      <!-- Functional Status Result Observation Date/Time, FIM Assessment Date/Time -->
+                      <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                       <effectiveTime>
                         <low value="skillTime"/>
                       </effectiveTime>
-                      <!--  Functional Status Result Observation Date/Time, FIM Skill Score -->
+                      <xsl:comment>Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                       <value nullFlavor="NA" xsi:type="CD">
                         <translation nullFlavor="UNK">
                           <originalText>
@@ -1696,7 +1708,7 @@
                           </originalText>
                         </translation>
                       </value>
-                      <!--  Functional Status Result Observation Comment, FIM Details -->
+                      <xsl:comment>Functional Status Result Observation Comment, FIM Details </xsl:comment>
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -1709,22 +1721,22 @@
                     </observation>
                   </component>
                   <component>
-                    <!-- Functional Status Result Observation  -->
+                    <xsl:comment> Functional Status Result Observation  </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                      <!-- Functional Status Result Observation ID  -->
+                      <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                       <id nullFlavor="NI" />
-                      <!--  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  -->
+                      <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
                       <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
                       <text>
                         <reference value="#fimTransChairName"/>
                       </text>
                       <statusCode code="completed"/>
-                      <!-- Functional Status Result Observation Date/Time, FIM Assessment Date/Time -->
+                      <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                       <effectiveTime>
                         <low value="skillTime"/>
                       </effectiveTime>
-                      <!--  Functional Status Result Observation Date/Time, FIM Skill Score -->
+                      <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                       <value nullFlavor="NA" xsi:type="CD">
                         <translation nullFlavor="UNK">
                           <originalText>
@@ -1732,7 +1744,7 @@
                           </originalText>
                         </translation>
                       </value>
-                      <!--  Functional Status Result Observation Comment, FIM Details -->
+                      <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -1745,22 +1757,22 @@
                     </observation>
                   </component>
                   <component>
-                    <!-- Functional Status Result Observation  -->
+                    <xsl:comment> Functional Status Result Observation  </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                      <!-- Functional Status Result Observation ID  -->
+                      <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                       <id nullFlavor="NI" />
-                      <!--  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  -->
+                      <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
                       <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
                       <text>
                         <reference value="#fimTransToiletName"/>
                       </text>
                       <statusCode code="completed"/>
-                      <!-- Functional Status Result Observation Date/Time, FIM Assessment Date/Time -->
+                      <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                       <effectiveTime>
                         <low value="skillTime"/>
                       </effectiveTime>
-                      <!--  Functional Status Result Observation Date/Time, FIM Skill Score -->
+                      <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                       <value nullFlavor="NA" xsi:type="CD">
                         <translation nullFlavor="UNK">
                           <originalText>
@@ -1768,7 +1780,7 @@
                           </originalText>
                         </translation>
                       </value>
-                      <!--  Functional Status Result Observation Comment, FIM Details -->
+                      <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -1781,22 +1793,22 @@
                     </observation>
                   </component>
                   <component>
-                    <!-- Functional Status Result Observation  -->
+                    <xsl:comment> Functional Status Result Observation  </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                      <!-- Functional Status Result Observation ID  -->
+                      <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                       <id nullFlavor="NI" />
-                      <!--  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  -->
+                      <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
                       <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
                       <text>
                         <reference value="#fimTransTubName"/>
                       </text>
                       <statusCode code="completed"/>
-                      <!-- Functional Status Result Observation Date/Time, FIM Assessment Date/Time -->
+                      <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                       <effectiveTime>
                         <low value="skillTime"/>
                       </effectiveTime>
-                      <!--  Functional Status Result Observation Date/Time, FIM Skill Score -->
+                      <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                       <value nullFlavor="NA" xsi:type="CD">
                         <translation nullFlavor="UNK">
                           <originalText>
@@ -1804,7 +1816,7 @@
                           </originalText>
                         </translation>
                       </value>
-                      <!--  Functional Status Result Observation Comment, FIM Details -->
+                      <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -1817,22 +1829,22 @@
                     </observation>
                   </component>
                   <component>
-                    <!-- Functional Status Result Observation  -->
+                    <xsl:comment> Functional Status Result Observation  </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                      <!-- Functional Status Result Observation ID  -->
+                      <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                       <id nullFlavor="NI" />
-                      <!--  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  -->
+                      <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
                       <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
                       <text>
                         <reference value="#fimLocomWalkName"/>
                       </text>
                       <statusCode code="completed"/>
-                      <!-- Functional Status Result Observation Date/Time, FIM Assessment Date/Time -->
+                      <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                       <effectiveTime>
                         <low value="skillTime"/>
                       </effectiveTime>
-                      <!--  Functional Status Result Observation Date/Time, FIM Skill Score -->
+                      <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                       <value nullFlavor="NA" xsi:type="CD">
                         <translation nullFlavor="UNK">
                           <originalText>
@@ -1840,7 +1852,7 @@
                           </originalText>
                         </translation>
                       </value>
-                      <!--  Functional Status Result Observation Comment, FIM Details -->
+                      <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -1853,22 +1865,22 @@
                     </observation>
                   </component>
                   <component>
-                    <!-- Functional Status Result Observation  -->
+                    <xsl:comment> Functional Status Result Observation  </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                      <!-- Functional Status Result Observation ID  -->
+                      <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                       <id nullFlavor="NI" />
-                      <!--  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  -->
+                      <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
                       <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
                       <text>
                         <reference value="#fimLocomStairName"/>
                       </text>
                       <statusCode code="completed"/>
-                      <!-- Functional Status Result Observation Date/Time, FIM Assessment Date/Time -->
+                      <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                       <effectiveTime>
                         <low value="skillTime"/>
                       </effectiveTime>
-                      <!--  Functional Status Result Observation Date/Time, FIM Skill Score -->
+                      <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                       <value nullFlavor="NA" xsi:type="CD">
                         <translation nullFlavor="UNK">
                           <originalText>
@@ -1876,7 +1888,7 @@
                           </originalText>
                         </translation>
                       </value>
-                      <!--  Functional Status Result Observation Comment, FIM Details -->
+                      <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -1889,22 +1901,22 @@
                     </observation>
                   </component>
                   <component>
-                    <!-- Functional Status Result Observation  -->
+                    <xsl:comment> Functional Status Result Observation  </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                      <!-- Functional Status Result Observation ID  -->
+                      <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                       <id nullFlavor="NI" />
-                      <!--  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  -->
+                      <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
                       <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
                       <text>
                         <reference value="#fimComprehendName"/>
                       </text>
                       <statusCode code="completed"/>
-                      <!-- Functional Status Result Observation Date/Time, FIM Assessment Date/Time -->
+                       <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                       <effectiveTime>
                         <low value="skillTime"/>
                       </effectiveTime>
-                      <!--  Functional Status Result Observation Date/Time, FIM Skill Score -->
+                       <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                       <value nullFlavor="NA" xsi:type="CD">
                         <translation nullFlavor="UNK">
                           <originalText>
@@ -1912,7 +1924,7 @@
                           </originalText>
                         </translation>
                       </value>
-                      <!--  Functional Status Result Observation Comment, FIM Details -->
+                      <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -1925,22 +1937,22 @@
                     </observation>
                   </component>
                   <component>
-                    <!-- Functional Status Result Observation  -->
+                    <xsl:comment> Functional Status Result Observation  </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                      <!-- Functional Status Result Observation ID  -->
+                      <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                       <id nullFlavor="NI" />
-                      <!--  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  -->
+                      <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
                       <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
                       <text>
                         <reference value="#fimExpressName"/>
                       </text>
                       <statusCode code="completed"/>
-                      <!-- Functional Status Result Observation Date/Time, FIM Assessment Date/Time -->
+                      <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                       <effectiveTime>
                         <low value="skillTime"/>
                       </effectiveTime>
-                      <!--  Functional Status Result Observation Date/Time, FIM Skill Score -->
+                      <xsl:comment>-  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                       <value nullFlavor="NA" xsi:type="CD">
                         <translation nullFlavor="UNK">
                           <originalText>
@@ -1948,7 +1960,7 @@
                           </originalText>
                         </translation>
                       </value>
-                      <!--  Functional Status Result Observation Comment, FIM Details -->
+                      <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -1961,22 +1973,22 @@
                     </observation>
                   </component>
                   <component>
-                    <!-- Functional Status Result Observation  -->
+                    <xsl:comment> Functional Status Result Observation  </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                      <!-- Functional Status Result Observation ID  -->
+                      <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                       <id nullFlavor="NI" />
-                      <!--  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  -->
+                      <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
                       <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
                       <text>
                         <reference value="#fimInteractName"/>
                       </text>
                       <statusCode code="completed"/>
-                      <!-- Functional Status Result Observation Date/Time, FIM Assessment Date/Time -->
+                      <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                       <effectiveTime>
                         <low value="skillTime"/>
                       </effectiveTime>
-                      <!--  Functional Status Result Observation Date/Time, FIM Skill Score -->
+                      <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                       <value nullFlavor="NA" xsi:type="CD">
                         <translation nullFlavor="UNK">
                           <originalText>
@@ -1984,7 +1996,7 @@
                           </originalText>
                         </translation>
                       </value>
-                      <!--  Functional Status Result Observation Comment, FIM Details -->
+                      <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -1997,22 +2009,22 @@
                     </observation>
                   </component>
                   <component>
-                    <!-- Functional Status Result Observation  -->
+                    <xsl:comment> Functional Status Result Observation  </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                      <!-- Functional Status Result Observation ID  -->
+                      <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                       <id nullFlavor="NI" />
-                      <!--  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  -->
+                      <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
                       <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
                       <text>
                         <reference value="#fimProblemName"/>
                       </text>
                       <statusCode code="completed"/>
-                      <!-- Functional Status Result Observation Date/Time, FIM Assessment Date/Time -->
+                      <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                       <effectiveTime>
                         <low value="skillTime"/>
                       </effectiveTime>
-                      <!--  Functional Status Result Observation Date/Time, FIM Skill Score -->
+                      <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                       <value nullFlavor="NA" xsi:type="CD">
                         <translation nullFlavor="UNK">
                           <originalText>
@@ -2020,7 +2032,7 @@
                           </originalText>
                         </translation>
                       </value>
-                      <!--  Functional Status Result Observation Comment, FIM Details -->
+                      <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -2033,22 +2045,22 @@
                     </observation>
                   </component>
                   <component>
-                    <!-- Functional Status Result Observation  -->
+                    <xsl:comment> Functional Status Result Observation  </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                      <!-- Functional Status Result Observation ID  -->
+                      <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                       <id nullFlavor="NI" />
-                      <!--  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  -->
+                      <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
                       <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
                       <text>
                         <reference value="#fimMemoryName"/>
                       </text>
                       <statusCode code="completed"/>
-                      <!-- Functional Status Result Observation Date/Time, FIM Assessment Date/Time -->
+                      <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                       <effectiveTime>
                         <low value="skillTime"/>
                       </effectiveTime>
-                      <!--  Functional Status Result Observation Date/Time, FIM Skill Score -->
+                      <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                       <value nullFlavor="NA" xsi:type="CD">
                         <translation nullFlavor="UNK">
                           <originalText>
@@ -2056,7 +2068,7 @@
                           </originalText>
                         </translation>
                       </value>
-                      <!--  Functional Status Result Observation Comment, FIM Details -->
+                      <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -2069,22 +2081,22 @@
                     </observation>
                   </component>
                   <component>
-                    <!-- Functional Status Result Observation  -->
+                    <xsl:comment>Functional Status Result Observation  </xsl:comment> 
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                      <!-- Functional Status Result Observation ID  -->
+                      <xsl:comment> Functional Status Result Observation ID  </xsl:comment> 
                       <id nullFlavor="NI" />
-                      <!--  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  -->
+                      <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment> 
                       <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
                       <text>
                         <reference value="#fimTotalName"/>
                       </text>
                       <statusCode code="completed"/>
-                      <!-- Functional Status Result Observation Date/Time, FIM Assessment Date/Time -->
+                      <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment> 
                       <effectiveTime>
                         <low value="skillTime"/>
                       </effectiveTime>
-                      <!--  Functional Status Result Observation Date/Time, FIM Skill Score -->
+                      <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment> 
                       <value nullFlavor="NA" xsi:type="CD">
                         <translation nullFlavor="UNK">
                           <originalText>
@@ -2092,7 +2104,7 @@
                           </originalText>
                         </translation>
                       </value>
-                      <!--  Functional Status Result Observation Comment, FIM Details -->
+                      <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment> 
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -2109,17 +2121,17 @@
             </section>
           </component>
           <component>
-            <!-- **************************************************************** 
-                MEDICATIONS (RX & Non-RX) SECTION, REQUIRED **************************************************************** -->
+            <xsl:comment> **************************************************************** 
+                MEDICATIONS (RX &amp; Non-RX) SECTION, REQUIRED **************************************************************** </xsl:comment>
             <section>
-              <!-- C-CDA Medications Section Template Entries REQUIRED -->
+              <xsl:comment> C-CDA Medications Section Template Entries REQUIRED </xsl:comment> 
               <templateId root="2.16.840.1.113883.10.20.22.2.1.1" extension="2014-06-09"/>
               <templateId root="2.16.840.1.113883.10.20.22.2.1" />
               <code code="10160-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="History of medication use" />
               <title>Medications: VA Dispensed and Non-VA Dispensed</title>
-              <!-- MEDICATIONS NARRATIVE BLOCK -->
+              <xsl:comment> MEDICATIONS NARRATIVE BLOCK </xsl:comment> 
               <text>
-                <!-- VA Medication Business Rules for Medical Content -->
+                <xsl:comment> VA Medication Business Rules for Medical Content </xsl:comment> 
                 <paragraph>
                   <content ID="medTime">Section Date Range: 1) prescriptions processed by a VA pharmacy in the last 15 months, and 2) all medications recorded in the VA medical record as "non-VA medications". Pharmacy terms refer to VA pharmacy's work on prescriptions. VA patients are advised to take their medications as instructed by their health care team. The data comes from all VA treatment facilities.</content>
                 </paragraph>
@@ -2181,7 +2193,7 @@
                   </tbody>
                 </table>
               </text>
-              <!-- C-CDA R2.1 Section Time Range, Optional -->
+              <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
               <entry typeCode="DRIV" >
                 <observation classCode="OBS" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
@@ -2196,13 +2208,13 @@
                   </value>
                 </observation>
               </entry>
-              <!-- CCD Medication Activity Entry -->
+              <xsl:comment> CCD Medication Activity Entry </xsl:comment> 
               <entry typeCode="DRIV">
                 <substanceAdministration classCode="SBADM" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.16" extension ="2014-06-09"/>
                   <id nullFlavor="NA" />
-                  <!-- 8.12 DELIVERY METHOD, Optional, No value set defined, Not provided by VA b/c data from VA VistA RPCs not yet available -->
-                  <!-- 8.01 FREE TEXT SIG REFERENCE, Optional -->
+                  <xsl:comment> 8.12 DELIVERY METHOD, Optional, No value set defined, Not provided by VA b/c data from VA VistA RPCs not yet available </xsl:comment>
+                  <xsl:comment> 8.01 FREE TEXT SIG REFERENCE, Optional </xsl:comment> 
                   <text>
                     <reference value="#mndSig" />
                   </text>
@@ -2210,41 +2222,41 @@
                   <effectiveTime xsi:type="IVL_TS">
                     <low nullFlavor="UNK" />
                   </effectiveTime>
-                  <!-- 8.02 INDICATE MEDICATION STOPPPED, Optional, Removed b/c data 
-                            not yet available via VA VistA RPCs -->
-                  <!-- 8.03 ADMINISTRATION TIMING (xsi:type='EIVL' operator='A'), Optional, 
-                            Not provided by VA b/c data not yet available via VA VistA RPCs -->
-                  <!-- 8.04 FREQUENCY (xsi:type='PIVL_TS institutionSpecified='false' 
+                  <xsl:comment> 8.02 INDICATE MEDICATION STOPPPED, Optional, Removed b/c data 
+                            not yet available via VA VistA RPCs </xsl:comment>
+                  <xsl:comment> 8.03 ADMINISTRATION TIMING (xsi:type='EIVL' operator='A'), Optional, 
+                            Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
+                  <xsl:comment> 8.04 FREQUENCY (xsi:type='PIVL_TS institutionSpecified='false' 
                             operator='A''), Optional, Not provided by VA b/c data not yet available via 
-                            VA VistA RPCs -->
-                  <!--8.05 INTERVAL ( xsi:type='PIVL_TS' institutionSpecified='false' 
+                            VA VistA RPCs </xsl:comment>
+                  <xsl:comment>8.05 INTERVAL ( xsi:type='PIVL_TS' institutionSpecified='false' 
                             operator='A'), Optional,Not provided by VA b/c data not yet available via 
-                            VA VistA RPCs -->
-                  <!--8.06 DURATION ( xsi:type='PIVL_TS' operator='A'), Optional, Not 
-                            provided by VA b/c data not yet available via VA VistA RPCs -->
-                  <!-- 8.08 DOSE, Optional, Not provided by VA b/c data not yet available 
-                            via VA VistA RPCs -->
+                            VA VistA RPCs </xsl:comment>
+                  <xsl:comment>8.06 DURATION ( xsi:type='PIVL_TS' operator='A'), Optional, Not 
+                            provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
+                  <xsl:comment> 8.08 DOSE, Optional, Not provided by VA b/c data not yet available 
+                            via VA VistA RPCs </xsl:comment>
                   <consumable>
                     <manufacturedProduct classCode="MANU">
                       <templateId root="2.16.840.1.113883.10.20.22.4.23" extension="2014-06-09" />
                       <manufacturedMaterial>
-                        <!-- 8.13 CODED PRODUCT NAME, REQUIRED, UNII, RxNorm, NDF-RT, NDC, 
-                                        Not provided by VA b/c data not yet available via VA VistA RPCs -->
+                        <xsl:comment> 8.13 CODED PRODUCT NAME, REQUIRED, UNII, RxNorm, NDF-RT, NDC, 
+                                        Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
                         <code codeSystem="2.16.840.1.113883.3.88.12.80.16" codeSystemName="RxNorm"  >
-                          <!-- 8.14 CODED BRAND NAME, R2, Not provided by VA b/c data not 
-                                            yet available via VA VistA RPCs -->
-                          <!-- 8.15 FREE TEXT PRODUCT NAME, REQUIRED -->
+                          <xsl:comment> 8.14 CODED BRAND NAME, R2, Not provided by VA b/c data not 
+                                            yet available via VA VistA RPCs </xsl:comment>
+                          <xsl:comment> 8.15 FREE TEXT PRODUCT NAME, REQUIRED </xsl:comment>
                           <originalText>
                             <reference value="#mndMedication" />
                           </originalText>
                           <translation codeSystem="2.16.840.1.113883.6.233" codeSystemName="VHA Enterprise Reference Terminology" />
                         </code>
-                        <!-- 8.16 FREE TEXT BRAND NAME, R2, Not provided by VA b/c data 
-                                        not yet available via VA VistA RPCs -->
+                          <xsl:comment> 8.16 FREE TEXT BRAND NAME, R2, Not provided by VA b/c data 
+                                        not yet available via VA VistA RPCs </xsl:comment>
                       </manufacturedMaterial>
                     </manufacturedProduct>
                   </consumable>
-                  <!-- Information Source for Medication Entry, Optional -->
+                  <xsl:comment> Information Source for Medication Entry, Optional </xsl:comment>
                   <author>
                     <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                     <time nullFlavor="UNK" />
@@ -2257,9 +2269,9 @@
                     </assignedAuthor>
                   </author>
 
-                  <!-- 8.20-STATUS OF MEDICATION, Optional-R2, SNOMED CT -->
+                  <xsl:comment> 8.20-STATUS OF MEDICATION, Optional-R2, SNOMED CT </xsl:comment>
                   <entryRelationship typeCode="REFR">
-                    <!--To Identify Status -->
+                    <xsl:comment>To Identify Status </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.1.47" />
                       <code code="33999-4" displayName="Status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" />
@@ -2269,42 +2281,42 @@
                     </observation>
                   </entryRelationship>
 
-                  <!-- CCD Patient Instructions Entry, Optional -->
+                  <xsl:comment> CCD Patient Instructions Entry, Optional </xsl:comment>
 
                   <entryRelationship typeCode="SUBJ">
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.3.88.11.32.10" />
-                      <!-- VLER SEG 1B: 8.19-TYPE OF MEDICATION, Optional-R2, SNOMED CT -->
+                      <xsl:comment> VLER SEG 1B: 8.19-TYPE OF MEDICATION, Optional-R2, SNOMED CT </xsl:comment>
                       <code codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
                         <originalText />
                       </code>
                     </observation>
                   </entryRelationship>
 
-                  <!-- CCD Drug Vehicle Entry, Optional, Not provided by VA b/c data 
-                            not yet available via VA VistA RPCs -->
-                  <!-- 8.24 VEHICLE, Optional, Not provided by VA b/c data not yet available 
-                            via VA VistA RPCs -->
-                  <!-- CCD Indication Entry, Optional, Not provided by VA b/c data not 
-                            yet available via VA VistA RPCs -->
-                  <!-- 8.21 INDICATION VALUE, Optional, SNOMED CT, Not provided by VA 
-                            b/c data not yet available via VA VistA RPCs -->
-                  <!-- CCD Medication Supply Order Entry, REQUIRED -->
+                  <xsl:comment> CCD Drug Vehicle Entry, Optional, Not provided by VA b/c data 
+                            not yet available via VA VistA RPCs </xsl:comment>
+                  <xsl:comment> 8.24 VEHICLE, Optional, Not provided by VA b/c data not yet available 
+                            via VA VistA RPCs </xsl:comment>
+                  <xsl:comment> CCD Indication Entry, Optional, Not provided by VA b/c data not 
+                            yet available via VA VistA RPCs </xsl:comment>
+                  <xsl:comment> 8.21 INDICATION VALUE, Optional, SNOMED CT, Not provided by VA 
+                            b/c data not yet available via VA VistA RPCs </xsl:comment>
+                  <xsl:comment> CCD Medication Supply Order Entry, REQUIRED </xsl:comment>
                   <entryRelationship typeCode='REFR'>
                     <supply classCode="SPLY" moodCode="INT">
                       <templateId root="2.16.840.1.113883.10.20.22.4.17" extension="2014-06-09"/>
-                      <!-- VLER SEG 1B: 8.26 ORDER NUMBER, Optional-R2 -->
+                      <xsl:comment> VLER SEG 1B: 8.26 ORDER NUMBER, Optional-R2 </xsl:comment>
                       <id extension="orderNbr" root="2.16.840.1.113883.4.349" />
                       <statusCode code="completed" />
-                      <!-- 8.29 ORDER EXPIRATION DATE/TIME, Optional-R2 -->
+                      <xsl:comment> 8.29 ORDER EXPIRATION DATE/TIME, Optional-R2 </xsl:comment>
                       <effectiveTime xsi:type="IVL_TS">
                         <low nullFlavor="UNK" />
                         <high />
                       </effectiveTime>
-                      <!-- VLER SEG 1B: 8.27 FILLS, Optional -->
+                      <xsl:comment> VLER SEG 1B: 8.27 FILLS, Optional </xsl:comment>
                       <repeatNumber />
-                      <!-- 8.28 QUANTITY ORDERED, R2, Not provided by VA b/c data not 
-                                    yet available via VA VistA RPCs -->
+                      <xsl:comment> 8.28 QUANTITY ORDERED, R2, Not provided by VA b/c data not 
+                                    yet available via VA VistA RPCs </xsl:comment>
                       <!--<product>
 										<manufacturedProduct classCode="MANU">
 											<templateId root="2.16.840.1.113883.10.20.22.4.23" />
@@ -2317,12 +2329,12 @@
 									</product> -->
                       <author>
                         <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                        <!-- 8.30 ORDER DATE/TIME, Optional -->
+                        <xsl:comment> 8.30 ORDER DATE/TIME, Optional </xsl:comment>
                         <time value="20100717"/>
                         <assignedAuthor>
                           <id nullFlavor="NA" />
                           <assignedPerson>
-                            <!-- 8.31 ORDERING PROVIDER, Optional -->
+                            <xsl:comment> 8.31 ORDERING PROVIDER, Optional </xsl:comment>
                             <name />
                           </assignedPerson>
                         </assignedAuthor>
@@ -2330,7 +2342,7 @@
                     </supply>
                   </entryRelationship>
 
-                  <!-- FULFILLMENT Instructions -->
+                  <xsl:comment> FULFILLMENT Instructions </xsl:comment>
                   <entryRelationship inversionInd="true" typeCode='SUBJ'>
                     <act classCode="ACT" moodCode="INT">
                       <templateId root="2.16.840.1.113883.10.20.22.4.20" />
@@ -2341,32 +2353,32 @@
                       <statusCode code="completed" />
                     </act>
                   </entryRelationship>
-                  <!-- FULFILLMENT HISTORY INFORMATION -->
-                  <!-- CCD Medication Dispense Entry, Optional -->
+                 <xsl:comment>FULFILLMENT HISTORY INFORMATION </xsl:comment>
+                 <xsl:comment> CCD Medication Dispense Entry, Optional </xsl:comment>
                   <entryRelationship typeCode='REFR'>
                     <supply classCode="SPLY" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.18" extension="2014-06-09"/>
-                      <!-- 8.34 PRESCRIPTION NUMBER, Optional-R2 -->
+                      <xsl:comment> 8.34 PRESCRIPTION NUMBER, Optional-R2 </xsl:comment>
                       <id />
                       <statusCode nullFlavor="UNK" />
                       <effectiveTime />
                     </supply>
                   </entryRelationship>
-                  <!-- 8.23 REACTION OBSERVATION Entry, Optional, Not provided by VA 
-                        b/c data not yet available via VA VistA RPCs -->
-                  <!-- CCD PRECONDITION FOR SUBSTANCE ADMINISTRATION ENTRY, Optional, 
-                        Not provided by VA b/c data not yet available via VA VistA RPCs -->
-                  <!--8.25 DOSE INDICATOR, Optional, Not provided by VA b/c data not 
-                        yet available via VA VistA RPCs -->
+                  <xsl:comment> 8.23 REACTION OBSERVATION Entry, Optional, Not provided by VA 
+                        b/c data not yet available via VA VistA RPCs </xsl:comment>
+                  <xsl:comment> CCD PRECONDITION FOR SUBSTANCE ADMINISTRATION ENTRY, Optional, 
+                        Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
+                  <xsl:comment>8.25 DOSE INDICATOR, Optional, Not provided by VA b/c data not 
+                        yet available via VA VistA RPCs </xsl:comment>
                 </substanceAdministration>
               </entry>
             </section>
           </component>
-          <!-- Immunizations section -->
+          <xsl:comment> Immunizations section </xsl:comment>
           <component>
-            <!-- ******************************************************** IMMUNIZATIONS SECTION, Optional ******************************************************** -->
+            <xsl:comment> ******************************************************** IMMUNIZATIONS SECTION, Optional ******************************************************** </xsl:comment>
             <section>
-              <!-- CCD Immunization Section Entries REQUIRED -->
+              <xsl:comment> CCD Immunization Section Entries REQUIRED </xsl:comment>
               <templateId root="2.16.840.1.113883.10.20.22.2.2.1" extension="2015-08-01" />
               <templateId root="2.16.840.1.113883.10.20.22.2.2" />
               <code code="11369-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Immunization"/>
@@ -2375,7 +2387,7 @@
                 <paragraph>
                   <content ID="immsectionTime">Section Date Range: From patient's date of birth to the date document was created.</content>
                 </paragraph>
-                <!-- VA Immunization Business Rules for Medical Content -->
+                <xsl:comment> VA Immunization Business Rules for Medical Content </xsl:comment>
                 <paragraph>This section includes Immunizations on record with VA for the patient. The data comes from all VA treatment facilities. A reaction to an immunization may also be reported in the Allergy section.</paragraph>
                 <table MAP_ID="immunizationNarrative">
                   <thead>
@@ -2407,7 +2419,7 @@
                   </tbody>
                 </table>
               </text>
-              <!-- C-CDA R2.1 Section Time Range, Optional -->
+              <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
               <entry typeCode="DRIV">
                 <observation classCode="OBS" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
@@ -2423,8 +2435,8 @@
                 </observation>
               </entry>
               <entry typeCode='DRIV'>
-                <!-- CCD Immunization Activity Entry, REQUIRED -->
-                <!-- 13.01 IMMUNIZATION REFUSAL (negation ind="true"), REQUIRED -->
+                <xsl:comment> CCD Immunization Activity Entry, REQUIRED </xsl:comment>
+                <xsl:comment> 13.01 IMMUNIZATION REFUSAL (negation ind="true"), REQUIRED </xsl:comment>
                 <substanceAdministration classCode="SBADM" moodCode="EVN" negationInd="false">
                   <templateId root="2.16.840.1.113883.10.20.22.4.52" extension="2015-08-01"/>
                   <id nullFlavor="NA" />
@@ -2433,7 +2445,7 @@
                   </text>
                   <statusCode code="completed" />
                   <effectiveTime />
-                  <!-- C-CDA R2.1 Immunization Medication Series Nbr -->
+                  <xsl:comment> C-CDA R2.1 Immunization Medication Series Nbr </xsl:comment>
                   <repeatNumber />
                   <routeCode codeSystem="2.16.840.1.113883.3.26.1.1" codeSystemName="FDA Route of Administration">
                     <originalText />
@@ -2445,7 +2457,7 @@
                     <manufacturedProduct classCode="MANU">
                       <templateId root="2.16.840.1.113883.10.20.22.4.54" extension="2014-06-09"/>
                       <manufacturedMaterial>
-                        <!-- 13.06 CODED IMMUNIZATION PRODUCT NAME -->
+                        <xsl:comment> 13.06 CODED IMMUNIZATION PRODUCT NAME </xsl:comment>
                         <code codeSystemName="Vaccine Administered (CVX code)" codeSystem="2.16.840.1.113883.6.59">
                           <originalText>
                             <reference />
@@ -2461,29 +2473,29 @@
                   </consumable>
                   <performer>
                     <assignedEntity>
-                      <!-- CCD Provider ID, extension = VA Provider ID, root=VA OID, REQUIRED -->
+                      <xsl:comment> CCD Provider ID, extension = VA Provider ID, root=VA OID, REQUIRED </xsl:comment>
                       <id extension="providerID" root="2.16.840.1.113883.4.349" />
                       <assignedPerson>
-                        <!-- CCD Provider Name, REQUIRED -->
+                        <xsl:comment> CCD Provider Name, REQUIRED </xsl:comment>
                         <name />
                       </assignedPerson>
                     </assignedEntity>
                   </performer>
-                  <!-- INFORMATION SOURCE FOR IMMUNIZATION, Optional -->
+                  <xsl:comment> INFORMATION SOURCE FOR IMMUNIZATION, Optional </xsl:comment>
                   <author>
                     <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                     <time nullFlavor="NA" />
                     <assignedAuthor>
                       <id nullFlavor="NA" />
                       <representedOrganization>
-                        <!-- INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING FACILITY NBR) -->
+                        <xsl:comment> INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING FACILITY NBR) </xsl:comment>
                         <id root="2.16.840.1.113883.4.349" />
-                        <!-- INFORMATION SOURCE FACILITY NAME (facilityName) -->
+                        <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
                         <name />
                       </representedOrganization>
                     </assignedAuthor>
                   </author>
-                  <!-- IMMUNIZATION REACTION -->
+                  <xsl:comment> IMMUNIZATION REACTION </xsl:comment>
                   <entryRelationship typeCode="CAUS" inversionInd="true">
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.9" extension="2014-06-09" />
@@ -2499,23 +2511,23 @@
                       <value nullFlavor="UNK" xsi:type="CD"/>
                     </observation>
                   </entryRelationship>
-                  <!-- 13.10 REFUSAL REASON ENTRY, Optional, VA provides administered immunizations only -->
+                  <xsl:comment> 13.10 REFUSAL REASON ENTRY, Optional, VA provides administered immunizations only </xsl:comment>
                 </substanceAdministration>
               </entry>
             </section>
           </component>
-          <!-- Procedures section -->
+          <xsl:comment> Procedures section </xsl:comment>
           <component>
-            <!-- ******************************************************** PROCEDURES 
-                SECTION ******************************************************** -->
+            <xsl:comment> ******************************************************** PROCEDURES 
+                SECTION ******************************************************** </xsl:comment>
             <section>
-              <!-- CCD Procedures Section Entries REQUIRED -->
+              <xsl:comment> CCD Procedures Section Entries REQUIRED </xsl:comment>
               <templateId root="2.16.840.1.113883.10.20.22.2.7.1" extension="2014-06-09"/>
               <code code="47519-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="History of procedures" />
               <title>Procedures: Surgical Procedures with Notes</title>
-              <!-- PROCEDURE NARRATIVE BLOCK -->
+                <xsl:comment> PROCEDURE NARRATIVE BLOCK </xsl:comment>
               <text>
-                <!-- VA Procedure Business Rules for Medical Content -->
+                <xsl:comment> VA Procedure Business Rules for Medical Content </xsl:comment>
                 <paragraph>
                   <content ID="procedureTime">This section contains a list of Surgical Procedures performed at the VA for the patient, with the associated Surgical Notes on record at the VA for the patient, within the requested date range. If no date range was provided, the lists include data from the last 18 months. The data comes from all VA treatment facilities. Clinical Procedure Notes are provided separately, in a subsequent section.</content>
                 </paragraph>
@@ -2567,7 +2579,7 @@
                     <tr>
                       <td />
                       <td colspan="5">
-                        <!-- Surgical notes begin -->
+                        <xsl:comment> Surgical notes begin </xsl:comment>
                         <paragraph>
                           <content styleCode="Bold">Surgical Notes</content>
                         </paragraph>
@@ -2604,9 +2616,9 @@
                     </tr>
                   </tbody>
                 </table>
-                <!-- Surgical End -->
+                <xsl:comment> Surgical End </xsl:comment>
               </text>
-              <!-- C-CDA R2.1 Section Time Range, Optional -->
+              <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
               <entry typeCode="DRIV" >
                 <observation classCode="OBS" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
@@ -2622,19 +2634,19 @@
                 </observation>
               </entry>
 
-              <!-- PROCEDURE STRUCTURED -->
+              <xsl:comment> PROCEDURE STRUCTURED </xsl:comment>
               <entry typeCode="DRIV">
                 <procedure classCode="PROC" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.14" extension="2014-06-09"/>
                   <id nullFlavor="NI" />
-                  <!-- 17.02-PROCEDURE TYPE, REQUIRED, LOINC, SNOMED CT or CPT, 4 -->
+                  <xsl:comment> 17.02-PROCEDURE TYPE, REQUIRED, LOINC, SNOMED CT or CPT, 4 </xsl:comment>
                   <code nullFlavor="UNK" codeSystem="2.16.840.1.113883.6.12" codeSystemName="CPT-4">
-                    <!-- 17.03 PROCEDURE FREE TEXT TYPE, R2 -->
+                    <xsl:comment> 17.03 PROCEDURE FREE TEXT TYPE, R2 </xsl:comment>
                     <originalText>
                       <reference />
                     </originalText>
                     <translation>
-                      <!-- 17.03 PROCEDURE FREE TEXT TYPE, R2 -->
+                      <xsl:comment> 17.03 PROCEDURE FREE TEXT TYPE, R2 </xsl:comment>
                       <originalText>
                         <reference />
                       </originalText>
@@ -2656,7 +2668,7 @@
                       </assignedPerson>
                     </assignedEntity>
                   </performer>
-                  <!-- INFORMATION SOURCE FOR PROCEDURE ENTRY, Optional -->
+                  <xsl:comment> INFORMATION SOURCE FOR PROCEDURE ENTRY, Optional </xsl:comment>
                   <author>
                     <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                     <time nullFlavor="NA" />
@@ -2678,11 +2690,11 @@
                         <reference />
                       </text>
                       <statusCode code="completed" />
-                      <!-- Clinically relevant time of the note -->
+                      <xsl:comment> Clinically relevant time of the note </xsl:comment>
                       <effectiveTime />
                       <author>
                         <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                        <!-- Time note was actually written -->
+                        <xsl:comment> Time note was actually written </xsl:comment>
                         <time />
                         <assignedAuthor>
                           <id nullFlavor="NI" />
@@ -2703,10 +2715,10 @@
             </section>
           </component>
           <component>
-            <!-- ******************************************************** PLAN OF 
-                CARE SECTION, Optional ******************************************************** -->
+            <xsl:comment> ******************************************************** PLAN OF 
+                CARE SECTION, Optional ******************************************************** </xsl:comment>
             <section>
-              <!-- CCD Plan of Care Section Entries -->
+              <xsl:comment> CCD Plan of Care Section Entries </xsl:comment>
               <templateId root="2.16.840.1.113883.10.20.22.2.10" extension="2014-06-09"/>
               <code code="18776-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Plan of care note" />
               <title>Plan of Treatment: Future Appointments and Active/Pending Orders</title>
@@ -2775,7 +2787,7 @@
                   </tbody>
                 </table>
               </text>
-              <!-- C-CDA R2.1 Section Time Range, Optional -->
+              <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
               <entry typeCode="DRIV" >
                 <observation classCode="OBS" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
@@ -2790,9 +2802,11 @@
                   </value>
                 </observation>
               </entry>
-              <!-- PLAN OF CARE (POC) STRUCTURED DATA -->
-              <!-- CCD Plan of Care (POC) Activity Encounter (Future VA Appointments, 
-                    Future Scheduled Tests, Wellness Reminders), Optional -->
+              <xsl:comment> PLAN OF CARE (POC) STRUCTURED DATA </xsl:comment>
+              <xsl:comment>
+                CCD Plan of Care (POC) Activity Encounter (Future VA Appointments,
+                Future Scheduled Tests, Wellness Reminders), Optional
+              </xsl:comment>
               <entry>
                 <encounter classCode="ENC" moodCode="INT">
                   <templateId root="2.16.840.1.113883.10.20.22.4.40" extension="2014-06-09"/>
@@ -2831,20 +2845,20 @@
             </section>
           </component>
           <component>
-            <!-- ******************************************************** PROBLEM/CONDITION 
-                SECTION, REQUIRED ******************************************************** -->
+            <xsl:comment> ******************************************************** PROBLEM/CONDITION 
+                SECTION, REQUIRED ******************************************************** </xsl:comment>
             <section>
-              <!-- C-CDA Problem Section Template. Entries REQUIRED -->
+              <xsl:comment> C-CDA Problem Section Template. Entries REQUIRED </xsl:comment>
               <templateId root="2.16.840.1.113883.10.20.22.2.5.1" extension="2015-08-01"/>
               <templateId root="2.16.840.1.113883.10.20.22.2.5" />
               <code code="11450-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Problem List" />
               <title>Problems (Conditions): All on record at VA</title>
-              <!-- PROBLEMS NARRATIVE BLOCK -->
+                <xsl:comment> PROBLEMS NARRATIVE BLOCK </xsl:comment>
               <text>
                 <paragraph>
                   <content ID="problemTime" >Section Date Range: From patient's date of birth to the date document was created.</content>
                 </paragraph>
-                <!-- VA Problem/Condition Business Rules for Medical Content -->
+                <xsl:comment> VA Problem/Condition Business Rules for Medical Content </xsl:comment>
                 <paragraph>
                   This section includes a list of Problems (Conditions) known to VA for the patient.
                   It includes both active and inactive problems (conditions). The data comes from all VA treatment facilities.
@@ -2896,7 +2910,7 @@
                   </tbody>
                 </table>
               </text>
-              <!-- C-CDA R2.1 Section Time Range, Optional -->
+              <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
               <entry typeCode="DRIV" >
                 <observation classCode="OBS" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
@@ -2912,33 +2926,33 @@
                   </value>
                 </observation>
               </entry>
-              <!-- PROBLEMS STRUCTURED DATA -->
-              <!-- Problem Concern Activty Entry -->
+              <xsl:comment> PROBLEMS STRUCTURED DATA </xsl:comment>
+              <xsl:comment> Problem Concern Activty Entry </xsl:comment>
               <entry>
                 <act classCode="ACT" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.3" extension="2015-08-01" />
                   <id nullFlavor="NA" />
                   <code code="CONC" codeSystem="2.16.840.1.113883.5.6" codeSystemName="HL7ActClass" displayName="Concern" />
                   <statusCode code="active" />
-                  <!-- C-CDA R2.1 PROBLEM CONCERN DATE,  Date Recorded/Entered, Required -->
-                  <!-- 7.01 PROBLEM DATE, R2 -->
+                  <xsl:comment> C-CDA R2.1 PROBLEM CONCERN DATE,  Date Recorded/Entered, Required </xsl:comment>
+                  <xsl:comment> 7.01 PROBLEM DATE, R2 </xsl:comment>
                   <effectiveTime>
-                    <!-- 7.01 PROBLEM DATE, cda:low=Date of Entry -->
+                    <xsl:comment> 7.01 PROBLEM DATE, cda:low=Date of Entry </xsl:comment>
                     <low />
-                    <!-- 7.01 PROBLEM DATE, cda:high=Date Resolved ? YOU WISH! Always nullFlavor -->
+                      <xsl:comment> 7.01 PROBLEM DATE, cda:high=Date Resolved </xsl:comment>
                     <high nullFlavor="UNK"/>
                   </effectiveTime>
-                  <!-- TREATING PROVIDER Performer Block, Optional -->
+                    <xsl:comment> TREATING PROVIDER Performer Block, Optional </xsl:comment>
                   <performer>
                     <assignedEntity>
-                      <!-- 7.05 TREATING PROVIDER -->
+                   <xsl:comment> 7.05 TREATING PROVIDER </xsl:comment>
                       <id nullFlavor="NI" />
                       <assignedPerson>
                         <name />
                       </assignedPerson>
                     </assignedEntity>
                   </performer>
-                  <!-- INFORMATION SOURCE FOR PROBLEM, Optional -->
+                  <xsl:comment> INFORMATION SOURCE FOR PROBLEM, Optional </xsl:comment>
                   <author>
                     <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                     <time nullFlavor="NA" />
@@ -2946,10 +2960,10 @@
                       <id nullFlavor="NI" />
                       <code nullFlavor="NA" />
                       <representedOrganization>
-                        <!-- INFORMATION SOURCE ID, root=VA OID, extension= VAMC TREATING 
-                                        FACILITY NBR -->
+                        <xsl:comment> INFORMATION SOURCE ID, root=VA OID, extension= VAMC TREATING 
+                                        FACILITY NBR </xsl:comment>
                         <id root="2.16.840.1.113883.4.349" />
-                        <!-- INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME -->
+                        <xsl:comment> INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME </xsl:comment>
                         <name />
                         <telecom nullFlavor="NA" />
                         <addr nullFlavor="NA" />
@@ -2957,41 +2971,41 @@
                     </assignedAuthor>
                   </author>
                   <entryRelationship typeCode="SUBJ">
-                    <!-- CCD Problem Observation -->
+                    <xsl:comment> CCD Problem Observation </xsl:comment>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.4" extension="2015-08-01"/>
                       <id nullFlavor="NI" />
-                      <!-- 7.02 PROBLEM TYPE, REQUIRED, SNOMED CT, provided as nullFlavor 
-                                    b/c data not yet available via VA VistA RPCs -->
+                      <xsl:comment> 7.02 PROBLEM TYPE, REQUIRED, SNOMED CT, provided as nullFlavor 
+                                    b/c data not yet available via VA VistA RPCs </xsl:comment>
                       <code nullFlavor="NA" />
-                      <!-- 7.03 PROBLEM NAME, R2 -->
+                      <xsl:comment> 7.03 PROBLEM NAME, R2 </xsl:comment>
                       <text>
                         <reference value="#pndProblem" />
                       </text>
                       <statusCode code="completed" />
-                      <!-- 7.01 Problem Observation Date -->
+                      <xsl:comment> 7.01 Problem Observation Date </xsl:comment>
                       <effectiveTime>
-                        <!-- Date of onset -->
+                        <xsl:comment> Date of onset </xsl:comment>
                         <low />
-                        <!-- Date of resolution -->
+                        <xsl:comment> Date of resolution </xsl:comment>
                         <high />
                       </effectiveTime>
-                      <!-- 7.04 PROBLEM CODE, Optional, When uncoded only xsi:type="CD" 
-                                    allowed, Available as ICD-9, not SNOMED CT, -->
+                      <xsl:comment> 7.04 PROBLEM CODE, Optional, When uncoded only xsi:type="CD" 
+                                    allowed, Available as ICD-9, not SNOMED CT, </xsl:comment>
                       <value xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
                         <originalText>
                           <reference />
                         </originalText>
                         <translation codeSystem='2.16.840.1.113883.6.103' codeSystemName='ICD-9-CM' />
                       </value>
-                      <!-- PROBLEM STATUS entryRelationship block, Optional, -->
+                      <xsl:comment> PROBLEM STATUS entryRelationship block, Optional, </xsl:comment>
                       <entryRelationship typeCode="SUBJ">
                         <observation classCode="OBS" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.6" />
                           <code code="33999-4" codeSystem="2.16.840.1.113883.6.1"
                                                                                                   codeSystemName="LOINC" displayName="Status" />
                           <statusCode code="completed" />
-                          <!-- PROBLEM STATUS VALUE, Deprecated R2,1 -->
+                          <xsl:comment> PROBLEM STATUS VALUE, Deprecated R2,1 </xsl:comment>
                           <value xsi:type="CE" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" >
                             <originalText>
                               <reference />
@@ -2999,7 +3013,7 @@
                           </value>
                         </observation>
                       </entryRelationship>
-                      <!-- PROBLEM COMMENT (for SSA) entryRelationship block, Optional, -->
+                      <xsl:comment> PROBLEM COMMENT (for SSA) entryRelationship block, Optional, </xsl:comment>
                       <entryRelationship inversionInd="true" typeCode="SUBJ">
                         <act classCode="ACT" moodCode="EVN">
                           <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
@@ -3011,19 +3025,19 @@
                       </entryRelationship>
                     </observation>
                   </entryRelationship>
-                  <!-- CCD Problem Age Observation, not provided b/c data not yet available 
-                            via VA VistA RPCs -->
-                  <!-- CCD Health Status Observation, not provided b/c data not yet 
-                            available via VA VistA RPCs -->
+                  <xsl:comment> CCD Problem Age Observation, not provided b/c data not yet available 
+                            via VA VistA RPCs </xsl:comment>
+                  <xsl:comment> CCD Health Status Observation, not provided b/c data not yet 
+                            available via VA VistA RPCs </xsl:comment>
                 </act>
               </entry>
             </section>
           </component>
           <component>
-            <!-- ******************************************************** RESULTS 
-                SECTION, REQUIRED ******************************************************** -->
+            <xsl:comment> ******************************************************** RESULTS 
+                SECTION, REQUIRED ******************************************************** </xsl:comment>
             <section>
-              <!-- CCD Results Section Entries REQUIRED -->
+              <xsl:comment> CCD Results Section Entries REQUIRED </xsl:comment>
               <templateId root="2.16.840.1.113883.10.20.22.2.3.1" extension="2015-08-01"/>
               <templateId root="2.16.840.1.113883.10.20.22.2.3" />
               <code code="30954-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Relevant diagnostic tests and/or laboratory data" />
@@ -3138,7 +3152,7 @@
                 </observation>
               </entry>
               <entry typeCode='DRIV1'>
-                <!-- CCD Results Organizer = VA Lab Order Panel , REQUIRED -->
+                <xsl:comment> CCD Results Organizer = VA Lab Order Panel , REQUIRED </xsl:comment>
                 <organizer classCode="BATTERY" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.1" extension="2014-06-09" />
                   <id nullFlavor="NI" />
@@ -3166,9 +3180,9 @@
                   <component>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.2" extension="2015-08-01"/>
-                      <!-- 15.01 RESULT ID, REQUIRED -->
+                      <xsl:comment> 15.01 RESULT ID, REQUIRED </xsl:comment>
                       <id root="2.16.840.1.113883.4.349" />
-                      <!-- 15.03-RESULT TYPE, REQUIRED -->
+                      <xsl:comment> 15.03-RESULT TYPE, REQUIRED </xsl:comment>
                       <code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
                         <originalText>
                           <reference />
@@ -3179,22 +3193,22 @@
                         <reference/>
                       </text>
                       <statusCode code="completed" />
-                      <!-- 15.02 RESULT DATE/TIME, REQUIRED -->
+                      <xsl:comment> 15.02 RESULT DATE/TIME, REQUIRED </xsl:comment>
                       <effectiveTime />
-                      <!-- 15.05 RESULT VALUE, REQUIRED, xsi:type="PQ" -->
+                      <xsl:comment> 15.05 RESULT VALUE, REQUIRED, xsi:type="PQ" </xsl:comment>
                       <value xsi:type="PQ">
                         <reference/>
                       </value>
-                      <!-- 15.06 RESULT INTERPRETATION, R2, -->
+                      <xsl:comment> 15.06 RESULT INTERPRETATION, R2, </xsl:comment>
                       <interpretationCode nullFlavor="NAV">
                         <originalText>
                           <reference />
                         </originalText>
                       </interpretationCode>
-                      <!-- CCD METHOD CODE, Optional, Not provided by VA b/c data not 
-                                    yet available via VA VistA RPCs -->
-                      <!-- CCD TARGET SITE CODE, Optional, Not provided by VA b/c data 
-                                    not yet available via VA VistA RPCs -->
+                      <xsl:comment> CCD METHOD CODE, Optional, Not provided by VA b/c data not 
+                                    yet available via VA VistA RPCs </xsl:comment>
+                      <xsl:comment> CCD TARGET SITE CODE, Optional, Not provided by VA b/c data 
+                                    not yet available via VA VistA RPCs </xsl:comment>
                       <author>
                         <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                         <time nullFlavor="NA" />
@@ -3214,7 +3228,7 @@
                           </text>
                         </act>
                       </entryRelationship>
-                      <!-- 15.07 RESULT REFERENCE RANGE, R2, -->
+                      <xsl:comment> 15.07 RESULT REFERENCE RANGE, R2, </xsl:comment>
                       <referenceRange>
                         <observationRange>
                           <text>
@@ -3233,15 +3247,15 @@
             </section>
           </component>
           <component>
-            <!-- ******************************************************** SOCIAL 
-                HISTORY SECTION, Optional ******************************************************** -->
+            <xsl:comment> ******************************************************** SOCIAL 
+                HISTORY SECTION, Optional ******************************************************** </xsl:comment>
             <section>
-              <!-- CCD Social History Section Entries -->
+              <xsl:comment> CCD Social History Section Entries </xsl:comment>
               <templateId root="2.16.840.1.113883.10.20.22.2.17" extension="2015-08-01" />
               <code code="29762-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Social History" />
               <title>Social History: All on record at VA</title>
               <text>
-                <!-- VA Procedure Business Rules for Medical Content -->
+                <xsl:comment> VA Procedure Business Rules for Medical Content </xsl:comment>
                 <paragraph>
                   <content ID="socialHistTime">Section Date Range: From patient's date of birth to the date the document was created.</content>
                 </paragraph>
@@ -3317,7 +3331,7 @@
                   </tbody>
                 </table>
               </text>
-              <!-- C-CDA R2.1 Section Time Range, Optional -->
+              <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
               <entry typeCode="DRIV">
                 <observation classCode="OBS" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
@@ -3338,35 +3352,35 @@
                   <id nullFlavor="NI" />
                   <code code="72166-2" codeSystem="2.16.840.1.113883.6.1" displayName="Tobacco smoking status NHIS" />
                   <statusCode code="completed" />
-                  <!-- CCD Smoking Status Effective Time, R2 -->
+                  <xsl:comment> CCD Smoking Status Effective Time, R2 </xsl:comment>
                   <effectiveTime />
-                  <!-- CCD Smoking Status Value, REQURIED, SNOMED CT -->
+                  <xsl:comment> CCD Smoking Status Value, REQURIED, SNOMED CT </xsl:comment>
                   <value xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" nullFlavor="UNK">
                     <originalText>
                       <reference />
                     </originalText>
                   </value>
-                  <!-- INFORMATION SOURCE FOR SMOKING STATUS, Optional -->
+                  <xsl:comment> INFORMATION SOURCE FOR SMOKING STATUS, Optional </xsl:comment>
                   <author>
                     <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                     <time nullFlavor="UNK" />
                     <assignedAuthor>
                       <id nullFlavor="UNK" />
                       <representedOrganization>
-                        <!-- INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING 
-                                        FACILITY NBR) -->
+                        <xsl:comment> INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING 
+                                        FACILITY NBR) </xsl:comment>
                         <id extension="facilityNumber" root="2.16.840.1.113883.4.349" />
-                        <!-- INFORMATION SOURCE FACILITY NAME (facilityName) -->
+                        <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
                         <name>facilityName</name>
                       </representedOrganization>
                     </assignedAuthor>
                   </author>
-                  <!-- CCD Smoking Status Comment Entry, Optional -->
+                  <xsl:comment> CCD Smoking Status Comment Entry, Optional </xsl:comment>
                   <entryRelationship typeCode="SUBJ" inversionInd="true">
                     <act classCode="ACT" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.64" />
                       <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment" />
-                      <!-- CCD Smoking Status Comment, REQUIRED -->
+                      <xsl:comment> CCD Smoking Status Comment, REQUIRED </xsl:comment>
                       <text>
                         <reference />
                       </text>
@@ -3380,38 +3394,38 @@
                   <id nullFlavor="NI" />
                   <code code="11367-0" codeSystem="2.16.840.1.113883.6.1" displayName="History of tobacco use" />
                   <statusCode code="completed" />
-                  <!-- CCD Smoking Status Effective Time, R2 -->
+                  <xsl:comment> CCD Smoking Status Effective Time, R2 </xsl:comment>
                   <effectiveTime>
                     <low nullFlavor="UNK" />
                     <high nullFlavor="NAV" />
                   </effectiveTime>
-                  <!-- CCD Smoking Status Value, REQURIED, SNOMED CT -->
+                    <xsl:comment> CCD Smoking Status Value, REQURIED, SNOMED CT </xsl:comment>
                   <value xsi:type="CD" nullFlavor="UNK" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
                     <originalText>
                       <reference />
                     </originalText>
                   </value>
-                  <!-- INFORMATION SOURCE FOR SMOKING STATUS, Optional -->
+                      <xsl:comment> INFORMATION SOURCE FOR SMOKING STATUS, Optional </xsl:comment>
                   <author>
                     <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                     <time nullFlavor="UNK" />
                     <assignedAuthor>
                       <id nullFlavor="UNK" />
                       <representedOrganization>
-                        <!-- INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING 
-                                        FACILITY NBR) -->
+                        <xsl:comment> INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING 
+                                        FACILITY NBR) </xsl:comment>
                         <id extension="facilityNumber" root="2.16.840.1.113883.4.349" />
-                        <!-- INFORMATION SOURCE FACILITY NAME (facilityName) -->
+                          <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
                         <name>facilityName</name>
                       </representedOrganization>
                     </assignedAuthor>
                   </author>
-                  <!-- CCD Smoking Status Comment Entry, Optional -->
+                        <xsl:comment> CCD Smoking Status Comment Entry, Optional </xsl:comment>
                   <entryRelationship typeCode="SUBJ" inversionInd="true">
                     <act classCode="ACT" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.64" />
                       <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment" />
-                      <!-- CCD Smoking Status Comment, REQUIRED -->
+                      <xsl:comment> CCD Smoking Status Comment, REQUIRED </xsl:comment>
                       <text>
                         <reference />
                       </text>
@@ -3422,15 +3436,15 @@
             </section>
           </component>
           <component>
-            <!-- ******************************************************** VITAL SIGNS 
-                SECTION, REQUIRED ******************************************************** -->
+            <xsl:comment> ******************************************************** VITAL SIGNS 
+                SECTION, REQUIRED ******************************************************** </xsl:comment>
             <section>
-              <!-- C-CDA CCD VITAL SIGNS Section Template Entries REQUIRED -->
+              <xsl:comment> C-CDA CCD VITAL SIGNS Section Template Entries REQUIRED </xsl:comment>
               <templateId root="2.16.840.1.113883.10.20.22.2.4.1" extension="2015-08-01"/>
               <templateId root="2.16.840.1.113883.10.20.22.2.4" />
               <code code="8716-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Vital Signs" />
               <title>Vital Signs</title>
-              <!-- VITAL SIGNS NARRATIVE BLOCK, REQUIRED -->
+                <xsl:comment> VITAL SIGNS NARRATIVE BLOCK, REQUIRED </xsl:comment>
               <text>
                 <paragraph>
                   <content ID="vitalsTime">
@@ -3486,10 +3500,10 @@
                     </tr>
                   </tbody>
                 </table>
-                <!-- CDA Observation Text as a Reference tag -->
+                <xsl:comment> CDA Observation Text as a Reference tag </xsl:comment>
                 <content ID="vital1" revised='delete'>Vital Sign Observation Text Not Available</content>
               </text>
-              <!-- VITAL SIGNS STRUCTURED DATA -->
+              <xsl:comment>  VITAL SIGNS STRUCTURED DATA </xsl:comment>
               <entry typeCode="DRIV">
                 <observation classCode="OBS" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01" />
@@ -3505,11 +3519,11 @@
                 </observation>
               </entry>
               <entry typeCode='DRIV'>
-                <!-- Vital Signs Organizer Template, REQUIRED -->
+                <xsl:comment>  Vital Signs Organizer Template, REQUIRED </xsl:comment>
                 <organizer classCode="CLUSTER" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.26" extension="2015-08-01"/>
-                  <!-- Vital Sign Organizer ID as nullFlavor b/c data not yet available 
-                            via VA VistA RPCs -->
+                  <xsl:comment>Vital Sign Organizer ID as nullFlavor b/c data not yet available via VA VistA RPCs
+                  </xsl:comment>
                   <id nullFlavor="NA" />
                   <code code="46680005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Vital signs" >
                     <translation code="74728-7" codeSystem="2.16.840.1.113883.6.1" />
@@ -3519,29 +3533,31 @@
                     <low nullFlavor ="UNK"/>
                     <high nullFlavor ="UNK"/>
                   </effectiveTime>
-                  <!-- INFORMATION SOURCE FOR VITAL SIGN ORGANIZER/PANEL, Optional -->
-                  <author>
+                  <xsl:comment>
+                    INFORMATION SOURCE FOR VITAL SIGN ORGANIZER/PANEL, Optional </xsl:comment>
+                    <author>
                     <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                     <time nullFlavor="NA" />
                     <assignedAuthor>
                       <id nullFlavor="NI" />
                       <representedOrganization>
-                        <!-- INFORMATION SOURCE ID, root=VA OID, extension= VAMC TREATING 
-                                        FACILITY NBR -->
-                        <id root="2.16.840.1.113883.4.349" />
-                        <!-- INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME -->
-                        <name />
+                        <xsl:comment>
+                          INFORMATION SOURCE ID, root=VA OID, extension= VAMC TREATING
+                          FACILITY NBR </xsl:comment>
+                          <id root="2.16.840.1.113883.4.349" />
+                          <xsl:comment>INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME </xsl:comment>
+                            <name />
                       </representedOrganization>
                     </assignedAuthor>
                   </author>
-                  <!-- One component block for each Vital Sign -->
-                  <component>
+                  <xsl:comment>One component block for each Vital Sign </xsl:comment>
+                      <component>
                     <observation classCode="OBS" moodCode="EVN">
                       <templateId root="2.16.840.1.113883.10.20.22.4.27" extension="2014-06-09"/>
-                      <!-- 14.01-VITAL SIGN RESULT ID, REQUIRED -->
-                      <id root="2.16.840.1.113883.4.349" extension="vitalID"/>
-                      <!-- 14.03-VITAL SIGN RESULT TYPE, REQUIRED, LOINC -->
-                      <code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+                    <xsl:comment>14.01-VITAL SIGN RESULT ID, REQUIRED </xsl:comment>
+                        <id root="2.16.840.1.113883.4.349" extension="vitalID"/>
+                    <xsl:comment>14.03-VITAL SIGN RESULT TYPE, REQUIRED, LOINC </xsl:comment>
+                        <code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
                         <originalText>
                           <reference />
                         </originalText>
@@ -3550,24 +3566,24 @@
                       <text>
                         <reference />
                       </text>
-                      <!-- 14.04-VITAL SIGN RESULT STATUS, REQUIRED, Static value of completed -->
+                      <xsl:comment> 14.04-VITAL SIGN RESULT STATUS, REQUIRED, Static value of completed </xsl:comment>
                       <statusCode code="completed" />
-                      <!-- 14.02-VITAL SIGN RESULT DATE/TIME, REQURIED -->
+                      <xsl:comment> 14.02-VITAL SIGN RESULT DATE/TIME, REQURIED </xsl:comment>
                       <effectiveTime nullFlavor="UNK" />
-                      <!-- 14.05-VITAL SIGN RESULT VALUE, CONDITIONALLY REQUIRED when 
-                                    moodCode=EVN -->
-                      <!-- 14.05-VITAL SIGN RESULT VALUE with Unit of Measure -->
+                      <xsl:comment> 14.05-VITAL SIGN RESULT VALUE, CONDITIONALLY REQUIRED when 
+                                    moodCode=EVN </xsl:comment>
+                      <xsl:comment> 14.05-VITAL SIGN RESULT VALUE with Unit of Measure </xsl:comment>
                       <value xsi:type="PQ" >
                         <translation code="vaUnit"  codeSystem="2.16.840.1.113883.4.349" codeSystemName="Department of Veterans Affairs VistA" displayName="vaUnit"/>
                       </value>
                       <interpretationCode nullFlavor="NI" />
-                      <!-- 14.06-VITAL SIGN RESULT INTERPRETATION, Optional, HL7 Result 
-                                    Normalcy Status Value Set -->
-                      <!-- 14.06-VITAL SIGN RESULT INTERPRETATION, Removed b/c data not 
-                                    yet available via VA VistA RPCs -->
-                      <!-- 14.07-VITAL SIGN RESULT REFERENCE RANGE, Optional, -->
-                      <!-- 14.07-VITAL SIGN RESULT REFERENCE RANGE, Removed b/c data not 
-                                    yet available via VA VistA RPCs -->
+                      <xsl:comment> 14.06-VITAL SIGN RESULT INTERPRETATION, Optional, HL7 Result 
+                                    Normalcy Status Value Set </xsl:comment>
+                      <xsl:comment> 14.06-VITAL SIGN RESULT INTERPRETATION, Removed b/c data not 
+                                    yet available via VA VistA RPCs </xsl:comment>
+                      <xsl:comment> 14.07-VITAL SIGN RESULT REFERENCE RANGE, Optional, </xsl:comment>
+                      <xsl:comment> 14.07-VITAL SIGN RESULT REFERENCE RANGE, Removed b/c data not 
+                                    yet available via VA VistA RPCs </xsl:comment>
                       <methodCode nullFlavor="UNK">
                         <originalText/>
                       </methodCode>
@@ -3581,19 +3597,19 @@
             </section>
           </component>
 
-          <!-- ************************* STANDALONE NOTE SECTIONS BELOW *************** -->
+          <xsl:comment> ************************* STANDALONE NOTE SECTIONS BELOW *************** </xsl:comment>
           <component>
-            <!--Consultation Notes -->
+            <xsl:comment>Consultation Notes </xsl:comment>
             <section>
               <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01" />
               <code code="11488-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Consultation Note" />
               <title>Consult Notes</title>
               <text>
-                <!-- Start Consult Notes Narrative -->
+                <xsl:comment> Start Consult Notes Narrative </xsl:comment>
                 <paragraph MAP_ID="ConsultNotesSectionTitle">
                   <content styleCode="Bold">Consult Notes</content>
                 </paragraph>
-                <!-- Consult notes begin -->
+                  <xsl:comment> Consult notes begin </xsl:comment>
                 <paragraph MAP_ID="conTitle">
                   The list of Consult Notes with complete text includes all notes within the requested date range. If no date range was provided, the list of Consult Notes with complete text includes the 5 most recent notes within the last 18 months. The data comes from all VA treatment facilities.
                 </paragraph>
@@ -3623,7 +3639,7 @@
                     </tr>
                   </tbody>
                 </table>
-                <!-- Condensed Consult notes begin title only -->
+                <xsl:comment> Condensed Consult notes begin title only </xsl:comment>
                 <paragraph MAP_ID="conTitle2">
                   The list of ADDITIONAL Consult Note TITLES includes all notes signed within the last 18 months. The data comes from all VA treatment facilities.
                 </paragraph>
@@ -3653,10 +3669,10 @@
                     </tr>
                   </tbody>
                 </table>
-                <!-- Stop Consult Notes Narrative -->
+                <xsl:comment> Stop Consult Notes Narrative </xsl:comment>
               </text>
               <entry>
-                <!--Note Activity Entry -->
+                <xsl:comment>Note Activity Entry </xsl:comment>
                 <act classCode="ACT" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
                   <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
@@ -3666,11 +3682,11 @@
                     <reference />
                   </text>
                   <statusCode code="completed" />
-                  <!--Clinically relevant time of the note -->
+                  <xsl:comment>Clinically relevant time of the note </xsl:comment>
                   <effectiveTime />
                   <author>
                     <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <!--Time note was actually written-->
+                    <xsl:comment>Time note was actually written</xsl:comment>
                     <time />
                     <assignedAuthor>
                       <id nullFlavor="NI" />
@@ -3694,17 +3710,17 @@
             </section>
           </component>
           <component>
-            <!--History and Physical Notes-->
+            <xsl:comment>History and Physical Notes</xsl:comment>
             <section>
               <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01" />
               <code code="34117-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="HandP Note" />
               <title>History and Physical Notes</title>
               <text>
-                <!-- Start H&P Notes Narrative-->
+                <xsl:comment> Start H&amp;P Notes Narrative</xsl:comment>
                 <paragraph MAP_ID="HandPNotesSectionTitle">
                   <content styleCode="Bold">History &amp; Physical Notes</content>
                 </paragraph>
-                <!-- history and physical notes begin -->
+                <xsl:comment> history and physical notes begin </xsl:comment>
                 <paragraph MAP_ID="hnpTitle">
                   The list of H &amp; P Notes with complete text includes all notes within the requested date range. If no date range was provided, the list of H &amp; P Notes with complete text includes the 2 most recent notes within the last 18 months. The data comes from all VA treatment facilities.
                 </paragraph>
@@ -3734,7 +3750,7 @@
                     </tr>
                   </tbody>
                 </table>
-                <!-- history and physical notes titles only begin -->
+                <xsl:comment> history and physical notes titles only begin </xsl:comment>
                 <paragraph MAP_ID="hnpTitle2">
                   The list of ADDITIONAL H &amp; P Note TITLES includes all notes signed within the last 18 months. The data comes from all VA treatment facilities.
                 </paragraph>
@@ -3766,7 +3782,7 @@
                 </table>
               </text>
               <entry>
-                <!--Note Activity Entry-->
+                <xsl:comment>Note Activity Entry</xsl:comment>
                 <act classCode="ACT" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
                   <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
@@ -3776,11 +3792,11 @@
                     <reference />
                   </text>
                   <statusCode code="completed" />
-                  <!--Clinically relevant time of the note-->
+                  <xsl:comment>Clinically relevant time of the note</xsl:comment>
                   <effectiveTime />
                   <author>
                     <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <!--Time note was actually written-->
+                    <xsl:comment>Time note was actually written</xsl:comment>
                     <time />
                     <assignedAuthor>
                       <id nullFlavor="NI" />
@@ -3804,7 +3820,7 @@
             </section>
           </component>
           <component>
-            <!-- Discharge Summaries Section -->
+            <xsl:comment> Discharge Summaries Section </xsl:comment>
             <section>
               <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01" />
               <code code="18842-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Discharge Note" />
@@ -3813,7 +3829,7 @@
                 <paragraph MAP_ID="DischargeSumSectionTitle">
                   <content styleCode="Bold">Discharge Summaries</content>
                 </paragraph>
-                <!-- Discharge summary notes begin -->
+                <xsl:comment> Discharge summary notes begin </xsl:comment>
                 <paragraph MAP_ID="disTitle">
                   The list of Discharge Summaries with complete text includes all summaries within the requested date range. If no date range was provided, the list of Discharge Summaries includes the 2 most recent summaries within the last 18 months. The data comes from all VA treatment facilities.
                 </paragraph>
@@ -3843,7 +3859,7 @@
                     </tr>
                   </tbody>
                 </table>
-                <!-- Discharge summary titles only notes begin  -->
+                <xsl:comment> Discharge summary titles only notes begin  </xsl:comment>
                 <paragraph MAP_ID="disTitle2">
                   The list of ADDITIONAL Discharge Summary TITLES includes all summaries signed within the last 18 months. The data comes from all VA treatment facilities.
                 </paragraph>
@@ -3875,7 +3891,7 @@
                 </table>
               </text>
               <entry>
-                <!--Note Activity Entry-->
+                <xsl:comment>Note Activity Entry</xsl:comment>
                 <act classCode="ACT" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
                   <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
@@ -3885,11 +3901,11 @@
                     <reference />
                   </text>
                   <statusCode code="completed" />
-                  <!--Clinically relevant time of the note-->
+                  <xsl:comment>Clinically relevant time of the note</xsl:comment>
                   <effectiveTime />
                   <author>
                     <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <!--Time note was actually written-->
+                    <xsl:comment>Time note was actually written</xsl:comment>
                     <time />
                     <assignedAuthor>
                       <id nullFlavor="NI" />
@@ -3913,7 +3929,7 @@
             </section>
           </component>
           <component MAP_ID="RADPATH">
-            <!--Radiology Studies-->
+            <xsl:comment>Radiology Studies</xsl:comment>
             <section>
               <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01"/>
               <code code="18726-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Radiology Reports"/>
@@ -3953,7 +3969,7 @@
                 </table>
               </text>
               <entry typeCode='DRIV'>
-                <!--Note Activity Entry-->
+                <xsl:comment>Note Activity Entry</xsl:comment>
                 <act classCode="ACT" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
                   <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
@@ -3963,11 +3979,11 @@
                     <reference />
                   </text>
                   <statusCode code="completed" />
-                  <!--Clinically relevant time of the note-->
+                  <xsl:comment>Clinically relevant time of the note</xsl:comment>
                   <effectiveTime />
                   <author>
                     <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <!--Time note was actually written-->
+                    <xsl:comment>Time note was actually written</xsl:comment>
                     <time />
                     <assignedAuthor>
                       <id nullFlavor="NI" />
@@ -3991,7 +4007,7 @@
             </section>
           </component>
           <component MAP_ID="RADPATH">
-            <!--Pathology Studies-->
+            <xsl:comment>Pathology Studies</xsl:comment>
             <section>
               <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01"/>
               <code code="27898-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Pathology Reports"/>
@@ -4030,7 +4046,7 @@
                 </table>
               </text>
               <entry typeCode='DRIV'>
-                <!--Note Activity Entry-->
+                <xsl:comment>Note Activity Entry</xsl:comment>
                 <act classCode="ACT" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
                   <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
@@ -4040,11 +4056,11 @@
                     <reference />
                   </text>
                   <statusCode code="completed" />
-                  <!--Clinically relevant time of the note-->
+                  <xsl:comment>Clinically relevant time of the note</xsl:comment>
                   <effectiveTime />
                   <author>
                     <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <!--Time note was actually written-->
+                    <xsl:comment>Time note was actually written</xsl:comment>
                     <time />
                     <assignedAuthor>
                       <id nullFlavor="NI" />
@@ -4068,7 +4084,7 @@
             </section>
           </component>
           <component MAP_ID="ClinProcNotes">
-            <!-- Clinical Procedure Notes -->
+            <xsl:comment> Clinical Procedure Notes </xsl:comment>
             <section>
               <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01" />
               <code code="28570-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Procedure Note" />
@@ -4107,7 +4123,7 @@
                   </tbody>
                 </table>
 
-                <!-- Additional Clinical Procedure Notes -->
+                <xsl:comment> Additional Clinical Procedure Notes </xsl:comment>
                 <paragraph MAP_ID="clinPNotesTitle2" styleCode="Bold">Additional Clinical Procedure Notes</paragraph>
                 <paragraph MAP_ID="clinPNotesTitleNote2">
                   The list of ADDITIONAL Clinical Procedure Note TITLES includes all notes signed within the last 18 months. The data comes from all VA treatment facilities.
@@ -4153,7 +4169,7 @@
                   </value>
                 </observation>
               </entry>
-              <!-- Note Entry -->
+              <xsl:comment> Note Entry </xsl:comment>
               <entry>
                 <act classCode="ACT" moodCode="EVN">
                   <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
@@ -4164,11 +4180,11 @@
                     <reference />
                   </text>
                   <statusCode code="completed" />
-                  <!-- Clinically relevant time of the note -->
+                  <xsl:comment> Clinically relevant time of the note </xsl:comment>
                   <effectiveTime />
                   <author>
                     <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <!-- Time note was actually written -->
+                    <xsl:comment> Time note was actually written </xsl:comment>
                     <time />
                     <assignedAuthor>
                       <id nullFlavor="NI" />
@@ -4276,25 +4292,24 @@
   </xsl:template>
   <xsl:template match="SupportContact" mode="header-participant">
     <participant typeCode="IND">
-        <!-- 3.01 DATE, REQUIRED -->
-        <!-- 3.01 DATE date as nullFlavor b/c data not yet available via VA VistA 
-        RPCs -->
-        <time nullFlavor="UNK" />
-        <!-- 3.02 CONTACT TYPE, REQUIRED, classCode value determined by VistA value 
-        in contactType -->
+      <xsl:comment> 3.01 DATE, REQUIRED </xsl:comment>
+      <xsl:comment>3.01 DATE date as nullFlavor b/c data not yet available via VA VistA RPCs
+      </xsl:comment>
+      <time nullFlavor="UNK" />
+      <xsl:comment> 3.02 CONTACT TYPE, REQUIRED, classCode value determined by VistA value in contactType </xsl:comment>
         <associatedEntity classCode="{ContactType/Code/text()}">
           <code codeSystem='2.16.840.1.113883.5.111' codeSystemName='{isc:evaluate("getCodeForOID","2.16.840.1.113883.5.111","","2.16.840.1.113883.5.111")}' nullFlavor='NA'>
             <originalText><xsl:value-of select='Relationship/Code/text()' /></originalText>
           </code>
-          <!-- 3.04 CONTACT Addresss, Home Permanent, Optional-R2 -->
+          <xsl:comment> 3.04 CONTACT Addresss, Home Permanent, Optional-R2 </xsl:comment>
           <xsl:apply-templates select='.' mode='standard-address'>
             <xsl:with-param name='use'>HP</xsl:with-param>
           </xsl:apply-templates>
-          <!-- 3.05 CONTACT PHONE/EMAIL/URL, Optional-R2, Removed b/c data not yet 
-            available via VA VistA RPCs -->
+          <xsl:comment> 3.05 CONTACT PHONE/EMAIL/URL, Optional-R2, Removed b/c data not yet 
+            available via VA VistA RPCs </xsl:comment>
           <xsl:apply-templates select='.' mode='standard-contact-info' />
           <associatedPerson>
-            <!-- 3.06 CONTACT NAME, REQUIRED -->
+            <xsl:comment> 3.06 CONTACT NAME, REQUIRED </xsl:comment>
             <xsl:apply-templates select='Name' mode='standard-name' />
           </associatedPerson>
         </associatedEntity>
@@ -4303,8 +4318,8 @@
   <xsl:template match='CareTeamMember' mode='header-careteammembers' >
     <xsl:param name="number" />
     <performer typeCode="PRF">
-      <!-- ****** PRIMARY HEALTHCARE PROVIDER MODULE, Optional ********* -->
-      <!-- 4.02 PROVIDER ROLE CODED, optional -->
+      <xsl:comment> ****** PRIMARY HEALTHCARE PROVIDER MODULE, Optional ********* </xsl:comment>
+      <xsl:comment> 4.02 PROVIDER ROLE CODED, optional </xsl:comment>
       <templateId root="2.16.840.1.113883.10.20.6.2.1" extension="2014-06-09" />
       <xsl:choose>
         <xsl:when test="$number=1">
@@ -4319,10 +4334,10 @@
         </xsl:otherwise>
       </xsl:choose>
       <assignedEntity>
-        <!-- Provider ID from Problems Module (7.05Treating Provider ID) -->
+        <xsl:comment> Provider ID from Problems Module (7.05Treating Provider ID) </xsl:comment>
         <!-- <id extension="providerN" root="2.16.840.1.113883.4.349" /> -->
         <id nullFlavor="NI"/>
-        <!--4.04 PROVIDER TYPE, optional, NUCC -->
+          <xsl:comment>4.04 PROVIDER TYPE, optional, NUCC </xsl:comment>
         <xsl:choose>
           <xsl:when test="boolean(CareProviderType)">
             <code code="{CareProviderType/Code/text()}" codeSystem="2.16.840.1.113883.6.101" codeSystemName="NUCC" displayName="{CareProviderType/Description/text()}">
@@ -4336,24 +4351,24 @@
           </xsl:otherwise>
         </xsl:choose>
 
-        <!-- Address Required for assignedEntity -->
+        <xsl:comment> Address Required for assignedEntity </xsl:comment>
         <xsl:apply-templates select="." mode="standard-address">
           <xsl:with-param name="use">WP</xsl:with-param>
         </xsl:apply-templates>
-        <!-- Telecom Required for iassignedEntity, but VA VistA data not yet available -->
+        <xsl:comment> Telecom Required for iassignedEntity, but VA VistA data not yet available </xsl:comment>
         <xsl:apply-templates select="." mode="standard-contact-info" />
-        <!-- 4.07-PROVIDER NAME, REQUIRED -->
+        <xsl:comment> 4.07-PROVIDER NAME, REQUIRED </xsl:comment>
         <assignedPerson>
           <xsl:apply-templates select="Name" mode="standard-name" />
         </assignedPerson>
         <representedOrganization>
-          <!-- INFORMATION SOURCE FOR FACILITY ID=VA OID, EXT= VAMC TREATING FACILITY NBR -->
+          <xsl:comment> INFORMATION SOURCE FOR FACILITY ID=VA OID, EXT= VAMC TREATING FACILITY NBR </xsl:comment>
           <id nullFlavor="UNK" />
-          <!-- INFORMATION SOURCE FACILITY NAME (facilityName) -->
+          <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
           <name nullFlavor="UNK" />
-          <!-- Telecom Required for representedOrganization, but VA VistA data not yet available -->
+          <xsl:comment> Telecom Required for representedOrganization, but VA VistA data not yet available </xsl:comment>
           <telecom nullFlavor="UNK" />
-          <!-- Address Required for representedOrganization, but VA VistA data not yet available -->
+          <xsl:comment> Address Required for representedOrganization, but VA VistA data not yet available </xsl:comment>
           <addr nullFlavor="UNK" />
         </representedOrganization>
       </assignedEntity>
