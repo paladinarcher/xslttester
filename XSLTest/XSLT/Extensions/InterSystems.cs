@@ -730,7 +730,7 @@ namespace XSLTest.XSLT.Extensions
 
             private string xmltimestamp(string code, string system, string def)
             {
-                DateTime d = DateTime.ParseExact(code, "yyyyMMddHHmm", System.Globalization.CultureInfo.InvariantCulture);
+                DateTime d = DateTime.ParseExact(code, "yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
                 return d.ToString("yyyy-MM-ddTHH:mm:ssZ");
             }
         }
