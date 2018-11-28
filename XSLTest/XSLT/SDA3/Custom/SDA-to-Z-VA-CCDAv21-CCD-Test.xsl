@@ -258,321 +258,404 @@
           <component>
             <!-- ********************************************************************************** 
                 INSURANCE PROVIDERS (PAYERS) SECTION, Optional ********************************************************************************** -->
-            <section>
-              <templateId root="2.16.840.1.113883.10.20.22.2.18" extension = "2015-08-01"/>
-              <code code="48768-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Payment sources" />
-              <title>Insurance Providers: All on record at VA</title>
-              <!-- PAYERS NARRATIVE BLOCK -->
-              <text>
-                <paragraph>
-                  <content ID="payersTime">Section Date Range: From patient's date of birth to the date document was created.</content>
-                </paragraph>
-                <!-- VA Insurance Providers Business Rules for Medical Content -->
-                <paragraph>This section includes the names of all active insurance providers for the patient.</paragraph>
-                <table MAP_ID="insuranceNarrative">
-                  <thead>
-                    <tr>
-                      <th>Insurance Provider</th>
-                      <th>Type of Coverage</th>
-                      <th>Plan Name</th>
-                      <th>Start of Policy Coverage</th>
-                      <th>End of Policy Coverage</th>
-                      <th>Group Number</th>
-                      <th>Member ID</th>
-                      <th>Insurance Provider's Telephone Number</th>
-                      <th>Policy Holder's Name</th>
-                      <th>Patient's Relationship to Policy Holder</th>
-                    </tr>
-
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <content ID="insCompany" />
-                      </td>
-                      <td>
-                        <content ID="insInsurance" />
-                      </td>
-                      <td>
-                        <content ID="insGroupName" />
-                      </td>
-
-
-                      <td>
-                        <content ID="insEffectiveDate" />
-                      </td>
-                      <td>
-                        <content ID="insExpirationDate" />
-                      </td>
-
-                      <td>
-                        <content ID="insGroup" />
-                      </td>
-                      <td>
-                        <content ID="insMemberId" />
-                      </td>
-                      <td>
-                        <content />
-                      </td>
-                      <td>
-                        <content ID="insMemberName" />
-                      </td>
-
-                      <td>
-                        <content ID="insRelationship" />
-                      </td>
-
-                    </tr>
-                  </tbody>
-                </table>
-              </text>
-              <!-- C-CDA R2.1 Section Time Range, Optional -->
-              <entry typeCode="DRIV" >
-                <observation classCode="OBS" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
-                  <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range"/>
+            <xsl:choose>
+              <xsl:when test="not(boolean(MemberEnrollments/MemberEnrollment))">
+                <section nullFlavor="NI">
+                  <templateId root="2.16.840.1.113883.10.20.22.2.18" extension = "2015-08-01"/>
+                  <code code="48768-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Payment sources" />
+                  <title>Insurance Providers: All on record at VA</title>
+                  <text>No Data Provided for This Section</text>
+                </section>
+              </xsl:when>
+              <xsl:otherwise>
+                <section>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.18" extension = "2015-08-01"/>
+                  <code code="48768-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Payment sources" />
+                  <title>Insurance Providers: All on record at VA</title>
+                  <!-- PAYERS NARRATIVE BLOCK -->
                   <text>
-                    <reference value="#payersTime" />
+                    <paragraph>
+                      <content ID="payersTime">Section Date Range: From patient's date of birth to the date document was created.</content>
+                    </paragraph>
+                    <!-- VA Insurance Providers Business Rules for Medical Content -->
+                    <paragraph>This section includes the names of all active insurance providers for the patient.</paragraph>
+                    <table MAP_ID="insuranceNarrative">
+                      <thead>
+                        <tr>
+                          <th>Insurance Provider</th>
+                          <th>Type of Coverage</th>
+                          <th>Plan Name</th>
+                          <th>Start of Policy Coverage</th>
+                          <th>End of Policy Coverage</th>
+                          <th>Group Number</th>
+                          <th>Member ID</th>
+                          <th>Insurance Provider's Telephone Number</th>
+                          <th>Policy Holder's Name</th>
+                          <th>Patient's Relationship to Policy Holder</th>
+                        </tr>
+
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="MemberEnrollments/MemberEnrollment">
+                          <tr>
+                            <td>
+                              <content>
+                                <xsl:attribute name="ID"><xsl:value-of select="concat('insCompany',position())" /></xsl:attribute>
+                                <xsl:value-of select="HealthFund/HealthFund/Description/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content>
+                                <xsl:attribute name="ID"><xsl:value-of select="concat('insInsurance',position())" /></xsl:attribute>
+                                <xsl:value-of select="InsuranceTypeOrProductCode/Code/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content>
+                                <xsl:attribute name="ID"><xsl:value-of select="concat('insGroupName',position())" /></xsl:attribute>
+                                <xsl:value-of select="HealthFund/GroupName/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content>
+                                <xsl:attribute name="ID"><xsl:value-of select="concat('insEffectiveDate',position())" /></xsl:attribute>
+                                <xsl:value-of select="HealthFund/FromTime/text()" /> <!-- TODO? Pretty print? -->
+                              </content>
+                            </td>
+                            <td>
+                              <content>
+                                <xsl:attribute name="ID"><xsl:value-of select="concat('insExpirationDate',position())" /></xsl:attribute>
+                                <xsl:value-of select="HealthFund/ExpDate/text()" /><!-- TODO: Need to know where exp date gets mapped into SDA, don't have it in test data-->
+                              </content>
+                            </td>
+
+                            <td>
+                              <content>
+                                <xsl:attribute name="ID"><xsl:value-of select="concat('insGroup',position())" /></xsl:attribute>
+                                <xsl:value-of select="HealthFund/GroupNumber/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content>
+                                <xsl:attribute name="ID"><xsl:value-of select="concat('insMemberId',position())" /></xsl:attribute>
+                                <xsl:value-of select="HealthFund/MembershipNumber/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content>
+                                <xsl:value-of select="HealthFund/HealthFund/ContactInfo/WorkPhoneNumber/text()" /><!-- TODO: remove, just testing -->
+                              </content>
+                            </td>
+                            <td>
+                              <content>
+                                <xsl:attribute name="ID"><xsl:value-of select="concat('insMemberName',position())" /></xsl:attribute>
+                                <xsl:value-of select="concat(HealthFund/InsuredName/FamilyName/text(), ',', HealthFund/InsuredName/GivenName/text())" />
+                              </content>
+                            </td>
+
+                            <td>
+                              <content>
+                                <xsl:attribute name="ID"><xsl:value-of select="concat('insRelationship',position())" /></xsl:attribute>
+                                <xsl:value-of select="HealthFund/InsuredRelationship/Description/text()" />
+                              </content>
+                            </td>
+
+                          </tr>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
                   </text>
-                  <statusCode code="completed"/>
-                  <value xsi:type="IVL_TS">
-                    <low value="{$patientBirthDate}" />
-                    <high value="{$documentCreatedOn}" />
-                  </value>
-                </observation>
-              </entry >
-              <!-- PAYERS STRUCTURED DATA -->
-              <!-- CCD Coverage Activity -->
-              <entry typeCode="DRIV">
-                <act classCode="ACT" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.60" extension="2015-08-01"/>
-                  <id nullFlavor="NA" />
-                  <code code="48768-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Payment Sources" />
-                  <statusCode code="completed" />
-                  <!-- CCD Payment Provider Event Entry -->
-                  <entryRelationship typeCode="COMP">
-                    <act classCode="ACT" moodCode="EVN">
-                      <templateId root="2.16.840.1.113883.10.20.22.4.61" extension = "2015-08-01" />
-                      <!-- 5.01 GROUP NUMBER, REQUIRED -->
-                      <id extension="groupNbr" root="2.16.840.1.113883.4.349" />
-                      <!-- 5.02 HEALTH INSURANCE TYPE, REQURIED -->
-                      <code codeSystem="2.16.840.1.113883.6.255.1336" codeSystemName="X12N-1336" >
-                        <originalText />
-                      </code>
-                      <statusCode code="completed" />
-                      <performer typeCode="PRF">
-                        <templateId root="2.16.840.1.113883.10.20.22.4.87" />
-                        <!-- 5.07 - Health Plan Coverage Dates, R2-Optional  -->
-                        <time>
-                          <!-- 5.07 VistA Policy Effective Date -->
-                          <low />
-                          <!-- 5.07 VistA Policy Expiration  Date -->
-                          <high />
-                        </time>
-                        <!-- CCD Payer Info -->
-                        <assignedEntity>
-                          <id nullFlavor="NA" />
-                          <!-- 5.03 HEALTH PLAN INSURANCE INFO SOURCE ID, REQUIRED -->
-                          <!-- 5.04 HEALTH PLAN INSURANCE INFO SOURCE ADDRESS, Optional -->
-                          <addr>
-                            <streetAddressLine />
-                            <streetAddressLine />
-                            <city />
-                            <state />
-                            <postalCode />
-                          </addr>
-                          <!-- 5.05 HEALTH PLAN INSURANCE INFO SOURCE PHONE/EMAIL/URL, Optional -->
-                          <telecom />
-                          <representedOrganization>
-                            <!-- 5.06 HEALTH PLAN INSURANCE INFO SOURCE NAME ( Insurance 
+                  <!-- C-CDA R2.1 Section Time Range, Optional -->
+                  <entry typeCode="DRIV" >
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
+                      <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range"/>
+                      <text>
+                        <reference value="#payersTime" />
+                      </text>
+                      <statusCode code="completed"/>
+                      <value xsi:type="IVL_TS">
+                        <low value="{$patientBirthDate}" />
+                        <high value="{$documentCreatedOn}" />
+                      </value>
+                    </observation>
+                  </entry >
+                  <!-- PAYERS STRUCTURED DATA -->
+                  <xsl:for-each select="MemberEnrollments/MemberEnrollment">
+                    <!-- CCD Coverage Activity -->
+                    <entry typeCode="DRIV">
+                      <act classCode="ACT" moodCode="EVN">
+                        <templateId root="2.16.840.1.113883.10.20.22.4.60" extension="2015-08-01"/>
+                        <id nullFlavor="NA" />
+                        <code code="48768-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Payment Sources" />
+                        <statusCode code="completed" />
+                        <!-- CCD Payment Provider Event Entry -->
+                        <entryRelationship typeCode="COMP">
+                          <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.22.4.61" extension = "2015-08-01" />
+                            <!-- 5.01 GROUP NUMBER, REQUIRED -->
+                            <id extension="{HealthFund/GroupNumber/text()}" root="2.16.840.1.113883.4.349" />
+                            <!-- 5.02 HEALTH INSURANCE TYPE, REQURIED -->
+                            <code codeSystem="2.16.840.1.113883.6.255.1336" codeSystemName="X12N-1336" > <!-- TODO: Determine where the VETS translated code goes -->
+                              <originalText />
+                            </code>
+                            <statusCode code="completed" />
+                            <!-- 5.07 - Health Plan Coverage Dates, R2-Optional  -->
+                            <effectiveTime>
+                              <!-- 5.07 VistA Policy Effective Date -->
+                              <low value="{HealthFund/FromTime/text()}"/>
+                              <!-- 5.07 VistA Policy Expiration  Date -->
+                              <xsl:choose>
+                                <xsl:when test="boolean(HealthFund/ExpTime)"> <!-- TODO: Where is the exp date really? -->
+                                  <high value="{HealthFund/ExpTime/text()}" />
+                                </xsl:when>
+                                <xsl:otherwise>
+                                  <high nullFlavor="NA" />                                  
+                                </xsl:otherwise>                                
+                              </xsl:choose>
+                            </effectiveTime>
+                            <performer typeCode="PRF">
+                              <templateId root="2.16.840.1.113883.10.20.22.4.87" />
+                              <!-- CCD Payer Info -->
+                              <assignedEntity>
+                                <id nullFlavor="NI" />
+                                <!-- 5.03 HEALTH PLAN INSURANCE INFO SOURCE ID, REQUIRED -->
+                                <!-- 5.04 HEALTH PLAN INSURANCE INFO SOURCE ADDRESS, Optional -->
+                                <xsl:apply-templates select="HealthFund/HealthFund" mode="standard-address" >
+                                  <xsl:with-param name="use">WP</xsl:with-param>
+                                </xsl:apply-templates>
+                                <!-- 5.05 HEALTH PLAN INSURANCE INFO SOURCE PHONE/EMAIL/URL, Optional -->
+                                <xsl:apply-templates select="HealthFund/HealthFund" mode="standard-contact-info" />
+                                <representedOrganization>
+                                  <!-- 5.06 HEALTH PLAN INSURANCE INFO SOURCE NAME ( Insurance 
                                                 Company Name), R2 -->
-                            <name />
-                          </representedOrganization>
-                        </assignedEntity>
-                      </performer>
-                      <author>
-                        <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                        <time nullFlavor="NA" />
-                        <assignedAuthor>
-                          <id nullFlavor="NI" />
-                          <representedOrganization>
-                            <id root="2.16.840.1.113883.4.349" />
-                            <!-- INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME -->
-                            <name />
-                            <telecom nullFlavor="NA" />
-                            <addr nullFlavor="NA" />
-                          </representedOrganization>
-                        </assignedAuthor>
-                      </author>
-                      <participant typeCode="COV">
-                        <templateId root="2.16.840.1.113883.10.20.22.4.89" />
-                        <participantRole classCode="PAT">
-                          <id root="2.16.840.1.113883.4.349" />
-                          <!-- 5.09 PATIENT RELATIONSHIP TO SUBSCRIBER, REQUIRED, HL7 Coverage 
+                                  <name><xsl:value-of select="HealthFund/HealthFund/Description/text()"/></name>
+                                </representedOrganization>
+                              </assignedEntity>
+                            </performer>
+                            <author>
+                              <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                              <time nullFlavor="NA" />
+                              <assignedAuthor>
+                                <id nullFlavor="NI" />
+                                <representedOrganization>
+                                  <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
+                                  <!-- INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME -->
+                                  <name><xsl:value-of select="EnteredAt/Description/text()"/></name>
+                                  <telecom nullFlavor="NA" />
+                                  <addr nullFlavor="NA" />
+                                </representedOrganization>
+                              </assignedAuthor>
+                            </author>
+                            <xsl:choose>
+                              <xsl:when test="not(HealthFund/InsuredRelationship/Code/text() = 'P')" >
+                              <participant typeCode="COV">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.89" />
+                                <participantRole classCode="PAT">
+                                  <id root="2.16.840.1.113883.4.349" extension="{HealthFund/MembershipNumber/text()}" />
+                                  <!-- 5.09 PATIENT RELATIONSHIP TO SUBSCRIBER, REQUIRED, HL7 Coverage 
                                             Role Type -->
-                          <code nullFlavor="UNK" codeSystem="2.16.840.1.113883.5.111" codeSystemName="RoleCode">
-                            <originalText>
-                              <reference/>
-                            </originalText>
-                          </code>
-                        </participantRole>
-                      </participant>
-                      <participant typeCode="HLD">
-                        <templateId root="2.16.840.1.113883.10.20.22.4.90" />
-                        <participantRole>
-                          <id root="2.16.840.1.113883.4.349" />
-                          <!-- 5.11 SUBSCRIBER ADDRESS -->
-                          <addr use="HP" nullFlavor="NA" />
-                          <!--  5.17 SUBSCRIBER PHONE -->
-                          <telecom nullFlavor="NA" />
-                          <playingEntity>
-                            <!-- 5.18 SUBSCRIBER NAME, REQUIRED -->
-                            <name />
-                            <!-- 5.19 SUBSCRIBER DATE OF BIRTH, R2 -->
-                            <sdtc:birthTime nullFlavor="UNK"/>
-                          </playingEntity>
-                        </participantRole>
-                      </participant>
-                      <!-- 5.24 HEALTH PLAN NAME, optional -->
-                      <entryRelationship typeCode="REFR">
-                        <act classCode="ACT" moodCode="DEF">
-                          <id root="2.16.840.1.113883.4.349" />
-                          <code nullFlavor="NA" />
-                          <text />
-                        </act>
-                      </entryRelationship>
-                    </act>
-                  </entryRelationship>
-                </act>
-              </entry>
-            </section>
+                                  <code nullFlavor="UNK" codeSystem="2.16.840.1.113883.5.111" codeSystemName="RoleCode">
+                                    <!-- TODO: um, what? -->
+                                    <originalText>
+                                      <reference value="{concat('#insRelationship',position())}"/>
+                                    </originalText>
+                                  </code>
+                                </participantRole>
+                              </participant>
+                                </xsl:when>
+                              <xsl:otherwise>
+                                <participant typeCode="HLD">
+                                  <templateId root="2.16.840.1.113883.10.20.22.4.90" />
+                                  <participantRole>
+                                    <id root="2.16.840.1.113883.4.349" extension="{HealthFund/MembershipNumber/text()}" />
+                                    <!-- 5.11 SUBSCRIBER ADDRESS -->
+                                    <addr use="HP" nullFlavor="NA" />
+                                    <!--  5.17 SUBSCRIBER PHONE -->
+                                    <telecom nullFlavor="NA" />
+                                    <playingEntity>
+                                      <!-- 5.18 SUBSCRIBER NAME, REQUIRED -->
+                                      <name />
+                                      <!-- 5.19 SUBSCRIBER DATE OF BIRTH, R2 -->
+                                      <sdtc:birthTime nullFlavor="UNK"/>
+                                    </playingEntity>
+                                  </participantRole>
+                                </participant>
+                              </xsl:otherwise>
+                            </xsl:choose>
+                            <!-- 5.24 HEALTH PLAN NAME, optional -->
+                            <entryRelationship typeCode="REFR">
+                              <act classCode="ACT" moodCode="DEF">
+                                <id root="2.16.840.1.113883.4.349" extension="{InsuredGroupOrPolicyNumber/text()}" />
+                                <code nullFlavor="NA" />
+                                <text><xsl:value-of select="InsuredGroupOrPolicyNumber/text()" /></text>
+                              </act>
+                            </entryRelationship>
+                          </act>
+                        </entryRelationship>
+                      </act>
+                    </entry>
+                  </xsl:for-each>
+                </section>
+              </xsl:otherwise>
+            </xsl:choose>
           </component>
           <component>
             <!-- ******************************************************** ADVANCED 
                 DIRECTIVE SECTION, REQUIRED ******************************************************** -->
-            <section>
-              <!-- C-CDA Advanced Directive Section Template Entries REQUIRED -->
-              <templateId root="2.16.840.1.113883.10.20.22.2.21.1" extension="2015-08-01"/>
-              <templateId root="2.16.840.1.113883.10.20.22.2.21" />
-              <code code="42348-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Advance Directives" />
-              <title>Advance Directives: All on record at VA</title>
-              <!-- ADVANCED DIRECTIVES NARRATIVE BLOCK -->
-              <text>
-                <paragraph>
-                  <content ID="advanceDirectiveTime">Section Date Range: From patient's date of birth to the date document was created.</content>
-                </paragraph>
-                <paragraph>
-                  This section includes a list of a patient's completed, amended, or rescinded VA Advance Directives, but an actual copy is not included.
-                </paragraph>
-                <table MAP_ID="advancedirectivesnarrative">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Advance Directives</th>
-                      <th>Provider</th>
-                      <th>Source</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td />
-
-                      <td>
-                        <content ID="advanceDirective" />
-                      </td>
-                      <td>
-                        <content ID="advDirProvider" />
-                      </td>
-                      <td>
-                        <content ID="advDirSource" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </text>
-              <!-- C-CDA R2.1 Section Time Range, Optional -->
-              <entry typeCode="DRIV" >
-                <observation classCode="OBS" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
-                  <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range"/>
+            <xsl:choose>
+              <xsl:when test="not(boolean(AdvanceDirectives/AdvanceDirective))">
+                <section nullFlavor="NI">
+                  <!-- C-CDA Advanced Directive Section Template Entries REQUIRED -->
+                  <templateId root="2.16.840.1.113883.10.20.22.2.21.1" extension="2015-08-01"/>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.21" />
+                  <code code="42348-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Advance Directives" />
+                  <title>Advance Directives: All on record at VA</title>
+                  <!-- ADVANCED DIRECTIVES NARRATIVE BLOCK -->
+                  <text>No Data Provided for This Section</text>
+                </section>
+                </xsl:when>
+              <xsl:otherwise>
+                <section>
+                  <!-- C-CDA Advanced Directive Section Template Entries REQUIRED -->
+                  <templateId root="2.16.840.1.113883.10.20.22.2.21.1" extension="2015-08-01"/>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.21" />
+                  <code code="42348-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Advance Directives" />
+                  <title>Advance Directives: All on record at VA</title>
+                  <!-- ADVANCED DIRECTIVES NARRATIVE BLOCK -->
                   <text>
-                    <reference value="#advanceDirectiveTime" />
+                    <paragraph>
+                      <content ID="advanceDirectiveTime">Section Date Range: From patient's date of birth to the date document was created.</content>
+                    </paragraph>
+                    <paragraph>
+                      This section includes a list of a patient's completed, amended, or rescinded VA Advance Directives, but an actual copy is not included.
+                    </paragraph>
+                    <table MAP_ID="advancedirectivesnarrative">
+                      <thead>
+                        <tr>
+                          <th>Date</th>
+                          <th>Advance Directives</th>
+                          <th>Provider</th>
+                          <th>Source</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="AdvanceDirectives/AdvanceDirective">
+                          <tr>
+                            <td><xsl:value-of select="FromTime/text()"/></td>
+                            <td>
+                              <content>
+                                <xsl:attribute name="ID"><xsl:value-of select="concat('advanceDirective',position())" /></xsl:attribute>
+                                <xsl:value-of select="AlertType/Description/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content>
+                                <xsl:attribute name="ID"><xsl:value-of select="concat('advDirProvider',position())" /></xsl:attribute>
+                                <xsl:value-of select="EnteredBy/Description/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content>
+                                <xsl:attribute name="ID"><xsl:value-of select="concat('advDirSource',position())" /></xsl:attribute>
+                                <xsl:value-of select="EnteredAt/Description/text()" />
+                              </content>
+                            </td>
+                          </tr>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
                   </text>
-                  <statusCode code="completed"/>
-                  <value xsi:type="IVL_TS">
-                    <low value="{$patientBirthDate}" />
-                    <high value="{$documentCreatedOn}" />
-                  </value>
-                </observation>
-              </entry>
-              <!-- ADVANCED DIRECTIVES STRUCTURED DATA -->
-              <entry typeCode="DRIV">
-                <!-- CCD Advanced Directive Observation, R2 -->
-                <observation classCode="OBS" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.48" extension="2015-08-01"/>
-                  <id nullFlavor="NI" />
-                  <!-- 12.01 ADVANCED DIRECTIVE TYPE, REQUIRED, SNOMED CT -->
-                  <code xsi:type="CD" nullFlavor="UNK">
-                    <originalText>
-                      <reference />
-                    </originalText>
-                    <translation nullFlavor="NA" />
-                  </code>
-                  <statusCode code="completed" />
-                  <!-- 12.03 ADVANCED DIRECTIVE EFFECTIVE DATE, REQUIRED -->
-                  <effectiveTime>
-                    <!-- ADVANCED DIRECTIVE EFFECTIVE DATE low = starting time, REQUIRED -->
-                    <low />
-                    <!-- ADVANCED DIRECTIVE EFFECTIVE DATE high= ending time, REQUIRED -->
-                    <high nullFlavor="NA" />
-                  </effectiveTime>
-                  <value xsi:type="CD">
-                    <originalText>
-                      <reference />
-                    </originalText>
-                  </value>
-                  <!-- ADVANCED DIRECTIVE REFERENCE, R2, not provided by VA -->
-                  <author>
-                    <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <time nullFlavor="UNK" />
-                    <assignedAuthor>
-                      <id nullFlavor="NI" />
-                      <representedOrganization>
-                        <id root="2.16.840.1.113883.4.349" />
-                        <name />
-                      </representedOrganization>
-                    </assignedAuthor>
-                  </author>
-                  <participant typeCode="VRF">
-                    <templateId root="2.16.840.1.113883.10.20.1.58"/>
-                    <time nullFlavor="UNK"/>
-                    <participantRole>
-                      <code nullFlavor="NA" />
-                      <addr nullFlavor="NA" />
-                      <!-- VERIFIER PHONE/EMAIL/URL, R2 -->
-                      <telecom nullFlavor="NA" />
-                      <playingEntity>
-                        <!-- VERIFIER NAME, REQUIRED  -->
-                        <name>Department of Veterans Affairs</name>
-                      </playingEntity>
-                    </participantRole>
-                  </participant>
-                  <!-- CUSTODIAN OF DOCUMENT, REQUIRED -->
-                  <participant typeCode="CST">
-                    <participantRole classCode="AGNT">
-                      <!-- CUSTODIAN ADDRESS, R2 -->
-                      <addr nullFlavor="NA" />
-                      <!-- CUSTODIAN PHONE?EMAIL/URL, R2 -->
-                      <telecom nullFlavor="NA" />
-                      <playingEntity>
-                        <!-- CUSTODIAN NAME, REQUIRED -->
-                        <name />
-                      </playingEntity>
-                    </participantRole>
-                  </participant>
-                </observation>
-              </entry>
-            </section>
+                  <!-- C-CDA R2.1 Section Time Range, Optional -->
+                  <entry typeCode="DRIV" >
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
+                      <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range"/>
+                      <text>
+                        <reference value="#advanceDirectiveTime" />
+                      </text>
+                      <statusCode code="completed"/>
+                      <value xsi:type="IVL_TS">
+                        <low value="{$patientBirthDate}" />
+                        <high value="{$documentCreatedOn}" />
+                      </value>
+                    </observation>
+                  </entry>
+                  <!-- ADVANCED DIRECTIVES STRUCTURED DATA -->
+                  <xsl:for-each select="AdvanceDirectives/AdvanceDirective">
+                    <entry typeCode="DRIV">
+                      <!-- CCD Advanced Directive Observation, R2 -->
+                      <observation classCode="OBS" moodCode="EVN">
+                        <templateId root="2.16.840.1.113883.10.20.22.4.48" extension="2015-08-01"/>
+                        <id nullFlavor="NI" />
+                        <!-- 12.01 ADVANCED DIRECTIVE TYPE, REQUIRED, SNOMED CT -->
+                        <code xsi:type="CD" nullFlavor="UNK">
+                          <originalText>
+                            <reference value="{concat('#advanceDirective',position())}"/>
+                          </originalText>
+                        </code>
+                        <statusCode code="completed" />
+                        <!-- 12.03 ADVANCED DIRECTIVE EFFECTIVE DATE, REQUIRED -->
+                        <effectiveTime>
+                          <!-- ADVANCED DIRECTIVE EFFECTIVE DATE low = starting time, REQUIRED -->
+                          <low value="{FromTime/text()}"/>
+                          <!-- ADVANCED DIRECTIVE EFFECTIVE DATE high= ending time, REQUIRED -->
+                          <high nullFlavor="NA" />
+                        </effectiveTime>
+                        <value xsi:type="CD">
+                          <originalText>
+                            <reference value="{concat('#advanceDirective',position())}"/>
+                          </originalText>
+                        </value>
+                        <!-- ADVANCED DIRECTIVE REFERENCE, R2, not provided by VA -->
+                        <author>
+                          <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                          <time nullFlavor="UNK" />
+                          <assignedAuthor>
+                            <id nullFlavor="NI" />
+                            <representedOrganization>
+                              <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
+                              <name>
+                                <xsl:value-of select="EnteredAt/Description/text()"/>
+                              </name>
+                            </representedOrganization>
+                          </assignedAuthor>
+                        </author>
+                        <participant typeCode="VRF">
+                          <templateId root="2.16.840.1.113883.10.20.1.58"/>
+                          <time nullFlavor="UNK"/>
+                          <participantRole>
+                            <code nullFlavor="NA" />
+                            <addr nullFlavor="NA" />
+                            <!-- VERIFIER PHONE/EMAIL/URL, R2 -->
+                            <telecom nullFlavor="NA" />
+                            <playingEntity>
+                              <!-- VERIFIER NAME, REQUIRED  -->
+                              <name>Department of Veterans Affairs</name>
+                            </playingEntity>
+                          </participantRole>
+                        </participant>
+                        <!-- CUSTODIAN OF DOCUMENT, REQUIRED -->
+                        <participant typeCode="CST">
+                          <participantRole classCode="AGNT">
+                            <!-- CUSTODIAN ADDRESS, R2 -->
+                            <addr nullFlavor="NA" />
+                            <!-- CUSTODIAN PHONE?EMAIL/URL, R2 -->
+                            <telecom nullFlavor="NA" />
+                            <playingEntity>
+                              <!-- CUSTODIAN NAME, REQUIRED -->
+                              <name>
+                                <xsl:value-of select="EnteredBy/Description/text()"/>
+                              </name>
+                            </playingEntity>
+                          </participantRole>
+                        </participant>
+                      </observation>
+                    </entry>
+                  </xsl:for-each>
+                </section>
+              </xsl:otherwise>
+            </xsl:choose>
           </component>
           <component>
             <!-- ************************************************************* ALLERGY/DRUG 
@@ -4223,7 +4306,7 @@
   </xsl:template>
   <xsl:template match='CareTeamMember' mode='header-careteammembers' >
     <xsl:param name="number" />
-    <performer typeCode="PRF" testing="{$number}">
+    <performer typeCode="PRF">
       <!-- ****** PRIMARY HEALTHCARE PROVIDER MODULE, Optional ********* -->
       <!-- 4.02 PROVIDER ROLE CODED, optional -->
       <templateId root="2.16.840.1.113883.10.20.6.2.1" extension="2014-06-09" />
@@ -4244,28 +4327,34 @@
         <!-- <id extension="providerN" root="2.16.840.1.113883.4.349" /> -->
         <id nullFlavor="NI"/>
         <!--4.04 PROVIDER TYPE, optional, NUCC -->
-        <code code="provTypeCode" codeSystem="2.16.840.1.113883.6.101" codeSystemName="NUCC" displayName="provTypeCodeName ">
-          <originalText />
-        </code>
+        <xsl:choose>
+          <xsl:when test="boolean(CareProviderType)">
+            <code code="{CareProviderType/Code/text()}" codeSystem="2.16.840.1.113883.6.101" codeSystemName="NUCC" displayName="{CareProviderType/Description/text()}">
+              <originalText><xsl:value-of select="CareProviderType/Description/text()" /></originalText>
+            </code>
+          </xsl:when>
+          <xsl:otherwise>
+            <code codeSystem="2.16.840.1.113883.6.101" codeSystemName="NUCC" nullFlavor="UNK">
+              <originalText><xsl:value-of select="Description/text()" /></originalText>
+            </code>
+          </xsl:otherwise>
+        </xsl:choose>
+
         <!-- Address Required for assignedEntity -->
-        <addr use="WP">
-          <streetAddressLine />
-          <city />
-          <state />
-          <postalCode />
-        </addr>
+        <xsl:apply-templates select="." mode="standard-address">
+          <xsl:with-param name="use">WP</xsl:with-param>
+        </xsl:apply-templates>
         <!-- Telecom Required for iassignedEntity, but VA VistA data not yet available -->
-        <telecom MAP_ID="TELEPHONE" />
-        <telecom MAP_ID="EMAIL" />
+        <xsl:apply-templates select="." mode="standard-contact-info" />
         <!-- 4.07-PROVIDER NAME, REQUIRED -->
         <assignedPerson>
-          <name />
+          <xsl:apply-templates select="Name" mode="standard-name" />
         </assignedPerson>
         <representedOrganization>
           <!-- INFORMATION SOURCE FOR FACILITY ID=VA OID, EXT= VAMC TREATING FACILITY NBR -->
-          <id root="2.16.840.1.113883.4.349" />
+          <id nullFlavor="UNK" />
           <!-- INFORMATION SOURCE FACILITY NAME (facilityName) -->
-          <name />
+          <name nullFlavor="UNK" />
           <!-- Telecom Required for representedOrganization, but VA VistA data not yet available -->
           <telecom nullFlavor="UNK" />
           <!-- Address Required for representedOrganization, but VA VistA data not yet available -->
