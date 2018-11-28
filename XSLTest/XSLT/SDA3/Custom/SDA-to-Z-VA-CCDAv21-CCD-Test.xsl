@@ -21,11 +21,11 @@
 
       <templateId root="2.16.840.1.113883.10.20.22.1.1" extension="2015-08-01"/>
       <templateId root="2.16.840.1.113883.10.20.22.1.2" extension="2015-08-01"/>
-      <!-- CCD Document Identifer, id=VA OID, extension=system-generated -->
+      <xsl:comment> CCD Document Identifer, id=VA OID, extension=system-generated </xsl:comment>
       <id extension="{isc:evaluate('createUUID')}" root="2.16.840.1.113883.4.349" />
-      <!-- CCD Document Code -->
+      <xsl:comment> CCD Document Code </xsl:comment>
       <code code="34133-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="{isc:evaluate('lookup', '34133-9','Summarization of Episode Note')}" />
-      <!-- CCD Document Title -->
+      <xsl:comment> CCD Document Title </xsl:comment>
       <title>Department of Veterans Affairs Health Summary</title>
       <!-- 1.01 DOCUMENT TIMESTAMP, REQUIRED -->
       <effectiveTime value="{$documentCreatedOn}" />
@@ -279,7 +279,7 @@
                     </paragraph>
                     <!-- VA Insurance Providers Business Rules for Medical Content -->
                     <paragraph>This section includes the names of all active insurance providers for the patient.</paragraph>
-                    <table MAP_ID="insuranceNarrative">
+                    <table>
                       <thead>
                         <tr>
                           <th>Insurance Provider</th>
@@ -447,42 +447,38 @@
                                 </representedOrganization>
                               </assignedAuthor>
                             </author>
-                            <xsl:choose>
-                              <xsl:when test="not(HealthFund/InsuredRelationship/Code/text() = 'P')" >
-                              <participant typeCode="COV">
-                                <templateId root="2.16.840.1.113883.10.20.22.4.89" />
-                                <participantRole classCode="PAT">
+                            <participant typeCode="COV">
+                              <templateId root="2.16.840.1.113883.10.20.22.4.89" />
+                              <participantRole classCode="PAT">
+                                <id root="2.16.840.1.113883.4.349" extension="{HealthFund/MembershipNumber/text()}" />
+                                <!-- 5.09 PATIENT RELATIONSHIP TO SUBSCRIBER, REQUIRED, HL7 Coverage 
+                                          Role Type -->
+                                <code nullFlavor="UNK" codeSystem="2.16.840.1.113883.5.111" codeSystemName="RoleCode">
+                                  <!-- TODO: um, what? -->
+                                  <originalText>
+                                    <reference value="{concat('#insRelationship',position())}"/>
+                                  </originalText>
+                                </code>
+                              </participantRole>
+                            </participant>
+                            <xsl:if test="not(HealthFund/InsuredRelationship/Code/text() = 'P')" >
+                              <participant typeCode="HLD">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.90" />
+                                <participantRole>
                                   <id root="2.16.840.1.113883.4.349" extension="{HealthFund/MembershipNumber/text()}" />
-                                  <!-- 5.09 PATIENT RELATIONSHIP TO SUBSCRIBER, REQUIRED, HL7 Coverage 
-                                            Role Type -->
-                                  <code nullFlavor="UNK" codeSystem="2.16.840.1.113883.5.111" codeSystemName="RoleCode">
-                                    <!-- TODO: um, what? -->
-                                    <originalText>
-                                      <reference value="{concat('#insRelationship',position())}"/>
-                                    </originalText>
-                                  </code>
+                                  <!-- 5.11 SUBSCRIBER ADDRESS -->
+                                  <addr use="HP" nullFlavor="NA" />
+                                  <!--  5.17 SUBSCRIBER PHONE -->
+                                  <telecom nullFlavor="NA" />
+                                  <playingEntity>
+                                    <!-- 5.18 SUBSCRIBER NAME, REQUIRED -->
+                                    <name><xsl:value-of select="HealthFund/MembershipNumber/text()" /></name>
+                                    <!-- 5.19 SUBSCRIBER DATE OF BIRTH, R2 -->
+                                    <sdtc:birthTime nullFlavor="UNK"/>
+                                  </playingEntity>
                                 </participantRole>
                               </participant>
-                                </xsl:when>
-                              <xsl:otherwise>
-                                <participant typeCode="HLD">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.90" />
-                                  <participantRole>
-                                    <id root="2.16.840.1.113883.4.349" extension="{HealthFund/MembershipNumber/text()}" />
-                                    <!-- 5.11 SUBSCRIBER ADDRESS -->
-                                    <addr use="HP" nullFlavor="NA" />
-                                    <!--  5.17 SUBSCRIBER PHONE -->
-                                    <telecom nullFlavor="NA" />
-                                    <playingEntity>
-                                      <!-- 5.18 SUBSCRIBER NAME, REQUIRED -->
-                                      <name />
-                                      <!-- 5.19 SUBSCRIBER DATE OF BIRTH, R2 -->
-                                      <sdtc:birthTime nullFlavor="UNK"/>
-                                    </playingEntity>
-                                  </participantRole>
-                                </participant>
-                              </xsl:otherwise>
-                            </xsl:choose>
+                            </xsl:if>
                             <!-- 5.24 HEALTH PLAN NAME, optional -->
                             <entryRelationship typeCode="REFR">
                               <act classCode="ACT" moodCode="DEF">
@@ -530,7 +526,7 @@
                     <paragraph>
                       This section includes a list of a patient's completed, amended, or rescinded VA Advance Directives, but an actual copy is not included.
                     </paragraph>
-                    <table MAP_ID="advancedirectivesnarrative">
+                    <table>
                       <thead>
                         <tr>
                           <th>Date</th>
