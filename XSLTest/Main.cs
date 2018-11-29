@@ -406,7 +406,7 @@ namespace XSLTest
             scintilla.Lexer = Lexer.Xml;
 
             // Show line numbers
-            scintilla.Margins[0].Width = 20;
+            scintilla.Margins[0].Width = 40;
 
             // Enable folding
             scintilla.SetProperty("fold", "1");

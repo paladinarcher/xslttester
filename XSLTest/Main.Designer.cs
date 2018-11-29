@@ -191,11 +191,14 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.richTextBox1.AutoCMaxHeight = 9;
+            this.richTextBox1.FontQuality = ScintillaNET.FontQuality.AntiAliased;
+            this.richTextBox1.IdleStyling = ScintillaNET.IdleStyling.All;
             this.richTextBox1.Lexer = ScintillaNET.Lexer.Xml;
             this.richTextBox1.Location = new System.Drawing.Point(3, 47);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.Size = new System.Drawing.Size(532, 393);
             this.richTextBox1.TabIndex = 2;
+            this.richTextBox1.Technology = ScintillaNET.Technology.DirectWrite;
             this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
             // 
             // button2
