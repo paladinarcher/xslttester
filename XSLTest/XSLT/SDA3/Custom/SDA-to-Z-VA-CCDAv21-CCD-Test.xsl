@@ -670,177 +670,322 @@
           <component>
             <xsl:comment> ************************************************************* ALLERGY/DRUG 
                 SECTION SECTION, REQUIRED ************************************************************* </xsl:comment>
-            <section>
-              <xsl:comment>ALLERGY/DRUG Section Template Entries REQUIRED </xsl:comment>
-              <templateId root="2.16.840.1.113883.10.20.22.2.6.1" extension="2015-08-01"/>
-              <templateId root="2.16.840.1.113883.10.20.22.2.6" />
-              <code code="48765-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Allergies and/or Adverse Reactions" />
-              <title>Allergies and Adverse Reactions (ADRs): All on record at VA</title>
-              <xsl:comment> ALLERGIES NARRATIVE BLOCK </xsl:comment>
-              <text>
-                <paragraph>
-                  <content ID="allergiesTime">Section Date Range: From patient's date of birth to the date document was created.</content>
-                </paragraph>
-                <xsl:comment>VA Allergies/Drug Business Rules for Medical Content </xsl:comment>
-                <paragraph>
-                  This section includes Allergies and Adverse Reactions (ADRs) on record with VA for the patient.
-                  The data comes from all VA treatment facilities. It does not list Allergies/ADRs that were removed or entered in error.
-                  Some allergies/ADRs may be reported in the Immunization section.
-                </paragraph>
-                <table MAP_ID="allergyNarrative">
-                  <thead>
-                    <tr>
-                      <th>Allergen</th>
-                      <th>Event Date</th>
-                      <th>Event Type</th>
-                      <th>Reaction(s)</th>
-                      <th>Severity</th>
-                      <th>Source</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <content ID="andAllergy" />
-                      </td>
-                      <td />
-
-
-                      <td>
-                        <content ID="andEventType" />
-                      </td>
-                      <td>
-                        <list>
-                          <item>
-                            <content ID="andReaction" />
-                          </item>
-                        </list>
-                      </td>
-                      <td>
-                        <content ID="andSeverity" />
-                      </td>
-                      <td>
-                        <content ID="andSource" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </text>
-              <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
-              <entry typeCode="DRIV">
-                <observation classCode="OBS" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
-                  <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range"/>
+            <xsl:choose>
+              <xsl:when test="not(boolean(Allergies/Allergy))">
+                <section nullFlavor="NI">
+                  <xsl:comment>ALLERGY/DRUG Section Template Entries REQUIRED </xsl:comment>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.6.1" extension="2015-08-01"/>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.6" />
+                  <code code="48765-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Allergies and/or Adverse Reactions" />
+                  <title>Allergies and Adverse Reactions (ADRs): All on record at VA</title>
+                  <xsl:comment> ALLERGIES NARRATIVE BLOCK </xsl:comment>
+                  <text>No Data Provided for This Section</text>
+                </section>
+              </xsl:when>
+              <xsl:otherwise>
+                <section>
+                  <xsl:comment>ALLERGY/DRUG Section Template Entries REQUIRED </xsl:comment>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.6.1" extension="2015-08-01"/>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.6" />
+                  <code code="48765-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Allergies and/or Adverse Reactions" />
+                  <title>Allergies and Adverse Reactions (ADRs): All on record at VA</title>
+                  <xsl:comment> ALLERGIES NARRATIVE BLOCK </xsl:comment>
                   <text>
-                    <reference value='#allergiesTime' />
+                    <paragraph>
+                      <content ID="allergiesTime">Section Date Range: From patient's date of birth to the date document was created.</content>
+                    </paragraph>
+                    <xsl:comment>VA Allergies/Drug Business Rules for Medical Content </xsl:comment>
+                    <paragraph>
+                      This section includes Allergies and Adverse Reactions (ADRs) on record with VA for the patient.
+                      The data comes from all VA treatment facilities. It does not list Allergies/ADRs that were removed or entered in error.
+                      Some allergies/ADRs may be reported in the Immunization section.
+                    </paragraph>
+                    <table MAP_ID="allergyNarrative">
+                      <thead>
+                        <tr>
+                          <th>Allergen</th>
+                          <th>Event Date</th>
+                          <th>Event Type</th>
+                          <th>Reaction(s)</th>
+                          <th>Severity</th>
+                          <th>Source</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="Allergies/Allergy">
+                          <xsl:if test="boolean(Allergy/SDACodingStandard) or (count(../Allergy/Allergy/SDACodingStandard) = 0 and ((Allergy/Code/text() = 'NKA' and count(preceding::Allergy[Code/text() = 'NKA']) = 0) or ((Allergy/Code/text() = 'NONE' and count(preceding::Allergy[Code/text() = 'NONE']) = 0))))">
+                            <xsl:choose>
+                              <xsl:when test="boolean(Allergy/SDACodingStandard)">
+                                <xsl:variable name="allergyIndex" select="position()" />
+                                <tr>
+                                  <td>
+                                    <content>
+                                      <xsl:attribute name="ID">
+                                        <xsl:value-of select="concat('andAllergy',position())" />
+                                      </xsl:attribute>
+                                      <xsl:value-of select="Allergy/Description/text()" />
+                                    </content>
+                                  </td>
+                                  <td></td>
+                                  <td>
+                                    <content>
+                                      <xsl:attribute name="ID">
+                                        <xsl:value-of select="concat('andEventType',position())" />
+                                      </xsl:attribute><!-- TODO: get translation from VETS ? -->
+                                      <xsl:value-of select="AllergyCategory/Description/text()" />
+                                    </content>
+                                  </td>
+                                  <td>
+                                    <list>
+                                      <xsl:for-each select="Extension/Reactions/Reaction">
+                                        <item>
+                                          <content>
+                                            <xsl:attribute name="ID">
+                                              <xsl:value-of select="concat('andReaction', $allergyIndex, '-', position())" />
+                                            </xsl:attribute>
+                                            <xsl:value-of select="Description/text()" />
+                                          </content>
+                                        </item>
+                                      </xsl:for-each>
+                                    </list>
+                                  </td>
+                                  <td>
+                                    <content>
+                                      <xsl:attribute name="ID">
+                                        <xsl:value-of select="concat('andSeverity',position())" />
+                                      </xsl:attribute>
+                                      <xsl:value-of select="Severity/Description/text()" />
+                                    </content>
+                                  </td>
+                                  <td>
+                                    <content>
+                                      <xsl:attribute name="ID">
+                                        <xsl:value-of select="concat('andSource',position())" />
+                                      </xsl:attribute>
+                                      <xsl:value-of select="EnteredAt/Description/text()" />
+                                    </content>
+                                  </td>
+                                </tr>
+                              </xsl:when>
+                              <xsl:otherwise>
+                                <tr>
+                                  <td colspan="5"><xsl:value-of select="Allergy/Description/text()" /></td>
+                                  <td>
+                                    <content>
+                                      <xsl:attribute name="ID">
+                                        <xsl:value-of select="concat('andSource',position())" />
+                                      </xsl:attribute>
+                                      <xsl:value-of select="EnteredAt/Description/text()" />
+                                    </content>
+                                  </td>
+                                </tr>
+                              </xsl:otherwise>
+                            </xsl:choose>
+                          </xsl:if>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
                   </text>
-                  <statusCode code="completed"/>
-                  <value xsi:type="IVL_TS">
-                    <low value="{$patientBirthDate}" />
-                    <high value="{$documentCreatedOn}" />
-                  </value>
-                </observation>
-              </entry>
-
-              <xsl:comment> ALLERGIES STRUCTURED DATA </xsl:comment>
-              <entry typeCode="DRIV">
-                <act classCode="ACT" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.30" extension="2015-08-01"/>
-                  <xsl:comment> CCD Allergy Act ID as nullFlavor </xsl:comment>
-                  <id nullFlavor="NA" />
-                  <!--<code code="48765-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Allergies, adverse reactions, alerts" /> -->
-                  <code code="CONC" codeSystem="2.16.840.1.113883.5.6" displayName="Concern" />
-                  <statusCode code="active" />
-                  <effectiveTime>
-                    <low nullFlavor="NA" />
-                  </effectiveTime>
-                  <xsl:comment> INFORMATION SOURCE FOR ALLERGIES/DRUG, Optional </xsl:comment>
-                  <author>
-                    <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <time nullFlavor="NA" />
-                    <assignedAuthor>
-                      <id nullFlavor="NA" />
-                      <code nullFlavor="NA" />
-                      <representedOrganization>
-                        <xsl:comment> INFORMATION SOURCE ID, root=VA OID, extension= VAMC TREATING FACILITY NBR </xsl:comment>
-                        <id root="2.16.840.1.113883.4.349" />
-                        <xsl:comment> INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME </xsl:comment>
-                        <name />
-                        <telecom nullFlavor="NA" />
-                        <addr nullFlavor="NA" />
-                      </representedOrganization>
-                    </assignedAuthor>
-                  </author>
-                  <entryRelationship typeCode="SUBJ">
-                    <xsl:comment> Allergy Intolerance Observation Entry </xsl:comment>
+                  <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
+                  <entry typeCode="DRIV">
                     <observation classCode="OBS" moodCode="EVN">
-                      <templateId root="2.16.840.1.113883.10.20.22.4.7" extension="2014-06-09"/>
-                      <id nullFlavor="NA" />
-                      <code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="HL7ActCode" />
-                      <statusCode code="completed" />
-                      <xsl:comment> 6.01 ADVERSE EVENT DATE, REQUIRED </xsl:comment>
-                      <effectiveTime>
-                        <low />
-                      </effectiveTime>
-                        <xsl:comment> 6.02 ADVERSE EVENT TYPE, REQUIRED; SNOMED CT </xsl:comment>
-                      <value xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
-                        <originalText>
-                          <reference />
-                        </originalText>
+                      <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
+                      <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range"/>
+                      <text>
+                        <reference value='#allergiesTime' />
+                      </text>
+                      <statusCode code="completed"/>
+                      <value xsi:type="IVL_TS">
+                        <low value="{$patientBirthDate}" />
+                        <high value="{$documentCreatedOn}" />
                       </value>
-                      <participant typeCode="CSM">
-                        <participantRole classCode="MANU">
-                          <playingEntity classCode="MMAT">
-                            <xsl:comment> 6.04 PRODUCT CODED,REQUIRED </xsl:comment>
-                            <code codeSystem="2.16.840.1.113883.6.88"  codeSystemName="RxNorm">
-                              <xsl:comment> 6.03 PRODUCT FREE TEXT, R2 </xsl:comment>
-                              <originalText>
-                                <reference />
-                              </originalText>
-                              <translation codeSystem="2.16.840.1.113883.6.233" codeSystemName="VHA Enterprise Reference Terminology" />
-                            </code>
-                          </playingEntity>
-                        </participantRole>
-                      </participant>
-                      <xsl:comment> REACTION ENTRY RELATIONSHIP BLOCK R2, repeatable </xsl:comment>
-                      <entryRelationship typeCode="MFST" inversionInd="true">
-                        <observation classCode="OBS" moodCode="EVN">
-                          <templateId root="2.16.840.1.113883.10.20.22.4.9" extension="2014-06-09" />
-                          <id nullFlavor="NA" />
-                          <code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="HL7ActCode"/>
-                          <statusCode code="completed" />
-                          <effectiveTime nullFlavor="UNK" />
-
-                          <xsl:comment> 6.06 REACTION CODED, REQUIRED </xsl:comment>
-
-                          <value   xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
-                            <xsl:comment> 6.05 REACTION-FREE TEXT, optional, </xsl:comment>
-                            <originalText>
-                              <reference />
-                            </originalText>
-                            <translation codeSystem="2.16.840.1.113883.6.233" codeSystemName="VHA Enterprise Reference Terminology" />
-                          </value>
-                        </observation>
-                      </entryRelationship>
-                      <xsl:comment> SEVERITY ENTRY RELATIONSHIP BLOCK R2, 0 or 1 per Allergy </xsl:comment>
-                      <entryRelationship typeCode="SUBJ" inversionInd="true">
-                        <observation classCode="OBS" moodCode="EVN">
-                          <templateId root="2.16.840.1.113883.10.20.22.4.8" extension="2014-06-09"/>
-                          <code code="SEV" displayName="Severity" codeSystem="2.16.840.1.113883.5.4" codeSystemName="HL7ActCode" />
-                          <xsl:comment> 6.07 SEVERITY FREE TEXT, Optional-R2 Removed b/c removed in template </xsl:comment>
-                          <text>
-                            <reference />
-                          </text>
-                          <statusCode code="completed" />
-                          <xsl:comment> 6.08 SEVERITY CODED, REQUIRED, SNOMED CT </xsl:comment>
-                          <value xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
-                        </observation>
-                      </entryRelationship>
                     </observation>
-                  </entryRelationship>
-                </act>
-              </entry>
-            </section>
+                  </entry>
+
+                  <xsl:comment> ALLERGIES STRUCTURED DATA </xsl:comment>
+                  <xsl:for-each select="Allergies/Allergy">
+                    <xsl:if test="boolean(Allergy/SDACodingStandard) or (count(../Allergy/Allergy/SDACodingStandard) = 0 and ((Allergy/Code/text() = 'NKA' and count(preceding::Allergy[Code/text() = 'NKA']) = 0) or ((Allergy/Code/text() = 'NONE' and count(preceding::Allergy[Code/text() = 'NONE']) = 0))))">
+                      <xsl:choose>
+                        <xsl:when test="boolean(Allergy/SDACodingStandard)">
+                          <xsl:variable name="allergyIndex" select="position()" />
+                          <entry typeCode="DRIV">
+                            <act classCode="ACT" moodCode="EVN">
+                              <templateId root="2.16.840.1.113883.10.20.22.4.30" extension="2015-08-01"/>
+                              <xsl:comment> CCD Allergy Act ID as nullFlavor </xsl:comment>
+                              <id nullFlavor="NA" />
+                              <!--<code code="48765-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Allergies, adverse reactions, alerts" /> -->
+                              <code code="CONC" codeSystem="2.16.840.1.113883.5.6" displayName="Concern" />
+                              <statusCode code="active" />
+                              <effectiveTime>
+                                <xsl:choose>
+                                  <xsl:when test="boolean(VerifiedTime)">
+                                    <low value="{VerifiedTime/text()}" />
+                                  </xsl:when>
+                                  <xsl:otherwise>
+                                    <low value="{EnteredOn/text()}" />
+                                  </xsl:otherwise>
+                                </xsl:choose>
+                              </effectiveTime>
+                              <xsl:comment> INFORMATION SOURCE FOR ALLERGIES/DRUG, Optional </xsl:comment>
+                              <author>
+                                <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                                <time nullFlavor="NA" />
+                                <assignedAuthor>
+                                  <id nullFlavor="NA" />
+                                  <code nullFlavor="NA" />
+                                  <representedOrganization>
+                                    <xsl:comment> INFORMATION SOURCE ID, root=VA OID, extension= VAMC TREATING FACILITY NBR </xsl:comment>
+                                    <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
+                                    <xsl:comment> INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME </xsl:comment>
+                                    <name><xsl:value-of select="EnteredAt/Description/text()"/></name>
+                                    <telecom nullFlavor="NA" />
+                                    <addr nullFlavor="NA" />
+                                  </representedOrganization>
+                                </assignedAuthor>
+                              </author>
+                              <entryRelationship typeCode="SUBJ">
+                                <xsl:comment> Allergy Intolerance Observation Entry </xsl:comment>
+                                <observation classCode="OBS" moodCode="EVN">
+                                  <templateId root="2.16.840.1.113883.10.20.22.4.7" extension="2014-06-09"/>
+                                  <id nullFlavor="NA" />
+                                  <code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="HL7ActCode" />
+                                  <statusCode code="completed" />
+                                  <xsl:comment> 6.01 ADVERSE EVENT DATE, REQUIRED </xsl:comment>
+                                  <effectiveTime>
+                                    <xsl:choose>
+                                      <xsl:when test="boolean(VerifiedTime)">
+                                        <low value="{VerifiedTime/text()}" />
+                                      </xsl:when>
+                                      <xsl:otherwise>
+                                        <low value="{EnteredOn/text()}" />
+                                      </xsl:otherwise>
+                                    </xsl:choose>
+                                  </effectiveTime>
+                                  <xsl:comment> 6.02 ADVERSE EVENT TYPE, REQUIRED; SNOMED CT </xsl:comment>
+                                  <value xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"> <!-- TODO: Vets Translation here -->
+                                    <originalText>
+                                      <reference value="{concat('#andEventType',position())}"/>
+                                    </originalText>
+                                  </value>
+                                  <participant typeCode="CSM">
+                                    <participantRole classCode="MANU">
+                                      <playingEntity classCode="MMAT">
+                                        <xsl:comment> 6.04 PRODUCT CODED,REQUIRED </xsl:comment>
+                                        <code codeSystem="2.16.840.1.113883.6.88"  codeSystemName="RxNorm">
+                                          <xsl:comment> 6.03 PRODUCT FREE TEXT, R2 </xsl:comment>
+                                          <originalText>
+                                            <reference value="{concat('#andAllergy',position())}" />
+                                          </originalText><!-- TODO: Vets Translation here (RXNORM) Internal or VETS? -->
+                                          <translation codeSystem="2.16.840.1.113883.6.233" codeSystemName="VHA Enterprise Reference Terminology" />
+                                        </code>
+                                      </playingEntity>
+                                    </participantRole>
+                                  </participant>
+                                  <xsl:comment> REACTION ENTRY RELATIONSHIP BLOCK R2, repeatable </xsl:comment>
+                                  <xsl:for-each select="Extension/Reactions/Reaction">
+                                    <entryRelationship typeCode="MFST" inversionInd="true">
+                                      <observation classCode="OBS" moodCode="EVN">
+                                        <templateId root="2.16.840.1.113883.10.20.22.4.9" extension="2014-06-09" />
+                                        <id nullFlavor="NA" />
+                                        <code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="HL7ActCode"/>
+                                        <statusCode code="completed" />
+                                        <effectiveTime nullFlavor="UNK" />
+
+                                        <xsl:comment> 6.06 REACTION CODED, REQUIRED </xsl:comment>
+                                          <!-- TODO: Internal Translation -->
+                                        <value   xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                                          <xsl:comment> 6.05 REACTION-FREE TEXT, optional, </xsl:comment>
+                                          <originalText>
+                                            <reference value="{concat('#andReaction', $allergyIndex, '-', position())}" />
+                                          </originalText>
+                                          <translation codeSystem="2.16.840.1.113883.6.233" codeSystemName="VHA Enterprise Reference Terminology" />
+                                        </value>
+                                      </observation>
+                                    </entryRelationship>
+                                  </xsl:for-each>
+                                  <xsl:comment> SEVERITY ENTRY RELATIONSHIP BLOCK R2, 0 or 1 per Allergy </xsl:comment>
+                                  <entryRelationship typeCode="SUBJ" inversionInd="true">
+                                    <observation classCode="OBS" moodCode="EVN">
+                                      <templateId root="2.16.840.1.113883.10.20.22.4.8" extension="2014-06-09"/>
+                                      <code code="SEV" displayName="Severity" codeSystem="2.16.840.1.113883.5.4" codeSystemName="HL7ActCode" />
+                                      <xsl:comment> 6.07 SEVERITY FREE TEXT, Optional-R2 Removed b/c removed in template </xsl:comment>
+                                      <text>
+                                        <reference value="{concat('#andSeverity',position())}" />
+                                      </text>
+                                      <statusCode code="completed" />
+                                      <xsl:comment> 6.08 SEVERITY CODED, REQUIRED, SNOMED CT </xsl:comment>
+                                      <!-- TODO: Internal Translation -->
+                                      <value xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+                                    </observation>
+                                  </entryRelationship>
+                                </observation>
+                              </entryRelationship>
+                            </act>
+                          </entry>
+                        </xsl:when>
+                        <xsl:otherwise>
+                          <entry typeCode="DRIV">
+                            <act classCode="ACT" moodCode="EVN">
+                              <templateId extension="2015-08-01" root="2.16.840.1.113883.10.20.22.4.30"/>
+                              <xsl:comment>CCD Allergy Act ID as nullFlavor</xsl:comment>
+                              <id nullFlavor="NA"/>
+                              <code code="CONC" codeSystem="2.16.840.1.113883.5.6" displayName="Concern"/>
+                              <statusCode code="active"/>
+                              <effectiveTime>
+                                <low nullFlavor="NA"/>
+                              </effectiveTime>
+                              <xsl:comment>INFORMATION SOURCE FOR ALLERGIES/DRUG, Optional</xsl:comment>
+                              <author>
+                                <templateId root="2.16.840.1.113883.10.20.22.4.119"/>
+                                <time nullFlavor="NA"/>
+                                <assignedAuthor>
+                                  <id nullFlavor="NA"/>
+                                  <code nullFlavor="NA"/>
+                                  <representedOrganization>
+                                    <xsl:comment>INFORMATION SOURCE ID, root=VA OID, extension= VAMC TREATING 
+                                              FACILITY NBR</xsl:comment>
+                                    <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
+                                    <xsl:comment> INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME </xsl:comment>
+                                    <name><xsl:value-of select="EnteredAt/Description/text()"/></name>
+                                    <telecom nullFlavor="NA"/>
+                                    <addr nullFlavor="NA"/>
+                                  </representedOrganization>
+                                </assignedAuthor>
+                              </author>
+                              <entryRelationship typeCode="SUBJ">
+                                <xsl:comment>Allergy Intolerance Observation Entry</xsl:comment>
+                                <observation classCode="OBS" moodCode="EVN">
+                                  <xsl:choose>
+                                    <xsl:when test="Allergy/Code/text() = 'NKA'">
+                                      <xsl:attribute name="negationInd">true</xsl:attribute>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                      <xsl:attribute name="nullFlavor">NASK</xsl:attribute>
+                                    </xsl:otherwise>
+                                  </xsl:choose>
+                                  <templateId extension="2014-06-09" root="2.16.840.1.113883.10.20.22.4.7"/>
+                                  <id nullFlavor="NA"/>
+                                  <code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="HL7ActCode"/>
+                                  <statusCode code="completed"/>
+                                  <xsl:comment>6.01 ADVERSE EVENT DATE, REQUIRED</xsl:comment>
+                                  <effectiveTime>
+                                    <low nullFlavor="NA"/>
+                                  </effectiveTime>
+                                  <xsl:comment>6.02 ADVERSE EVENT TYPE, REQUIRED; SNOMED CT</xsl:comment>
+                                  <value code="419199007" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Allergy to substance (disorder)" xsi:type="CD"></value>
+                                  <xsl:comment>REACTION ENTRY RELATIONSHIP BLOCK R2, repeatable</xsl:comment>
+                                  <xsl:comment>SEVERITY ENTRY RELATIONSHIP BLOCK R2, 0 or 1 per Allergy</xsl:comment>
+                                </observation>
+                              </entryRelationship>
+                            </act>
+                          </entry>
+                        </xsl:otherwise>
+                      </xsl:choose>
+                    </xsl:if>
+                  </xsl:for-each>
+                </section>
+              </xsl:otherwise>
+            </xsl:choose>
           </component>
           <component>
             <xsl:comment> ******************************************************** ENCOUNTER 
