@@ -23,7 +23,8 @@ namespace XSLTest
 
         private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
-            using(var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EmbedAssembly.GotDotNet.Exslt.dll"))
+            string name = args.Name.Substring(0, args.Name.IndexOf(","));
+            using(var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EmbedAssembly."+name+".dll"))//GotDotNet.Exslt
             {
                 byte[] assemblyData = new byte[stream.Length];
                 stream.Read(assemblyData, 0, assemblyData.Length);

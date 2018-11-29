@@ -41,11 +41,11 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.richTextBox1 = new ScintillaNET.Scintilla();
             this.button2 = new System.Windows.Forms.Button();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.richTextBox2 = new System.Windows.Forms.RichTextBox();
+            this.richTextBox2 = new ScintillaNET.Scintilla();
             this.worker = new System.ComponentModel.BackgroundWorker();
             this.button3 = new System.Windows.Forms.Button();
             this.bwTransform = new System.ComponentModel.BackgroundWorker();
@@ -190,11 +190,12 @@
             this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBox1.AutoCMaxHeight = 9;
+            this.richTextBox1.Lexer = ScintillaNET.Lexer.Xml;
             this.richTextBox1.Location = new System.Drawing.Point(3, 47);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.Size = new System.Drawing.Size(532, 393);
             this.richTextBox1.TabIndex = 2;
-            this.richTextBox1.Text = "";
             this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
             // 
             // button2
@@ -232,13 +233,16 @@
             // 
             // richTextBox2
             // 
+            this.richTextBox2.AutoCMaxHeight = 9;
             this.richTextBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.richTextBox2.FontQuality = ScintillaNET.FontQuality.AntiAliased;
+            this.richTextBox2.IdleStyling = ScintillaNET.IdleStyling.All;
+            this.richTextBox2.Lexer = ScintillaNET.Lexer.Xml;
             this.richTextBox2.Location = new System.Drawing.Point(3, 16);
             this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.ReadOnly = true;
             this.richTextBox2.Size = new System.Drawing.Size(602, 579);
             this.richTextBox2.TabIndex = 0;
-            this.richTextBox2.Text = "";
+            this.richTextBox2.Technology = ScintillaNET.Technology.DirectWrite;
             // 
             // worker
             // 
@@ -377,10 +381,10 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ComboBox comboBox2;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.RichTextBox richTextBox2;
+        private ScintillaNET.Scintilla richTextBox2;
         private System.ComponentModel.BackgroundWorker worker;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private ScintillaNET.Scintilla richTextBox1;
         private System.Windows.Forms.Button button3;
         private System.ComponentModel.BackgroundWorker bwTransform;
         private System.ComponentModel.BackgroundWorker bwTransformOpener;
