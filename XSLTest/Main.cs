@@ -399,7 +399,7 @@ namespace XSLTest
             // Reset the styles
             scintilla.StyleResetDefault();
             scintilla.Styles[Style.Default].Font = "Consolas";
-            scintilla.Styles[Style.Default].Size = 10;
+            scintilla.Styles[Style.Default].Size = 9;
             scintilla.StyleClearAll();
 
             // Set the XML Lexer

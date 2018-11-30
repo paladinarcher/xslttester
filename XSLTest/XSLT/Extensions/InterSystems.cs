@@ -634,6 +634,15 @@ namespace XSLTest.XSLT.Extensions
                     end = DateTime.Now;
                 }
                 //System.Diagnostics.Debug.WriteLine("DateDiff "+end.ToString()+" - "+start.ToString()+" = "+((end - start).Days.ToString())+" [" + MethodBase.GetCurrentMethod().Name + "([" + code + "],[" + system + "],[" + def + "])]");
+                switch(code)
+                {
+                    case "dd":
+                        return (end - start).Days.ToString();
+                    case "mm":
+                        return ((end.Month - start.Month) + 12 * (end.Year - start.Year)).ToString();
+                    case "yy":
+                        return (end.Year - start.Year).ToString();
+                }
                 return (end - start).Days.ToString();
             }
 
