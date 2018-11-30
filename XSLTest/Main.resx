@@ -141,6 +141,9 @@
   <data name="textBox1.Text" xml:space="preserve">
     <value>Select a main entry XSL above. If any missing variables are found while compiling, they will be placed in the starting parameters. Add/Edit any other starting parameters you wish to have. Select in input XML file. Once the file is loaded, make any edits you wish to in the text box that populates with the XML. Then press Start Transform and laugh as it completes before your very eyes.</value>
   </data>
+  <metadata name="findReplace1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>791, 18</value>
+  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

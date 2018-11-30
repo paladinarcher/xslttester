@@ -54,6 +54,7 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button4 = new System.Windows.Forms.Button();
+            this.findReplace1 = new ScintillaNET_FindReplaceDialog.FindReplace();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -126,7 +127,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.groupBox2);
-            this.splitContainer1.Size = new System.Drawing.Size(1150, 598);
+            this.splitContainer1.Size = new System.Drawing.Size(1150, 637);
             this.splitContainer1.SplitterDistance = 538;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -144,8 +145,8 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.groupBox1);
-            this.splitContainer3.Size = new System.Drawing.Size(538, 598);
-            this.splitContainer3.SplitterDistance = 151;
+            this.splitContainer3.Size = new System.Drawing.Size(538, 637);
+            this.splitContainer3.SplitterDistance = 82;
             this.splitContainer3.TabIndex = 1;
             // 
             // groupBox3
@@ -154,7 +155,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(0, 0);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(538, 151);
+            this.groupBox3.Size = new System.Drawing.Size(538, 82);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Starting Parameters";
@@ -167,7 +168,7 @@
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(3, 16);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(532, 132);
+            this.dataGridView1.Size = new System.Drawing.Size(532, 63);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.DataSourceChanged += new System.EventHandler(this.dataGridView1_DataSourceChanged);
             this.dataGridView1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView1_RowsAdded);
@@ -180,7 +181,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(538, 443);
+            this.groupBox1.Size = new System.Drawing.Size(538, 551);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Input";
@@ -196,10 +197,12 @@
             this.richTextBox1.Lexer = ScintillaNET.Lexer.Xml;
             this.richTextBox1.Location = new System.Drawing.Point(3, 47);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(532, 393);
+            this.richTextBox1.Size = new System.Drawing.Size(532, 504);
             this.richTextBox1.TabIndex = 2;
             this.richTextBox1.Technology = ScintillaNET.Technology.DirectWrite;
             this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
+            this.richTextBox1.Enter += new System.EventHandler(this.richTextBox_Enter);
+            this.richTextBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.genericScintilla_KeyDown);
             // 
             // button2
             // 
@@ -229,23 +232,27 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Location = new System.Drawing.Point(0, 0);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(608, 598);
+            this.groupBox2.Size = new System.Drawing.Size(608, 637);
             this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Output";
             // 
             // richTextBox2
             // 
+            this.richTextBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.richTextBox2.AutoCMaxHeight = 9;
-            this.richTextBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.richTextBox2.FontQuality = ScintillaNET.FontQuality.AntiAliased;
             this.richTextBox2.IdleStyling = ScintillaNET.IdleStyling.All;
             this.richTextBox2.Lexer = ScintillaNET.Lexer.Xml;
             this.richTextBox2.Location = new System.Drawing.Point(3, 16);
             this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.Size = new System.Drawing.Size(602, 579);
+            this.richTextBox2.Size = new System.Drawing.Size(602, 621);
             this.richTextBox2.TabIndex = 0;
             this.richTextBox2.Technology = ScintillaNET.Technology.DirectWrite;
+            this.richTextBox2.Enter += new System.EventHandler(this.richTextBox_Enter);
+            this.richTextBox2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.genericScintilla_KeyDown);
             // 
             // worker
             // 
@@ -258,7 +265,7 @@
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button3.BackColor = System.Drawing.SystemColors.Control;
             this.button3.Enabled = false;
-            this.button3.Location = new System.Drawing.Point(1026, 697);
+            this.button3.Location = new System.Drawing.Point(1026, 739);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(123, 23);
             this.button3.TabIndex = 4;
@@ -294,8 +301,8 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.splitContainer1);
-            this.splitContainer2.Size = new System.Drawing.Size(1150, 651);
-            this.splitContainer2.SplitterDistance = 49;
+            this.splitContainer2.Size = new System.Drawing.Size(1150, 693);
+            this.splitContainer2.SplitterDistance = 52;
             this.splitContainer2.TabIndex = 5;
             // 
             // groupBox4
@@ -304,7 +311,7 @@
             this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox4.Location = new System.Drawing.Point(0, 0);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(1150, 49);
+            this.groupBox4.Size = new System.Drawing.Size(1150, 52);
             this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Instructions";
@@ -317,7 +324,7 @@
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(1144, 30);
+            this.textBox1.Size = new System.Drawing.Size(1144, 33);
             this.textBox1.TabIndex = 0;
             this.textBox1.Text = resources.GetString("textBox1.Text");
             // 
@@ -332,12 +339,19 @@
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
+            // findReplace1
+            // 
+            this.findReplace1._lastReplaceHighlight = false;
+            this.findReplace1._lastReplaceLastLine = 0;
+            this.findReplace1._lastReplaceMark = false;
+            this.findReplace1.Scintilla = this.richTextBox1;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(1161, 732);
+            this.ClientSize = new System.Drawing.Size(1161, 774);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.splitContainer2);
             this.Controls.Add(this.button3);
@@ -399,6 +413,7 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button button4;
+        private ScintillaNET_FindReplaceDialog.FindReplace findReplace1;
     }
 }
 

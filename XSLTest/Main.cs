@@ -13,6 +13,7 @@ using System.Xml;
 using XSLTest.XSLT;
 using XSLTest.Query;
 using ScintillaNET;
+using ScintillaNET_FindReplaceDialog;
 
 namespace XSLTest
 {
@@ -31,6 +32,13 @@ namespace XSLTest
             openFileDialog2.Filter = "XML Files (*.xml)|*.xml|All files (*.*)|*.*";
             openFileDialog2.FileName = "";
             scintillaStyles();
+            findReplace1.Scintilla = richTextBox1;
+            findReplace1.KeyPressed += FindReplace1_KeyPressed;
+        }
+
+        private void FindReplace1_KeyPressed(object sender, KeyEventArgs e)
+        {
+            genericScintilla_KeyDown(sender, e);
         }
 
         private void scintillaStyles()
@@ -453,6 +461,62 @@ namespace XSLTest
             scintilla.Styles[Style.Xml.TagEnd].ForeColor = Color.Blue;
             scintilla.Styles[Style.Xml.DoubleString].ForeColor = Color.DeepPink;
             scintilla.Styles[Style.Xml.SingleString].ForeColor = Color.DeepPink;
+        }
+
+        private void richTextBox_Enter(object sender, EventArgs e)
+        {
+            findReplace1.Scintilla = (Scintilla)sender;
+        }
+
+        /// <summary>
+        /// Key down event for each Scintilla. Tie each Scintilla to this event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void genericScintilla_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.F)
+            {
+                findReplace1.ShowFind();
+                e.SuppressKeyPress = true;
+            }
+            else if (e.Shift && e.KeyCode == Keys.F3)
+            {
+                findReplace1.Window.FindPrevious();
+                e.SuppressKeyPress = true;
+            }
+            else if (e.KeyCode == Keys.F3)
+            {
+                findReplace1.Window.FindNext();
+                e.SuppressKeyPress = true;
+            }
+            else if (e.Control && e.KeyCode == Keys.H)
+            {
+                findReplace1.ShowReplace();
+                e.SuppressKeyPress = true;
+            }
+            else if (e.Control && e.KeyCode == Keys.I)
+            {
+                findReplace1.ShowIncrementalSearch();
+                e.SuppressKeyPress = true;
+            }
+            else if (e.Control && e.KeyCode == Keys.G)
+            {
+                GoTo MyGoTo = new GoTo((Scintilla)sender);
+                MyGoTo.ShowGoToDialog();
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        /// <summary>
+        /// Enter event tied to each Scintilla that will share a FindReplace dialog.
+        /// Tie each Scintilla to this event.
+        /// </summary>
+        /// <param name="sender">The Scintilla receiving focus</param>
+        /// <param name="e"></param>
+        private void genericScintilla1_Enter(object sender, EventArgs e)
+        {
+            findReplace1.Scintilla = (Scintilla)sender;
         }
     }
 }

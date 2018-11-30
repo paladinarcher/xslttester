@@ -39,6 +39,9 @@
     <Reference Include="ScintillaNET">
       <HintPath>.\ScintillaNET.dll</HintPath>
     </Reference>
+    <Reference Include="ScintillaNET.FindReplaceDialog">
+      <HintPath>.\ScintillaNET.FindReplaceDialog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
@@ -108,13 +111,19 @@
   <ItemGroup>
     <EmbeddedResource Include="GotDotNet.Exslt.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="ScintillaNET.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ScintillaNET FindReplaceDialog.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Refresh.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
