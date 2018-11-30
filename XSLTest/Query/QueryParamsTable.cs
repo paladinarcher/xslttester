@@ -15,6 +15,8 @@ namespace XSLTest.Query
             TableName = "QueryParameters";
             Columns.Add(new DataColumn("Name", typeof(string)));
             Columns.Add(new DataColumn("Value", typeof(string)));
+            Columns.Add(new DataColumn("AddParam", typeof(bool)));
+            Columns.Add(new DataColumn("SetParam", typeof(bool)));
         }
 
         public void LoadXml(String xml)

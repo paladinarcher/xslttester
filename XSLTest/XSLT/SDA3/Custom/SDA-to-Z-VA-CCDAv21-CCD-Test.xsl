@@ -3048,144 +3048,226 @@
           <xsl:comment> Immunizations section </xsl:comment>
           <component>
             <xsl:comment> ******************************************************** IMMUNIZATIONS SECTION, Optional ******************************************************** </xsl:comment>
-            <section>
-              <xsl:comment> CCD Immunization Section Entries REQUIRED </xsl:comment>
-              <templateId root="2.16.840.1.113883.10.20.22.2.2.1" extension="2015-08-01" />
-              <templateId root="2.16.840.1.113883.10.20.22.2.2" />
-              <code code="11369-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Immunization"/>
-              <title>Immunizations: All on record at VA</title>
-              <text>
-                <paragraph>
-                  <content ID="immsectionTime">Section Date Range: From patient's date of birth to the date document was created.</content>
-                </paragraph>
-                <xsl:comment> VA Immunization Business Rules for Medical Content </xsl:comment>
-                <paragraph>This section includes Immunizations on record with VA for the patient. The data comes from all VA treatment facilities. A reaction to an immunization may also be reported in the Allergy section.</paragraph>
-                <table MAP_ID="immunizationNarrative">
-                  <thead>
-                    <tr>
-                      <th>Immunization</th>
-                      <th>Series</th>
-                      <th>Date Issued</th>
-                      <th>Reaction</th>
-                      <th>Comments</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <content ID="indImmunization" />
-                      </td>
-                      <td>
-                        <content ID="indSeries" />
-                      </td>
-                      <td />
+            <!-- 
+              TODO 
+              If same CVX and admin date, most recent by time
+              Omit "Unspecified Formulation" 
+                -->
+            <xsl:variable name="immunies" select="Vaccinations/Vaccination"></xsl:variable>
+            <xsl:choose>
+              <xsl:when test="not(boolean($immunies))">
+                <section>
+                  <xsl:comment> CCD Immunization Section Entries REQUIRED </xsl:comment>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.2.1" extension="2015-08-01" />
+                  <templateId root="2.16.840.1.113883.10.20.22.2.2" />
+                  <code code="11369-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Immunization"/>
+                  <title>Immunizations: All on record at VA</title>
+                  <text>No Data Provided for This Section</text>
+                </section>
+              </xsl:when>
+              <xsl:otherwise>
+                <section>
+                  <xsl:comment> CCD Immunization Section Entries REQUIRED </xsl:comment>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.2.1" extension="2015-08-01" />
+                  <templateId root="2.16.840.1.113883.10.20.22.2.2" />
+                  <code code="11369-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Immunization"/>
+                  <title>Immunizations: All on record at VA</title>
+                  <text>
+                    <paragraph>
+                      <content ID="immsectionTime">Section Date Range: From patient's date of birth to the date document was created.</content>
+                    </paragraph>
+                    <xsl:comment> VA Immunization Business Rules for Medical Content </xsl:comment>
+                    <paragraph>This section includes Immunizations on record with VA for the patient. The data comes from all VA treatment facilities. A reaction to an immunization may also be reported in the Allergy section.</paragraph>
+                    <table MAP_ID="immunizationNarrative">
+                      <thead>
+                        <tr>
+                          <th>Immunization</th>
+                          <th>Series</th>
+                          <th>Date Issued</th>
+                          <th>Reaction</th>
+                          <th>Comments</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="$immunies" >
+                          <xsl:sort select="FromTime" order="descending" />
+                          <xsl:sort select="OrderItem/Description" />
+                          <xsl:variable name="curImmEnc" select="EncounterNumber" />
+                          <tr>
+                            <td>
+                              <content ID="{concat('indImmunization', position())}" >
+                                <xsl:value-of select="OrderItem/Description/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('indSeries', position())}">
+                                <xsl:value-of select="Administrations/Administration/AdministrationStatus/Description/text()" />
+                              </content>
+                            </td>
+                            <td >
+                              <xsl:value-of select="FromTime/text()" />
+                            </td>
 
-                      <td>
-                        <content ID="indReaction" />
-                      </td>
-                      <td>
-                        <content ID="indComments" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </text>
-              <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
-              <entry typeCode="DRIV">
-                <observation classCode="OBS" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
-                  <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range"/>
-                  <text>
-                    <reference value='#immsectionTime' />
+                            <td>
+                              <content ID="{concat('indReaction', position())}">
+                                <xsl:value-of select="Extension/Reaction/Description/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('indComments', position())}" >
+                                <xsl:choose>
+                                  <xsl:when test="Extension/IsContraindicated/text() = 'false' and boolean(Administrations/Administration/AdministrationNotes/Description)">
+                                    <xsl:value-of select="Administrations/Administration/AdministrationNotes/Description/text()" />
+                                  </xsl:when>
+                                  <xsl:when test="Extension/IsContraindicated/text() = 'true' and boolean(Administrations/Administration/AdministrationNotes/Description)">
+                                    <xsl:value-of select="Administrations/Administration/AdministrationNotes/Description/text()" /><br /><br />
+                                    CONTRAINDICATION=DO NOT REPEAT THIS VACCINE
+                                  </xsl:when>
+                                  <xsl:otherwise>
+                                    <xsl:value-of select="Comments/text()" />
+                                  </xsl:otherwise>
+                                </xsl:choose>
+                              </content>
+                            </td>
+                          </tr>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
                   </text>
-                  <statusCode code="completed"/>
-                  <value xsi:type="IVL_TS">
-                    <low value="{$patientBirthDate}" />
-                    <high value="{$documentCreatedOn}" />
-                  </value>
-                </observation>
-              </entry>
-              <entry typeCode='DRIV'>
-                <xsl:comment> CCD Immunization Activity Entry, REQUIRED </xsl:comment>
-                <xsl:comment> 13.01 IMMUNIZATION REFUSAL (negation ind="true"), REQUIRED </xsl:comment>
-                <substanceAdministration classCode="SBADM" moodCode="EVN" negationInd="false">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.52" extension="2015-08-01"/>
-                  <id nullFlavor="NA" />
-                  <text>
-                    <reference value="#indComments" />
-                  </text>
-                  <statusCode code="completed" />
-                  <effectiveTime />
-                  <xsl:comment> C-CDA R2.1 Immunization Medication Series Nbr </xsl:comment>
-                  <repeatNumber />
-                  <routeCode codeSystem="2.16.840.1.113883.3.26.1.1" codeSystemName="FDA Route of Administration">
-                    <originalText />
-                  </routeCode>
-                  <approachSiteCode>
-                    <originalText />
-                  </approachSiteCode>
-                  <consumable>
-                    <manufacturedProduct classCode="MANU">
-                      <templateId root="2.16.840.1.113883.10.20.22.4.54" extension="2014-06-09"/>
-                      <manufacturedMaterial>
-                        <xsl:comment> 13.06 CODED IMMUNIZATION PRODUCT NAME </xsl:comment>
-                        <code codeSystemName="Vaccine Administered (CVX code)" codeSystem="2.16.840.1.113883.6.59">
-                          <originalText>
-                            <reference />
-                          </originalText>
-                          <translation codeSystem='2.16.840.1.113883.6.12' codeSystemName='Current Procedural Terminology (CPT) Fourth Edition (CPT-4)' />
-                        </code>
-                        <lotNumberText>#immLot</lotNumberText>
-                      </manufacturedMaterial>
-                      <manufacturerOrganization>
-                        <name/>
-                      </manufacturerOrganization>
-                    </manufacturedProduct>
-                  </consumable>
-                  <performer>
-                    <assignedEntity>
-                      <xsl:comment> CCD Provider ID, extension = VA Provider ID, root=VA OID, REQUIRED </xsl:comment>
-                      <id extension="providerID" root="2.16.840.1.113883.4.349" />
-                      <assignedPerson>
-                        <xsl:comment> CCD Provider Name, REQUIRED </xsl:comment>
-                        <name />
-                      </assignedPerson>
-                    </assignedEntity>
-                  </performer>
-                  <xsl:comment> INFORMATION SOURCE FOR IMMUNIZATION, Optional </xsl:comment>
-                  <author>
-                    <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <time nullFlavor="NA" />
-                    <assignedAuthor>
-                      <id nullFlavor="NA" />
-                      <representedOrganization>
-                        <xsl:comment> INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING FACILITY NBR) </xsl:comment>
-                        <id root="2.16.840.1.113883.4.349" />
-                        <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
-                        <name />
-                      </representedOrganization>
-                    </assignedAuthor>
-                  </author>
-                  <xsl:comment> IMMUNIZATION REACTION </xsl:comment>
-                  <entryRelationship typeCode="CAUS" inversionInd="true">
+                  <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
+                  <entry typeCode="DRIV">
                     <observation classCode="OBS" moodCode="EVN">
-                      <templateId root="2.16.840.1.113883.10.20.22.4.9" extension="2014-06-09" />
-                      <id nullFlavor="NA" />
-                      <code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" />
+                      <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
+                      <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range"/>
                       <text>
-                        <reference value="#pndimmunization_rxn_n"/>
+                        <reference value='#immsectionTime' />
                       </text>
-                      <statusCode code="completed" />
-                      <effectiveTime>
-                        <low nullFlavor="UNK"/>
-                      </effectiveTime>
-                      <value nullFlavor="UNK" xsi:type="CD"/>
+                      <statusCode code="completed"/>
+                      <value xsi:type="IVL_TS">
+                        <low value="{$patientBirthDate}" />
+                        <high value="{$documentCreatedOn}" />
+                      </value>
                     </observation>
-                  </entryRelationship>
-                  <xsl:comment> 13.10 REFUSAL REASON ENTRY, Optional, VA provides administered immunizations only </xsl:comment>
-                </substanceAdministration>
-              </entry>
-            </section>
+                  </entry>
+                  <xsl:for-each select="$immunies" >
+                    <xsl:sort select="FromTime" order="descending" />
+                    <xsl:sort select="OrderItem/Description" />
+                    <xsl:variable name="curImmEnc" select="EncounterNumber" />
+                    <entry typeCode='DRIV'>
+                      <xsl:comment> CCD Immunization Activity Entry, REQUIRED </xsl:comment>
+                      <xsl:comment> 13.01 IMMUNIZATION REFUSAL (negation ind="true"), REQUIRED </xsl:comment>
+                      <substanceAdministration classCode="SBADM" moodCode="EVN" negationInd="false">
+                        <templateId root="2.16.840.1.113883.10.20.22.4.52" extension="2015-08-01"/>
+                        <id nullFlavor="NA" />
+                        <text>
+                          <reference value="{concat('#indComments', position())}" />
+                        </text>
+                        <statusCode code="completed" />
+                        <effectiveTime value="{FromTime/text()}" />
+                        <xsl:comment> C-CDA R2.1 Immunization Medication Series Nbr </xsl:comment>
+                        <xsl:choose>
+                          <xsl:when test="boolean(Administrations/Administration/AdministrationStatus/Description)">
+                            <repeatNumber value="{Administrations/Administration/AdministrationStatus/Description/text()}"/>
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <repeatNumber nullFlavor="NI" />
+                          </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:choose>
+                          <xsl:when test="boolean(Route/Code)">
+                            <routeCode code="{Route/Code/text()}" displayName="{Route/Description/text()}" codeSystem="2.16.840.1.113883.3.26.1.1" codeSystemName="FDA Route of Administration">
+                              <originalText><xsl:value-of select="Route/OriginalText"/></originalText>
+                            </routeCode>
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <routeCode codeSystem="2.16.840.1.113883.3.26.1.1" codeSystemName="FDA Route of Administration" nullFlavor="UNK">
+                              <originalText><xsl:value-of select="Route/OriginalText"/></originalText>
+                            </routeCode>
+                          </xsl:otherwise>
+                        </xsl:choose>
+                        <approachSiteCode nullFlavor="UNK">
+                          <xsl:if test="boolean(Administrations/Administration/AdministrationSite)">
+                            <originalText>
+                              <xsl:value-of select="Administrations/Administration/AdministrationSite/Description/text()"/>
+                            </originalText>
+                          </xsl:if>
+                        </approachSiteCode>
+                        <consumable>
+                          <manufacturedProduct classCode="MANU">
+                            <templateId root="2.16.840.1.113883.10.20.22.4.54" extension="2014-06-09"/>
+                            <manufacturedMaterial>
+                              <xsl:comment> 13.06 CODED IMMUNIZATION PRODUCT NAME </xsl:comment>
+                              <xsl:choose>
+                                <xsl:when test="boolean(OrderItem/Code)">
+                              <code code="{OrderItem/Code/text()}" displayName="{OrderItem/Description/text()}" codeSystemName="Vaccine Administered (CVX code)" codeSystem="2.16.840.1.113883.6.59">
+                                <originalText>
+                                  <reference value="{concat('#indImmunization', position())}"/>
+                                </originalText>
+                              </code>
+                                </xsl:when>
+                                <xsl:otherwise>
+                              <code codeSystemName="Vaccine Administered (CVX code)" codeSystem="2.16.840.1.113883.6.59" nullFlavor="UNK">
+                                <originalText>
+                                  <reference value="{concat('#indImmunization', position())}"/>
+                                </originalText>
+                                <translation code="{Extension/CPT/Code/text()}" displayName="{Extension/CPT/Description/text()}" codeSystem='2.16.840.1.113883.6.12' codeSystemName='Current Procedural Terminology (CPT) Fourth Edition (CPT-4)' />
+                              </code>
+                              </xsl:otherwise>
+                              </xsl:choose>
+                              <lotNumberText>#immLot</lotNumberText>
+                            </manufacturedMaterial>
+                            <manufacturerOrganization>
+                              <name/>
+                            </manufacturerOrganization>
+                          </manufacturedProduct>
+                        </consumable>
+                        <performer>
+                          <assignedEntity>
+                            <xsl:comment> CCD Provider ID, extension = VA Provider ID, root=VA OID, REQUIRED </xsl:comment>
+                            <id extension="providerID" root="2.16.840.1.113883.4.349" />
+                            <assignedPerson>
+                              <xsl:comment> CCD Provider Name, REQUIRED </xsl:comment>
+                              <name />
+                            </assignedPerson>
+                          </assignedEntity>
+                        </performer>
+                        <xsl:comment> INFORMATION SOURCE FOR IMMUNIZATION, Optional </xsl:comment>
+                        <author>
+                          <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                          <time nullFlavor="NA" />
+                          <assignedAuthor>
+                            <id nullFlavor="NA" />
+                            <representedOrganization>
+                              <xsl:comment> INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING FACILITY NBR) </xsl:comment>
+                              <id root="2.16.840.1.113883.4.349" />
+                              <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
+                              <name />
+                            </representedOrganization>
+                          </assignedAuthor>
+                        </author>
+                        <xsl:comment> IMMUNIZATION REACTION </xsl:comment>
+                        <entryRelationship typeCode="CAUS" inversionInd="true">
+                          <observation classCode="OBS" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.22.4.9" extension="2014-06-09" />
+                            <id nullFlavor="NA" />
+                            <code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" />
+                            <text>
+                              <reference value="#pndimmunization_rxn_n"/>
+                            </text>
+                            <statusCode code="completed" />
+                            <effectiveTime>
+                              <low nullFlavor="UNK"/>
+                            </effectiveTime>
+                            <value nullFlavor="UNK" xsi:type="CD"/>
+                          </observation>
+                        </entryRelationship>
+                        <xsl:comment> 13.10 REFUSAL REASON ENTRY, Optional, VA provides administered immunizations only </xsl:comment>
+                      </substanceAdministration>
+                    </entry>
+                  </xsl:for-each>
+                </section>
+              </xsl:otherwise>
+            </xsl:choose>
           </component>
           <xsl:comment> Procedures section </xsl:comment>
           <component>

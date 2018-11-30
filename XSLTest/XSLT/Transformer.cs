@@ -62,7 +62,7 @@ namespace XSLTest.XSLT
             catch (System.Xml.Xsl.XsltException e)
             {
                 string msg = e.Message;
-                if (msg.IndexOf("variable or parameter ") < 0)
+                if (msg.IndexOf("variable or parameter ") < 0 || msg.IndexOf("not defined or it is out of scope") < 0)
                 {
                     throw e;
                 }
@@ -71,7 +71,7 @@ namespace XSLTest.XSLT
                 int en = msg.IndexOf("'", st);
                 string variable = msg.Substring(st, en - st);
                 string newVal = "UNKNOWN_VARIABLE_"+variable;
-                AddParameter(variable, newVal);
+                AddParameter(variable, newVal, true, true);
                 OnParameterEmergencyAdded(new OnParameterEmergencyArgs(variable, newVal, e));
                 filloutTmpFile(originalFilePath);
                 XmlTextReader tmp = new XmlTextReader(tmpWrapperFilename);
@@ -101,16 +101,26 @@ namespace XSLTest.XSLT
             {
                 string n = (string)r["Name"];
                 string v = (string)r["Value"];
-                AddParameter(n, v);
+                if(r["AddParam"].GetType() == typeof(DBNull)) { r["AddParam"] = true; }
+                if(r["SetParam"].GetType() == typeof(DBNull)) { r["SetParam"] = true; }
+                bool a = (bool)(r["AddParam"]);
+                bool s = (bool)(r["SetParam"]);
+                AddParameter(n, v, a, s);
             }
         }
 
-        public void AddParameter(string name, string value)
+        public void AddParameter(string name, string value, bool addParam, bool setParam)
         {
-            xslArgs.RemoveParam(name, "");
-            xslArgs.AddParam(name, "", value);
-            if (args.ContainsKey(name)) { args[name] = value; }
-            else { args.Add(name, value); }
+            if (setParam)
+            {
+                xslArgs.RemoveParam(name, "");
+                xslArgs.AddParam(name, "", value);
+            }
+            if (addParam)
+            {
+                if (args.ContainsKey(name)) { args[name] = value; }
+                else { args.Add(name, value); }
+            }
         }
 
         public void TransformXML(Stream instream, Stream outstream)
