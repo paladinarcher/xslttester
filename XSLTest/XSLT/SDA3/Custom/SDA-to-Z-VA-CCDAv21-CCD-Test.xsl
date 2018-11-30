@@ -3594,132 +3594,170 @@
           <component>
             <xsl:comment> ******************************************************** PLAN OF 
                 CARE SECTION, Optional ******************************************************** </xsl:comment>
-            <section>
-              <xsl:comment> CCD Plan of Care Section Entries </xsl:comment>
-              <templateId root="2.16.840.1.113883.10.20.22.2.10" extension="2014-06-09"/>
-              <code code="18776-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Plan of care note" />
-              <title>Plan of Treatment: Future Appointments and Active/Pending Orders</title>
-              <text>
-                <paragraph>
-                  <content ID="treatmentTime">The Plan of Treatment section contains future care activities for the patient from all VA treatment facilities. This section includes future appointments (within the next 6 months) and future orders (within +/- 45 days) which are active, pending or scheduled.</content>
-                </paragraph>
-                <paragraph MAP_ID="futureAppointmentsTitle">
-                  <content styleCode="Bold">Future Appointments</content>
-                </paragraph>
-                <paragraph MAP_ID="futureAppointmentsRules">
-                  This section includes up to a maximum of 20 appointments scheduled over the next 6 months. Some types of appointments may not be included. Contact the VA health care team if there are questions.
-                </paragraph>
-                <table MAP_ID="futureAppointments">
-                  <thead>
-                    <tr>
-                      <th>Appointment Date/Time</th>
-                      <th>Appointment Type</th>
-                      <th>Appointment Facility Name</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <content ID="apptDateTime" />
-                      </td>
-                      <td>
-                        <content ID="apptType" />
-                      </td>
-                      <td>
-                        <content ID="apptFacility" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <paragraph MAP_ID="futureScheduledTestsTitle">
-                  <content styleCode="Bold">Active, Pending, and Scheduled Orders</content>
-                </paragraph>
-                <paragraph MAP_ID="futureScheduledTestsRules">
-                  This section includes a listing of several types of active, pending, and scheduled orders, including clinic medication orders, diagnostic test orders, procedure orders, and consult orders; where the start date of the order is 45 days before or after the date this document was created.
-                </paragraph>
-                <table MAP_ID="futureScheduledTests">
-                  <thead>
-                    <tr>
-                      <th>Test Date/Time</th>
-                      <th>Test Type</th>
-                      <th>Test Details</th>
-                      <th>Facility Name</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <content ID="orderDateTime" />
-                      </td>
-                      <td>
-                        <content ID="contentType" />
-                      </td>
-                      <td>
-                        <content ID="orderDetails" />
-                      </td>
-                      <td>
-                        <content ID="orderFacilityName" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </text>
-              <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
-              <entry typeCode="DRIV" >
-                <observation classCode="OBS" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
-                  <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range"/>
+            <xsl:variable name="planOfCare" select="Appointments/Appointment[isc:evaluate('dateDiff','mm',FromTime,isc:evaluate('xmltimestamp',isc:evaluate('timestamp'))) &lt; 1] | LabOrders/LabOrder[isc:evaluate('dateDiff','mm',FromTime,isc:evaluate('xmltimestamp',isc:evaluate('timestamp'))) &lt; 1] | OtherOrders/OtherOrder[isc:evaluate('dateDiff','mm',FromTime,isc:evaluate('xmltimestamp',isc:evaluate('timestamp'))) &lt; 1] | RadOrders/RadOrder[isc:evaluate('dateDiff','mm',FromTime,isc:evaluate('xmltimestamp',isc:evaluate('timestamp'))) &lt; 1]" />
+            <xsl:choose>
+              <xsl:when test="not(boolean($planOfCare))">
+                <section nullFlavor="NI">
+                  <xsl:comment> CCD Plan of Care Section Entries </xsl:comment>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.10" extension="2014-06-09"/>
+                  <code code="18776-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Plan of care note" />
+                  <title>Plan of Treatment: Future Appointments and Active/Pending Orders</title>
+                  <text>No Data Provided for This Section</text>
+                </section>
+              </xsl:when>
+              <xsl:otherwise>
+                <section>
+                  <xsl:comment> CCD Plan of Care Section Entries </xsl:comment>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.10" extension="2014-06-09"/>
+                  <code code="18776-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Plan of care note" />
+                  <title>Plan of Treatment: Future Appointments and Active/Pending Orders</title>
                   <text>
-                    <reference value="#treatmentTime"/>
+                    <paragraph>
+                      <content ID="treatmentTime">The Plan of Treatment section contains future care activities for the patient from all VA treatment facilities. This section includes future appointments (within the next 6 months) and future orders (within +/- 45 days) which are active, pending or scheduled.</content>
+                    </paragraph>
+                    <paragraph>
+                      <content styleCode="Bold">Future Appointments</content>
+                    </paragraph>
+                    <paragraph>
+                      This section includes up to a maximum of 20 appointments scheduled over the next 6 months. Some types of appointments may not be included. Contact the VA health care team if there are questions.
+                    </paragraph>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Appointment Date/Time</th>
+                          <th>Appointment Type</th>
+                          <th>Appointment Facility Name</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="$planOfCare">
+                          <xsl:if test="local-name() = 'Appointment'">
+                            <tr>
+                              <td>
+                                <content ID="{concat('apptDateTime',position())}">
+                                  <xsl:value-of select="FromTime/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('apptType',position())}" >
+                                  <xsl:value-of select="Type/Description/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('apptFacility',position())}" >
+                                  <xsl:value-of select="EnteredAt/Description/text()" />
+                                </content>
+                              </td>
+                            </tr>
+                          </xsl:if>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
+                    <paragraph MAP_ID="futureScheduledTestsTitle">
+                      <content styleCode="Bold">Active, Pending, and Scheduled Orders</content>
+                    </paragraph>
+                    <paragraph MAP_ID="futureScheduledTestsRules">
+                      This section includes a listing of several types of active, pending, and scheduled orders, including clinic medication orders, diagnostic test orders, procedure orders, and consult orders; where the start date of the order is 45 days before or after the date this document was created.
+                    </paragraph>
+                    <table MAP_ID="futureScheduledTests">
+                      <thead>
+                        <tr>
+                          <th>Test Date/Time</th>
+                          <th>Test Type</th>
+                          <th>Test Details</th>
+                          <th>Facility Name</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="$planOfCare">
+                          <xsl:if test="not(local-name() = 'Appointment')">
+                            <tr>
+                              <td>
+                                <content ID="{concat('orderDateTime',position())}">
+                                  <xsl:value-of select="FromTime/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('contentType',position())}">
+                                  <xsl:value-of select="OrderCategory/Description/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('orderDetails',position())}">
+                                  <xsl:value-of select="Extension/Content/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('orderFacilityName',position())}">
+                                  <xsl:value-of select="EnteredAt/Description/text()" />
+                                </content>
+                              </td>
+                            </tr>
+                          </xsl:if>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
                   </text>
-                  <statusCode code="completed"/>
-                  <value xsi:type="IVL_TS">
-                    <low value="$planOfCareStart" />
-                    <high value="$planOfCareEnd" />
-                  </value>
-                </observation>
-              </entry>
-              <xsl:comment> PLAN OF CARE (POC) STRUCTURED DATA </xsl:comment>
-              <xsl:comment>
-                CCD Plan of Care (POC) Activity Encounter (Future VA Appointments,
-                Future Scheduled Tests, Wellness Reminders), Optional
-              </xsl:comment>
-              <entry>
-                <encounter classCode="ENC" moodCode="INT">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.40" extension="2014-06-09"/>
-                  <!-- <id root="2.16.840.1.113883.4.349" /> -->
-                  <id nullFlavor="UNK"/>
-                  <code nullFlavor="UNK">
-                    <originalText>
-                      <reference />
-                    </originalText>
-                  </code>
-                  <statusCode code="active"/>
-                  <effectiveTime />
-                  <participant typeCode="LOC">
-                    <participantRole classCode="SDLOC">
-                      <templateId root="2.16.840.1.113883.10.20.22.4.32"/>
-                      <code nullFlavor="UNK"/>
-                      <addr nullFlavor="UNK" />
-                      <telecom nullFlavor="UNK"/>
-                      <playingEntity classCode="PLC">
-                        <name />
-                      </playingEntity>
-                    </participantRole>
-                  </participant>
-                  <entryRelationship inversionInd="true" typeCode='SUBJ'>
-                    <act classCode="ACT" moodCode="INT">
-                      <templateId root="2.16.840.1.113883.10.20.22.4.20" extension="2014-06-09" />
-                      <code xsi:type="CE" code="409073007" codeSystem="2.16.840.1.113883.6.96" displayName="Instruction" codeSystemName="SNOMED CT" />
+                  <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
+                  <entry typeCode="DRIV" >
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
+                      <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range"/>
                       <text>
-                        <reference />
+                        <reference value="#treatmentTime"/>
                       </text>
-                      <statusCode code="completed" />
-                    </act>
-                  </entryRelationship>
-                </encounter>
-              </entry>
-            </section>
+                      <statusCode code="completed"/>
+                      <value xsi:type="IVL_TS">
+                        <low value="$planOfCareStart" />
+                        <high value="$planOfCareEnd" />
+                      </value><!-- TODO: Dates-->
+                    </observation>
+                  </entry>
+                  <xsl:comment> PLAN OF CARE (POC) STRUCTURED DATA </xsl:comment>
+                  <xsl:comment>
+                    CCD Plan of Care (POC) Activity Encounter (Future VA Appointments,
+                    Future Scheduled Tests, Wellness Reminders), Optional
+                  </xsl:comment>
+                  <xsl:for-each select="$planOfCare">
+                    <entry>
+                      <encounter classCode="ENC" moodCode="INT">
+                        <templateId root="2.16.840.1.113883.10.20.22.4.40" extension="2014-06-09"/>
+                        <!-- <id root="2.16.840.1.113883.4.349" /> -->
+                        <id nullFlavor="UNK"/>
+                        <code nullFlavor="UNK">
+                          <originalText>
+                            <reference value="{concat('#contentType',position())}"/>
+                          </originalText>
+                        </code>
+                        <statusCode code="active"/>
+                        <effectiveTime value="{FromTime/text()}"/>
+                        <participant typeCode="LOC">
+                          <participantRole classCode="SDLOC">
+                            <templateId root="2.16.840.1.113883.10.20.22.4.32"/>
+                            <code nullFlavor="UNK"/>
+                            <addr nullFlavor="UNK" />
+                            <telecom nullFlavor="UNK"/>
+                            <playingEntity classCode="PLC">
+                              <name><xsl:value-of select="EnteredBy/Description/text()"/></name>
+                            </playingEntity>
+                          </participantRole>
+                        </participant>
+                        <entryRelationship inversionInd="true" typeCode='SUBJ'>
+                          <act classCode="ACT" moodCode="INT">
+                            <templateId root="2.16.840.1.113883.10.20.22.4.20" extension="2014-06-09" />
+                            <code xsi:type="CE" code="409073007" codeSystem="2.16.840.1.113883.6.96" displayName="Instruction" codeSystemName="SNOMED CT" />
+                            <text>
+                              <reference value="{concat('#contentType',position())}"/>
+                            </text>
+                            <statusCode code="completed" />
+                          </act>
+                        </entryRelationship>
+                      </encounter>
+                    </entry>
+                  </xsl:for-each>
+                </section>
+              </xsl:otherwise>
+            </xsl:choose>
           </component>
           <component>
             <xsl:comment> ******************************************************** PROBLEM/CONDITION 
