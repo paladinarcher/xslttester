@@ -147,8 +147,7 @@
           <xsl:comment>10.02 AUTHOR NAME REQUIRED as representedOrganization </xsl:comment> 
           <representedOrganization>
             <xsl:comment>
-              10.02 AUTHORING DEVICE ORGANIZATION OID (VA OID) (deviceOrgOID),
-              REQUIRED </xsl:comment> 
+              10.02 AUTHORING DEVICE ORGANIZATION OID (VA OID) (deviceOrgOID), REQUIRED </xsl:comment> 
             <id nullFlavor="NI" />
             <xsl:comment>10.02 AUTHORING DEVICE ORGANIZATION NAME (deviceOrgName), REQUIRED </xsl:comment>
             <name>Department of Veterans Affairs</name>
@@ -225,7 +224,8 @@
             <name>Department of Veterans Affairs</name>
           </assignedPerson>
           <representedOrganization>
-            <id nullFlavor="NI" />
+            <xsl:comment> LEGAL AUTHENTICATOR OID (VA) </xsl:comment>
+            <id root="2.16.840.1.113883.4.349" />
             <name>Department of Veterans Affairs</name>
             <addr>
               <streetAddressLine>810 Vermont Avenue NW</streetAddressLine>
@@ -333,7 +333,7 @@
                             <td>
                               <content>
                                 <xsl:attribute name="ID"><xsl:value-of select="concat('insExpirationDate',position())" /></xsl:attribute>
-                                <xsl:value-of select="HealthFund/ExpDate/text()" /><!-- TODO: Need to know where exp date gets mapped into SDA, don't have it in test data-->
+                                <xsl:value-of select="HealthFund/ToTime/text()" /><!-- TODO: Need to know where exp date gets mapped into SDA, don't have it in test data-->
                               </content>
                             </td>
 
@@ -414,8 +414,8 @@
                               <low value="{HealthFund/FromTime/text()}"/>
                               <xsl:comment>5.07 VistA Policy Expiration  Date</xsl:comment> 
                               <xsl:choose>
-                                <xsl:when test="boolean(HealthFund/ExpTime)"> <!-- TODO: Where is the exp date really? -->
-                                  <high value="{HealthFund/ExpTime/text()}" />
+                                <xsl:when test="boolean(HealthFund/ToTime)"> <!-- TODO: Where is the exp date really? DS: changed to 'ToTime'-->
+                                  <high value="{HealthFund/ToTime/text()}" />
                                 </xsl:when>
                                 <xsl:otherwise>
                                   <high nullFlavor="NA" />                                  
@@ -464,7 +464,7 @@
                                 <xsl:comment>5.09 PATIENT RELATIONSHIP TO SUBSCRIBER, REQUIRED, HL7 Coverage Role Type 
                                 </xsl:comment>
                                 <code nullFlavor="UNK" codeSystem="2.16.840.1.113883.5.111" codeSystemName="RoleCode">
-                                  <!-- TODO: um, what? -->
+                                  <!-- TODO: need VETS translated HL7 code for relationship type -->
                                   <originalText>
                                     <reference value="{concat('#insRelationship',position())}"/>
                                   </originalText>

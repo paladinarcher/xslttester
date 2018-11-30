@@ -36,7 +36,7 @@
       <recordTarget>
         <patientRole>
           <xsl:comment>1.02 PERSON ID, REQUIRED, id=VA OID, extension=GUID</xsl:comment>
-          <id root="2.16.840.1.113883.4.349" />
+          <id extension="{Patient/MPIID/text()}" root="2.16.840.1.113883.4.349" />
 
           <xsl:comment> 1.03 PERSON ADDRESS-HOME PERMANENT, REQUIRED </xsl:comment>
           <xsl:apply-templates select="Patient/Addresses" mode="standard-address">
@@ -110,6 +110,7 @@
       </xsl:comment>
       <xsl:comment>AUTHOR SECTION (REQUIRED) OF INFORMATION SOURCE CONTENT MODULE </xsl:comment>
       <author>
+        <templateId root="2.16.840.1.113883.10.20.22.4.119" />
         <xsl:comment> 10.01 AUTHOR TIME (=Document Creation Date), REQUIRED </xsl:comment>
         <time value="{$documentCreatedOn}" />
         <assignedAuthor>
@@ -125,19 +126,28 @@
           <assignedPerson>
             <name>Department of Veterans Affairs</name>
           </assignedPerson>
+          <assignedAuthoringDevice>
+            <manufacturerModelName>InterSystems</manufacturerModelName>
+            <softwareName>InterSystems HealthShare</softwareName>
+          </assignedAuthoringDevice>
           <xsl:comment>10.02 AUTHOR NAME REQUIRED as representedOrganization </xsl:comment>
           <representedOrganization>
             <xsl:comment>
-              10.02 AUTHORING DEVICE ORGANIZATION OID (VA OID) (deviceOrgOID),
-              REQUIRED
+              10.02 AUTHORING DEVICE ORGANIZATION OID (VA OID) (deviceOrgOID), REQUIRED
             </xsl:comment>
-            <id root="2.16.840.1.113883.4.349" />
+            <id nullFlavor="NI" />
             <xsl:comment>10.02 AUTHORING DEVICE ORGANIZATION NAME (deviceOrgName), REQUIRED </xsl:comment>
             <name>Department of Veterans Affairs</name>
             <xsl:comment>Assigned Author Telecom Required, but VA VistA data not yet available</xsl:comment>
             <telecom nullFlavor="NA" />
             <xsl:comment>Assigned Author Address Required, but VA VistA data not yet available </xsl:comment>
-            <addr nullFlavor="NA" />
+            <addr use="WP">
+              <streetAddressLine>810 Vermont Avenue, NW</streetAddressLine>
+              <city>Washington</city>
+              <state>DC</state>
+              <postalCode>20420</postalCode>
+              <country>US</country>
+            </addr>
           </representedOrganization>
         </assignedAuthor>
       </author>
@@ -154,17 +164,6 @@
             <xsl:comment>Name Required for informant/assignedEntity/assignedPerson </xsl:comment>
             <name>Department of Veterans Affairs</name>
           </assignedPerson>
-          <representedOrganization>
-            <xsl:comment>
-              10.06 INFORMATION SOURCE ORGANIZATION OID (VA OID) (sourceOrgOID),
-              REQUIRED
-            </xsl:comment>
-            <id root="2.16.840.1.113883.4.349" />
-            <xsl:comment> 10.06 INFORMATION SOURCE ORGANIZATION NAME (sourceOrgName), REQUIRED </xsl:comment>
-            <name>Department of Veterans Affairs</name>
-            <telecom nullFlavor="NA" />
-            <addr nullFlavor="NA" />
-          </representedOrganization>
         </assignedEntity>
       </informant>
       <xsl:comment>
@@ -179,13 +178,11 @@
             <xsl:comment>CUSTODIAN NAME</xsl:comment>
             <name>Department of Veterans Affairs</name>
             <xsl:comment>
-              Telecom Required for representedOrganization, but VA VistA data
-              not yet available
+              Telecom Required for representedOrganization, but VA VistA data not yet available
             </xsl:comment>
             <telecom nullFlavor="NA" />
             <xsl:comment>
-              Address Required for representedOrganization, but VA VistA data
-              not yet available
+              Address Required for representedOrganization, but VA VistA data not yet available
             </xsl:comment>
             <addr>
               <streetAddressLine>810 Vermont Avenue NW</streetAddressLine>
@@ -208,7 +205,13 @@
         <assignedEntity>
           <id nullFlavor="NI" />
           <code nullFlavor="NI" />
-          <addr nullFlavor="NA" />
+          <addr>
+            <streetAddressLine>810 Vermont Avenue NW</streetAddressLine>
+            <city>Washington</city>
+            <state>DC</state>
+            <postalCode>20420</postalCode>
+            <country>US</country>
+          </addr>
           <telecom nullFlavor="NA" />
           <assignedPerson>
             <name>Department of Veterans Affairs</name>
@@ -336,8 +339,9 @@
                                 <xsl:attribute name="ID">
                                   <xsl:value-of select="concat('insExpirationDate',position())" />
                                 </xsl:attribute>
-                                <xsl:value-of select="HealthFund/ExpDate/text()" />
-                                <!-- TODO: Need to know where exp date gets mapped into SDA, don't have it in test data-->
+                                <xsl:value-of select="HealthFund/ToTime/text()" />
+                                <!-- TODO: Need to know where exp date gets mapped into SDA, don't have it in test data
+                                      DS: mapped to ToTime, will need to add test data to test this-->
                               </content>
                             </td>
 
@@ -385,22 +389,6 @@
                       </tbody>
                     </table>
                   </text>
-                  <xsl:comment> PAYERS STRUCTURED DATA </xsl:comment>
-                  <xsl:comment> CCD Coverage Activity </xsl:comment>
-                  <entry >
-                    <observation classCode="OBS" moodCode="EVN">
-                      <templateId root="2.16.840.1.113883.10.20.22.4.201" />
-                      <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range"/>
-                      <text>
-                        <reference value="#payersTime" />
-                      </text>
-                      <statusCode code="completed"/>
-                      <value xsi:type="IVL_TS">
-                        <low value="{$patientBirthDate}" />
-                        <high value="{$documentCreatedOn}" />
-                      </value>
-                    </observation>
-                  </entry >
                   <xsl:comment>PAYERS STRUCTURED DATA</xsl:comment>
                   <xsl:for-each select="MemberEnrollments/MemberEnrollment">
                     <xsl:comment>CCD Coverage Activity</xsl:comment>
@@ -427,9 +415,9 @@
                               <low value="{HealthFund/FromTime/text()}"/>
                               <xsl:comment>5.07 VistA Policy Expiration  Date</xsl:comment>
                               <xsl:choose>
-                                <xsl:when test="boolean(HealthFund/ExpTime)">
-                                  <!-- TODO: Where is the exp date really? -->
-                                  <high value="{HealthFund/ExpTime/text()}" />
+                                <xsl:when test="boolean(HealthFund/ToTime)">
+                                  <!-- TODO: Where is the exp date really?  DS: changed to 'ToTime'-->
+                                  <high value="{HealthFund/ToTime/text()}" />
                                 </xsl:when>
                                 <xsl:otherwise>
                                   <high nullFlavor="NA" />
@@ -483,12 +471,23 @@
                                 <xsl:comment>
                                   5.09 PATIENT RELATIONSHIP TO SUBSCRIBER, REQUIRED, HL7 Coverage Role Type
                                 </xsl:comment>
-                                <code nullFlavor="UNK" codeSystem="2.16.840.1.113883.5.111" codeSystemName="RoleCode">
-                                  <!-- TODO: um, what? -->
-                                  <originalText>
-                                    <reference value="{concat('#insRelationship',position())}"/>
-                                  </originalText>
-                                </code>
+                                <xsl:choose>
+                                  <xsl:when test="boolean(HealthFund/InsuredRelationship/Code)">
+                                    <code code="" displayName="" codeSystem="2.16.840.1.113883.5.111" codeSystemName="RoleCode">
+                                      <!-- TODO: need VETS translated HL7 code for relationship type -->
+                                      <originalText>
+                                        <reference value="{concat('#insRelationship',position())}"/>
+                                      </originalText>
+                                    </code>
+                                  </xsl:when>
+                                  <xsl:otherwise>
+                                    <code nullFlavor="UNK" codeSystem="2.16.840.1.113883.5.111" codeSystemName="RoleCode">
+                                      <originalText>
+                                        <reference value="{concat('#insRelationship',position())}"/>
+                                      </originalText>
+                                    </code>
+                                  </xsl:otherwise>
+                                </xsl:choose>
                               </participantRole>
                             </participant>
                             <xsl:if test="not(HealthFund/InsuredRelationship/Code/text() = 'P')" >
@@ -857,14 +856,7 @@
                               <code code="48765-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Allergies, adverse reactions, alerts" />
                               <statusCode code="active" />
                               <effectiveTime>
-                                <xsl:choose>
-                                  <xsl:when test="boolean(VerifiedTime)">
-                                    <low value="{VerifiedTime/text()}" />
-                                  </xsl:when>
-                                  <xsl:otherwise>
-                                    <low value="{EnteredOn/text()}" />
-                                  </xsl:otherwise>
-                                </xsl:choose>
+                                <low nullFlavor="UNK" />
                               </effectiveTime>
                               <xsl:comment> INFORMATION SOURCE FOR ALLERGIES/DRUG, Optional </xsl:comment>
                               <author>
@@ -914,12 +906,13 @@
                                     <participantRole classCode="MANU">
                                       <playingEntity classCode="MMAT">
                                         <xsl:comment> 6.04 PRODUCT CODED,REQUIRED </xsl:comment>
+                                        <!--DS TODO: Insert translated data from VPR, once NDS patch utility is installed Allergy/Extension/DrugProducts/DrugProduct/Code&Description -->
                                         <code codeSystem="2.16.840.1.113883.6.88"  codeSystemName="RxNorm">
                                           <xsl:comment> 6.03 PRODUCT FREE TEXT, R2 </xsl:comment>
                                           <originalText>
                                             <reference value="{concat('#andAllergy',position())}" />
                                           </originalText>
-                                          <!-- TODO: Vets Translation here (RXNORM) Internal or VETS? -->
+                                          <!-- TODO: Vets Translation here (RXNORM) Internal or VETS? DS: Is translation still required here if VPR is providing native data?-->
                                           <translation codeSystem="2.16.840.1.113883.6.233" codeSystemName="VHA Enterprise Reference Terminology" />
                                         </code>
                                       </playingEntity>
@@ -933,16 +926,28 @@
                                         <id nullFlavor="NA" />
                                         <code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="HL7ActCode"/>
                                         <statusCode code="completed" />
-
                                         <xsl:comment> 6.06 REACTION CODED, REQUIRED </xsl:comment>
-                                        <!-- TODO: Internal Translation -->
-                                        <value   xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
-                                          <xsl:comment> 6.05 REACTION-FREE TEXT, optional, </xsl:comment>
-                                          <originalText>
-                                            <reference value="{concat('#andReaction', $allergyIndex, '-', position())}" />
-                                          </originalText>
-                                          <translation codeSystem="2.16.840.1.113883.6.233" codeSystemName="VHA Enterprise Reference Terminology" />
-                                        </value>
+                                        <!-- DS TODO: This will be provided by the VPR once NDS patch utility is applied -->
+                                        <xsl:choose>
+                                          <xsl:when test="boolean(Extension/Reactions/Reaction)">
+                                            <value code="{Code/text()}" displayName="{Description/text()}" xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                                              <xsl:comment> 6.05 REACTION-FREE TEXT, optional, </xsl:comment>
+                                              <originalText>
+                                                <reference value="{concat('#andReaction', $allergyIndex, '-', position())}" />
+                                              </originalText>
+                                              <!--DS TODO - do we still need translation if VPR Is providing native data?-->
+                                              <translation codeSystem="2.16.840.1.113883.6.233" codeSystemName="VHA Enterprise Reference Terminology" />
+                                            </value>
+                                          </xsl:when>
+                                          <xsl:otherwise>
+                                            <value nullFlavor="UNK" xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                                              <xsl:comment> 6.05 REACTION-FREE TEXT, optional, </xsl:comment>
+                                              <originalText>
+                                                <reference value="{concat('#andReaction', $allergyIndex, '-', position())}" />
+                                              </originalText>
+                                            </value>
+                                          </xsl:otherwise>
+                                        </xsl:choose>
                                       </observation>
                                     </entryRelationship>
                                   </xsl:for-each>
@@ -957,8 +962,16 @@
                                       </text>
                                       <statusCode code="completed" />
                                       <xsl:comment> 6.08 SEVERITY CODED, REQUIRED, SNOMED CT </xsl:comment>
-                                      <!-- TODO: Internal Translation -->
-                                      <value xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+                                      <!-- TODO: Internal Translation  DS - this is being provided in the VPR-->
+                                      <xsl:choose>
+                                        <xsl:when test="Allergy/Severity">
+                                          <!-- DS check context-->
+                                          <value code="{Severity/Code/text()}" displayName="{Severity/Description/text()}" xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                          <value xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+                                        </xsl:otherwise>
+                                      </xsl:choose>
                                     </observation>
                                   </entryRelationship>
                                 </observation>
@@ -4630,4 +4643,88 @@
         </structuredBody>
       </component>
     </ClinicalDocument>
+    </xsl:template>
+  <xsl:template match="Document" name="standard-documentCategoryToLoinc">
+    <xsl:param name="doc" select="." />
+    <xsl:choose>
+      <xsl:when test="DocumentType/Code/text() = 'PN'">
+        <LOINC>11506-3</LOINC>
+        <Display>Subsequent Evaluation Note</Display>
+      </xsl:when>
+      <xsl:when test="DocumentType/Code/text() = 'DS'">
+        <LOINC>18842-5</LOINC>
+        <Display>Discharge Summarization Note</Display>
+      </xsl:when>
+      <xsl:when test="DocumentType/Code/text() = 'CR'">
+        <LOINC>11488-4</LOINC>
+        <Display>Consultation Note</Display>
+      </xsl:when>
+      <xsl:when test="DocumentType/Code/text() = 'CP'">
+        <LOINC>28570-0</LOINC>
+        <Display>Procedure Note</Display>
+      </xsl:when>
+      <xsl:when test="DocumentType/Code/text() = 'SR'">
+        <LOINC>29752-3</LOINC>
+        <Display>Perioperative Records</Display>
+      </xsl:when>
+      <xsl:when test="DocumentType/Code/text() = 'RA'">
+        <LOINC>18726-0</LOINC>
+        <Display>Radiology Studies</Display>
+      </xsl:when>
+      <xsl:when test="DocumentType/Code/text() = 'LR'">
+        <LOINC>27898-6</LOINC>
+        <Display>Pathology Studies</Display>
+      </xsl:when>
+      <xsl:when test="DocumentType/Code/text() = 'C'">
+        <LOINC>34904-3</LOINC>
+        <Display>Progress Note - Mental Health</Display>
+      </xsl:when>
+      <xsl:when test="DocumentType/Code/text() = 'W'">
+        <LOINC>71282-4</LOINC>
+        <Display>Risk Assessment Document</Display>
+      </xsl:when>
+      <xsl:when test="DocumentType/Code/text() = 'A'">
+        <LOINC>68629-5</LOINC>
+        <Display>Allergy and Immunology Note</Display>
+      </xsl:when>
+      <xsl:when test="DocumentType/Code/text() = 'D'">
+        <LOINC>42348-3</LOINC>
+        <Display>Advance Directives</Display>
+      </xsl:when>
+      <xsl:when test="DocumentType/Code/text() = 'D'">
+        <LOINC>42348-3</LOINC>
+        <Display>Advance Directives</Display>
+      </xsl:when>
+      <xsl:when test="DocumentType/Code/text() = 'HP'">
+        <LOINC>34117-2</LOINC>
+        <Display>History and Physical Note</Display>
+      </xsl:when>
+      <xsl:when test="DocumentType/Code/text() = 'CM'">
+        <LOINC>38954-4</LOINC>
+        <Display>Compensation and Pension Exam</Display>
+      </xsl:when>
+      <xsl:otherwise>
+        <LOINC>34109-9</LOINC>
+        <Display>UNKNOWN NOTE</Display>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <xsl:template match="text()" name="standard-insertBreaks">
+    <xsl:param name="pText" select="."/>
+    <xsl:choose>
+      <xsl:when test="not(contains($pText, '&#xA;'))">
+        <xsl:copy-of select="$pText"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="substring-before($pText, '&#xA;')"/>
+        <br />
+        <xsl:call-template name="standard-insertBreaks">
+          <xsl:with-param name="pText" select=
+           "substring-after($pText, '&#xA;')"/>
+        </xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+</xsl:stylesheet>
+    
   
