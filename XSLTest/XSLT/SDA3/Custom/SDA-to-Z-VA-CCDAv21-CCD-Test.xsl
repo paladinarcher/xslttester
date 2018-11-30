@@ -3425,7 +3425,7 @@
                                   <list>
                                     <xsl:for-each select="Extension/DocumentNumbers/DocumentNumbersItem" >
                                       <xsl:variable name="pdoc" select="text()" />
-                                      <xsl:variable name="docs" select="../../Documents/Document[DocumentNumber = $pdoc][1]"/>
+                                      <xsl:variable name="docs" select="../../../../../Documents/Document[DocumentNumber=$pdoc]"/>
                                       <item>
                                         <table>
                                           <thead>
@@ -3439,17 +3439,19 @@
                                             <tr>
                                               <td>
                                                 <content ID="{concat('surgicalNoteDateTime', $pid, '-', position())}" >
-                                                  <xsl:value-of select="DocumentTime/text()" />
+                                                  <xsl:value-of select="$docs/DocumentTime/text()" />
                                                 </content>
                                               </td>
                                               <td>
                                                 <content ID="{concat('surgicalNoteEncounterDescription', $pid, '-', position())}"  >
-                                                  <xsl:value-of select="NoteText/text()" />
+                                                <xsl:call-template name="standard-insertBreaks">
+                                                    <xsl:with-param name="pText" select="$docs/NoteText/text()" />
+                                                  </xsl:call-template>  
                                                 </content>
                                               </td>
                                               <td>
                                                 <content ID="{concat('surgicalNoteProvider', $pid, '-', position())}"  >
-                                                  <xsl:value-of select="Clinician/Description/text()" />
+                                                  <xsl:value-of select="$docs/Clinician/Description/text()" />
                                                 </content>
                                               </td>
                                             </tr>
@@ -3492,31 +3494,41 @@
                         <templateId root="2.16.840.1.113883.10.20.22.4.14" extension="2014-06-09"/>
                         <id nullFlavor="NI" />
                         <xsl:comment> 17.02-PROCEDURE TYPE, REQUIRED, LOINC, SNOMED CT or CPT, 4 </xsl:comment>
-                        <code nullFlavor="UNK" codeSystem="2.16.840.1.113883.6.12" codeSystemName="CPT-4">
-                          <xsl:comment> 17.03 PROCEDURE FREE TEXT TYPE, R2 </xsl:comment>
-                          <originalText>
-                            <reference />
-                          </originalText>
-                          <translation>
-                            <xsl:comment> 17.03 PROCEDURE FREE TEXT TYPE, R2 </xsl:comment>
-                            <originalText>
-                              <reference />
-                            </originalText>
-                          </translation>
-                        </code>
-                        <qualifier>
-                          <name />
-                          <value />
-                        </qualifier>
+                        <xsl:choose>
+                          <xsl:when test="boolean(Procedure/Code)">
+                            <code code="{Procedure/Code/text()}" displayName="{Procedure/Description/text()}" codeSystem="2.16.840.1.113883.6.12" codeSystemName="CPT-4">
+                              <xsl:comment> 17.03 PROCEDURE FREE TEXT TYPE, R2 </xsl:comment>
+                              <originalText>
+                                <reference value="{concat('#prndDescription', position())}"/>
+                              </originalText>
+                            </code>
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <code nullFlavor="UNK" codeSystem="2.16.840.1.113883.6.12" codeSystemName="CPT-4">
+                              <xsl:comment> 17.03 PROCEDURE FREE TEXT TYPE, R2 </xsl:comment>
+                              <originalText>
+                                <reference value="{concat('#prndDescription', position())}"/>
+                              </originalText>
+                            </code>
+                          </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:if test="boolean(Extension/CptModifiers/CptModifier/Code)">
+                          <qualifier>
+                            <name>Other Procedure CPT Code</name>
+                            <value code="{Extension/CptModifiers/CptModifier/Code/text()}" displayName="{Extension/CptModifiers/CptModifier/Description/text()}" codeSystem="2.16.840.1.113883.6.12" codeSystemName="CPT-4"/>
+                          </qualifier>
+                        </xsl:if>                       
                         <statusCode code="completed" />
-                        <effectiveTime />
+                        <effectiveTime value="{ProcedureTime/text()}"/>
                         <performer>
                           <assignedEntity>
                             <id nullFlavor="NA" />
                             <addr nullFlavor="NA" />
                             <telecom nullFlavor="NA" />
                             <assignedPerson>
-                              <name />
+                              <name>
+                                <xsl:value-of select="Clinician/Description/text()"/>
+                              </name>
                             </assignedPerson>
                           </assignedEntity>
                         </performer>
@@ -3527,41 +3539,51 @@
                           <assignedAuthor>
                             <id nullFlavor="NA" />
                             <representedOrganization>
-                              <id root="2.16.840.1.113883.4.349" />
-                              <name/>
+                              <id extension="{EnteredAt/Code/text()}" root="2.16.840.1.113883.4.349" />
+                              <name>
+                                <xsl:value-of select="EnteredAt/Description"/>
+                              </name>
                             </representedOrganization>
                           </assignedAuthor>
                         </author>
-                        <entryRelationship typeCode='COMP'>
-                          <act classCode="ACT" moodCode="EVN">
-                            <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
-                            <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
-                              <translation code="29752-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Perioperative Records" />
-                            </code>
-                            <text>
-                              <reference />
-                            </text>
-                            <statusCode code="completed" />
-                            <xsl:comment> Clinically relevant time of the note </xsl:comment>
-                            <effectiveTime />
-                            <author>
-                              <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                              <xsl:comment> Time note was actually written </xsl:comment>
-                              <time />
-                              <assignedAuthor>
-                                <id nullFlavor="NI" />
-                                <assignedPerson>
-                                  <name />
-                                </assignedPerson>
-                                <representedOrganization>
-                                  <id root="2.16.840.1.113883.3.349" />
-                                  <name />
-                                  <addr nullFlavor="UNK" />
-                                </representedOrganization>
-                              </assignedAuthor>
-                            </author>
-                          </act>
-                        </entryRelationship>
+                        <xsl:for-each select="Extension/DocumentNumbers/DocumentNumbersItem" >
+                          <xsl:variable name="pdoc" select="text()" />
+                          <xsl:variable name="docs" select="../../../../../Documents/Document[DocumentNumber=$pdoc]"/>
+                          <entryRelationship typeCode='COMP'>
+                            <act classCode="ACT" moodCode="EVN">
+                              <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
+                              <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
+                                <translation code="29752-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Perioperative Records" />
+                              </code>
+                              <text>
+                                <reference value="{concat('#surgicalNoteEncounterDescription', $pid, '-', position())}" />
+                              </text>
+                              <statusCode code="completed" />
+                              <xsl:comment> Clinically relevant time of the note </xsl:comment>
+                              <effectiveTime value="{$docs/DocumentTime/text()}"/>
+                              <author>
+                                <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                                <xsl:comment> Time note was actually written </xsl:comment>
+                                <time value="{$docs/DocumentTime/text()}"/>
+                                <assignedAuthor>
+                                  <id nullFlavor="NI" />
+                                  <assignedPerson>
+                                    <name>
+                                      <xsl:value-of select="$docs/Clinician/Description" />
+                                    </name>
+                                  </assignedPerson>
+                                  <representedOrganization>
+                                    <id extension="{$docs/EnteredAt/Code}" root="2.16.840.1.113883.3.349" />
+                                    <name>
+                                      <xsl:value-of select="$docs/EnteredAt/Description"/>
+                                    </name> 
+                                    <addr nullFlavor="UNK" />
+                                  </representedOrganization>
+                                </assignedAuthor>
+                              </author>
+                            </act>
+                          </entryRelationship>
+                        </xsl:for-each>
                       </procedure>
                     </entry>
                   </xsl:for-each>
