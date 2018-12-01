@@ -89,7 +89,7 @@
             <ethnicGroupCode codeSystem='2.16.840.1.113883.6.238' codeSystemName='Race &amp; Ethnicity - CDC'>
               <originalText>ethnicity</originalText>
             </ethnicGroupCode>
-            <xsl:comment>********************************************************** LANGUAGE SPOKEN CONTENT MODULE, R2 **********************************************************</xsl:comment>
+<xsl:comment>********************************************************** LANGUAGE SPOKEN CONTENT MODULE, R2 **********************************************************</xsl:comment>
             <languageCommunication>
               <xsl:comment>2.01 LANGUAGE, REQUIRED, languageCode ISO 639-1</xsl:comment> 
               <xsl:choose>
@@ -119,8 +119,7 @@
         </patientRole>
       </recordTarget>
       <xsl:comment>
-        **********************************************************************
-        INFORMATION SOURCE CONTENT MODULE, REQUIRED **********************************************************************</xsl:comment>
+        ********************************************************************** INFORMATION SOURCE CONTENT MODULE, REQUIRED **********************************************************************</xsl:comment>
       <xsl:comment>AUTHOR SECTION (REQUIRED) OF INFORMATION SOURCE CONTENT MODULE </xsl:comment> 
       <author>
         <templateId root="2.16.840.1.113883.10.20.22.4.119" />
@@ -165,8 +164,7 @@
         </assignedAuthor>
       </author>
       <xsl:comment>
-        *******************************************************************************************
-        INFORMANT SECTION (AS AN ORGANIZATION), Optional *******************************************************************************************
+        ******************************************************************************************* INFORMANT SECTION (AS AN ORGANIZATION), Optional *******************************************************************************************
       </xsl:comment> 
       <informant>
         <assignedEntity>
@@ -180,8 +178,7 @@
         </assignedEntity>
       </informant>
       <xsl:comment>
-        *********************************************************************************
-        CUSTODIAN AS AN ORGANIZATION, REQUIRED ********************************************************************************** </xsl:comment> 
+        ********************************************************************************* CUSTODIAN AS AN ORGANIZATION, REQUIRED ********************************************************************************** </xsl:comment> 
       <custodian>
         <assignedCustodian>
           <representedCustodianOrganization>
@@ -202,8 +199,7 @@
         </assignedCustodian>
       </custodian>
       <xsl:comment>
-        ***************************************************************************
-        LEGAL AUTHENTICATOR (AS AN ORGANIZATION), Optional *************************************************************************** 
+        *************************************************************************** LEGAL AUTHENTICATOR (AS AN ORGANIZATION), Optional *************************************************************************** 
       </xsl:comment> 
       <legalAuthenticator>
         <xsl:comment>TIME OF AUTHENTICATION </xsl:comment> 
@@ -238,14 +234,12 @@
         </assignedEntity>
       </legalAuthenticator>
       <xsl:comment>
-        ********************************************************************
-        SUPPORT INFORMATION CONTENT MODULE, Optional ******************************************************************** 
+        ******************************************************************** SUPPORT INFORMATION CONTENT MODULE, Optional ******************************************************************** 
       </xsl:comment> 
       <xsl:apply-templates select="Patient/SupportContacts/SupportContact" mode="header-participant" />
 
       <xsl:comment>
-        *******************************************************************************
-        DOCUMENTATION OF MODULE - QUERY META DATA, Optional *******************************************************************************
+        ******************************************************************************* DOCUMENTATION OF MODULE - QUERY META DATA, Optional *******************************************************************************
       </xsl:comment> 
       <documentationOf>
         <serviceEvent classCode="PCPR">
@@ -261,14 +255,12 @@
           </xsl:apply-templates>
         </serviceEvent>
       </documentationOf>
-      <xsl:comment>******************************************************** CDA BODY ******************************************************** </xsl:comment> 
+<xsl:comment>******************************************************** CDA BODY ******************************************************** </xsl:comment> 
       <component>
         <structuredBody>
           <xsl:comment>Insurance Providers </xsl:comment>
           <component>
-            <xsl:comment>
-              **********************************************************************************
-              INSURANCE PROVIDERS (PAYERS) SECTION, Optional ********************************************************************************** 
+<xsl:comment> ********************************************************************************** INSURANCE PROVIDERS (PAYERS) SECTION, Optional ********************************************************************************** 
             </xsl:comment> 
             <xsl:choose>
               <xsl:when test="not(boolean(MemberEnrollments/MemberEnrollment))">
@@ -507,8 +499,7 @@
             </xsl:choose>
           </component>
           <component>
-            <xsl:comment> ******************************************************** ADVANCED 
-                DIRECTIVE SECTION, REQUIRED ******************************************************** </xsl:comment>
+<xsl:comment> ******************************************************** ADVANCED DIRECTIVE SECTION, REQUIRED ******************************************************** </xsl:comment>
             <xsl:choose>
               <xsl:when test="not(boolean(AdvanceDirectives/AdvanceDirective))">
                 <section nullFlavor="NI">
@@ -666,8 +657,7 @@
             </xsl:choose>
           </component>
           <component>
-            <xsl:comment> ************************************************************* ALLERGY/DRUG 
-                SECTION SECTION, REQUIRED ************************************************************* </xsl:comment>
+<xsl:comment> ************************************************************* ALLERGY/DRUG SECTION SECTION, REQUIRED ************************************************************* </xsl:comment>
             <xsl:choose>
               <xsl:when test="not(boolean(Allergies/Allergy))">
                 <section nullFlavor="NI">
@@ -988,8 +978,7 @@
             </xsl:choose>
           </component>
           <component>
-            <xsl:comment> ******************************************************** ENCOUNTER 
-                SECTION, Optional ******************************************************** </xsl:comment>
+<xsl:comment> ******************************************************** ENCOUNTER SECTION, Optional ******************************************************** </xsl:comment>
             <xsl:choose><!-- TODO Encounters filterings? -->
               <xsl:when test="not(boolean(Encounters/Encounter))">
                 <section nullFlavor="NI">
@@ -1340,7 +1329,7 @@
               </xsl:otherwise>
             </xsl:choose>
           </component>
-          <xsl:comment>  ***** FUNCTIONAL STATUS, OMIT from SES ************ </xsl:comment>
+<xsl:comment> ********************************************* FUNCTIONAL STATUS, OMIT from SES ************************************* </xsl:comment>
           <component>
             <xsl:choose>
               <xsl:when test="not(boolean(Problems/Problem[Problem/Code/text() = '408907016' and count(CustomPairs/NVPair) &gt; 19]))" >
@@ -2434,8 +2423,7 @@
             </xsl:choose>
           </component>
           <component>
-            <xsl:comment> **************************************************************** 
-                MEDICATIONS (RX &amp; Non-RX) SECTION, REQUIRED **************************************************************** </xsl:comment>
+<xsl:comment> **************************************************************** MEDICATIONS (RX &amp; Non-RX) SECTION, REQUIRED **************************************************************** </xsl:comment>
             <xsl:choose><!-- TODO Meds Filtering [((OrderCategory/Code/text() = 'O RX' or OrderCategory/Code/text() = 'O') and isc:evaluate('dateDiff', 'mm', (Extension/LastFilled | Extension/Expires)/text(), isc:evaluate('xmltimestamp', isc:evaluate('timestamp'))) &lt; 16 and not(Status/text() = 'DELETED')) or (OrderCategory/Code/text() = 'NV RX' and not(Status/text() = 'DISCONTINUED'))]-->
               <xsl:when test="not(boolean(Medications/Medication))">
                 <section nullFlavor="NI">
@@ -3047,7 +3035,7 @@
           </component>
           <xsl:comment> Immunizations section </xsl:comment>
           <component>
-            <xsl:comment> ******************************************************** IMMUNIZATIONS SECTION, Optional ******************************************************** </xsl:comment>
+<xsl:comment> ******************************************************** IMMUNIZATIONS SECTION, Optional ******************************************************** </xsl:comment>
             <!-- 
               TODO 
               If same CVX and admin date, most recent by time
@@ -3318,8 +3306,7 @@
           </component>
           <xsl:comment> Procedures section </xsl:comment>
           <component>
-            <xsl:comment> ******************************************************** PROCEDURES 
-                SECTION ******************************************************** </xsl:comment>
+<xsl:comment> ******************************************************** PROCEDURES SECTION ******************************************************** </xsl:comment>
             <xsl:choose>
               <xsl:when test="not(boolean(Procedures/Procedure))">
                 <section nullFlavor="NI">
@@ -3592,8 +3579,7 @@
             </xsl:choose>
           </component>
           <component>
-            <xsl:comment> ******************************************************** PLAN OF 
-                CARE SECTION, Optional ******************************************************** </xsl:comment>
+<xsl:comment> ******************************************************** PLAN OF CARE SECTION, Optional ******************************************************** </xsl:comment>
             <xsl:variable name="planOfCare" select="Appointments/Appointment[isc:evaluate('dateDiff','mm',FromTime,isc:evaluate('xmltimestamp',isc:evaluate('timestamp'))) &lt; 1] | LabOrders/LabOrder[isc:evaluate('dateDiff','mm',FromTime,isc:evaluate('xmltimestamp',isc:evaluate('timestamp'))) &lt; 1] | OtherOrders/OtherOrder[isc:evaluate('dateDiff','mm',FromTime,isc:evaluate('xmltimestamp',isc:evaluate('timestamp'))) &lt; 1] | RadOrders/RadOrder[isc:evaluate('dateDiff','mm',FromTime,isc:evaluate('xmltimestamp',isc:evaluate('timestamp'))) &lt; 1]" />
             <xsl:choose>
               <xsl:when test="not(boolean($planOfCare))">
@@ -3760,8 +3746,7 @@
             </xsl:choose>
           </component>
           <component>
-            <xsl:comment> ******************************************************** PROBLEM/CONDITION 
-                SECTION, REQUIRED ******************************************************** </xsl:comment>
+<xsl:comment> ******************************************************** PROBLEM/CONDITION SECTION, REQUIRED ******************************************************** </xsl:comment>
             <xsl:choose>
               <xsl:when test="not(boolean(Problems/Problem[not(Problem/Code/text() = '408907016')]))">
                 <section nullFlavor="NI">
@@ -4010,217 +3995,261 @@
             </xsl:choose>
           </component>
           <component>
-            <xsl:comment> ******************************************************** RESULTS 
-                SECTION, REQUIRED ******************************************************** </xsl:comment>
-            <section>
-              <xsl:comment> CCD Results Section Entries REQUIRED </xsl:comment>
-              <templateId root="2.16.840.1.113883.10.20.22.2.3.1" extension="2015-08-01"/>
-              <templateId root="2.16.840.1.113883.10.20.22.2.3" />
-              <code code="30954-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Relevant diagnostic tests and/or laboratory data" />
-              <title>Results: Chemistry and Hematology</title>
-              <text>
-                <paragraph>
-                  <content ID="resultsTime">
-                    This section contains the Chemistry and Hematology Lab Results on record with VA for the patient within the requested date range. If no date range was provided, the lists include data from the last 24 months. The data comes from all VA treatment facilities. Radiology Reports and Pathology Reports are provided separately, in subsequent sections.
-                  </content>
-                </paragraph>
-                <paragraph MAP_ID="labsTitle">
-                  <content styleCode="Bold">Lab Results</content>
-                </paragraph>
-                <paragraph MAP_ID="labsNarrative">
-                  This section contains all the Chemistry/Hematology Results collected within the requested date range. If no date range was provided, the included Chemistry/Hematology Results are from the last 24 months and are limited to the 10 most recent sets of tests. The data comes from all VA treatment facilities.
-                </paragraph>
-                <table MAP_ID="labNarrative">
-                  <thead>
-                    <tr>
-                      <th>Date/Time</th>
-                      <th>Source</th>
-                      <th>Result Type</th>
-                      <th>Result - Unit</th>
-                      <th>Interpretation</th>
-                      <th>Reference Range</th>
-                      <th>Comment</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    <tr MAP_ID="labTest">
-                      <td />
-
-                      <td>
-                        <content />
-                      </td>
-                      <td colspan="4">
-                        <content />
-                      </td>
-
-                      <td>
-                        <content />
-                      </td>
-                    </tr>
-                    <tr MAP_ID="labValues">
-                      <td />
-
-                      <td />
-
-                      <td>
-                        <content />
-                      </td>
-                      <td>
-                        <content />
-                      </td>
-                      <td>
-                        <content />
-                      </td>
-                      <td>
-                        <content />
-                      </td>
-                      <td>
-                        <content />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <paragraph MAP_ID="microbiologyTitle">
-                  <content styleCode="Bold">Microbiology Reports</content>
-                </paragraph>
-                <paragraph MAP_ID="microbiologyRules">
-                  The included Microbiology Reports are the 20 most recent reports within the last 24 months. The data comes from all VA treatment facilities.  ANTIBIOTIC SUSCEPTIBILITY TEST RESULTS KEY: SUSC = Susceptibility Result, S = Susceptible, INTP = Interpretation, I = Intermediate, MIC  = Minimum Inhibitory Concentration, R = Resistant.
-                </paragraph>
-                <table MAP_ID="microbiologyNarrative">
-                  <thead>
-                    <tr>
-                      <th>Date/Time</th>
-                      <th>Report</th>
-                      <th>Provider</th>
-                      <th>Source</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr MAP_ID="microbiologyTest">
-                      <td />
-
-                      <td>
-                        <content />
-                      </td>
-                      <td>
-                        <content />
-                      </td>
-                      <td>
-                        <content />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </text>
-              <entry typeCode="DRIV">
-                <observation classCode="OBS" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01" />
-                  <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range" />
+<xsl:comment> ******************************************************** RESULTS SECTION, REQUIRED ******************************************************** </xsl:comment>
+            <xsl:choose>
+              <xsl:when test="not(boolean(LabOrders/LabOrder[not(isc:evaluate('dateDiff','mm',FromTime,isc:evaluate('xmltimestamp',isc:evaluate('timestamp'))) &lt; 1)]))">
+                <section nullFlavor="NI">
+                  <xsl:comment> CCD Results Section Entries REQUIRED </xsl:comment>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.3.1" extension="2015-08-01"/>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.3" />
+                  <code code="30954-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Relevant diagnostic tests and/or laboratory data" />
+                  <title>Results: Chemistry and Hematology</title>
+                  <text>No Data Provided for This Section</text>
+                </section>
+              </xsl:when>
+              <xsl:otherwise>
+                <section>
+                  <xsl:comment> CCD Results Section Entries REQUIRED </xsl:comment>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.3.1" extension="2015-08-01"/>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.3" />
+                  <code code="30954-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Relevant diagnostic tests and/or laboratory data" />
+                  <title>Results: Chemistry and Hematology</title>
                   <text>
-                    <reference value="#resultsTime" />
-                  </text>
-                  <statusCode code="completed" />
-                  <value xsi:type="IVL_TS">
-                    <low value="$resultsStart"/>
-                    <high value="$resultsEnd" />
-                  </value>
-                </observation>
-              </entry>
-              <entry typeCode='DRIV1'>
-                <xsl:comment> CCD Results Organizer = VA Lab Order Panel , REQUIRED </xsl:comment>
-                <organizer classCode="BATTERY" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.1" extension="2014-06-09" />
-                  <id nullFlavor="NI" />
-                  <code nullFlavor="UNK">
-                    <originalText>
-                      <reference />
-                    </originalText>
-                  </code>
-                  <statusCode code="completed" />
-                  <effectiveTime>
-                    <low />
-                    <high />
-                  </effectiveTime>
-                  <author>
-                    <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <time nullFlavor="NA" />
-                    <assignedAuthor>
-                      <id nullFlavor="NI" />
-                      <representedOrganization>
-                        <id root="2.16.840.1.113883.4.349" />
-                        <name />
-                      </representedOrganization>
-                    </assignedAuthor>
-                  </author>
-                  <component>
-                    <observation classCode="OBS" moodCode="EVN">
-                      <templateId root="2.16.840.1.113883.10.20.22.4.2" extension="2015-08-01"/>
-                      <xsl:comment> 15.01 RESULT ID, REQUIRED </xsl:comment>
-                      <id root="2.16.840.1.113883.4.349" />
-                      <xsl:comment> 15.03-RESULT TYPE, REQUIRED </xsl:comment>
-                      <code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
-                        <originalText>
-                          <reference />
-                        </originalText>
-                      </code>
+                    <paragraph>
+                      <content ID="resultsTime">
+                        This section contains the Chemistry and Hematology Lab Results on record with VA for the patient within the requested date range. If no date range was provided, the lists include data from the last 24 months. The data comes from all VA treatment facilities. Radiology Reports and Pathology Reports are provided separately, in subsequent sections.
+                      </content>
+                    </paragraph>
+                    <paragraph >
+                      <content styleCode="Bold">Lab Results</content>
+                    </paragraph>
+                    <paragraph >
+                      This section contains all the Chemistry/Hematology Results collected within the requested date range. If no date range was provided, the included Chemistry/Hematology Results are from the last 24 months and are limited to the 10 most recent sets of tests. The data comes from all VA treatment facilities.
+                    </paragraph>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Date/Time</th>
+                          <th>Source</th>
+                          <th>Result Type</th>
+                          <th>Result - Unit</th>
+                          <th>Interpretation</th>
+                          <th>Reference Range</th>
+                          <th>Comment</th>
+                        </tr>
+                      </thead>
+                      <xsl:for-each select="LabOrders/LabOrder[not(isc:evaluate('dateDiff','mm',FromTime,isc:evaluate('xmltimestamp',isc:evaluate('timestamp'))) &lt; 1)]">
+                        <xsl:sort select="FromTime" order="descending" />
+                        <xsl:variable name="lid" select="position()" />
+                        <tbody>
+                          <tr ID="{concat('labTest',position())}">
+                            <td >
+                              <xsl:value-of select="FromTime/text()" />
+                            </td>
 
-                      <text >
-                        <reference/>
+                            <td>
+                              <content ID="{concat('lndSource',position())}">
+                                <xsl:value-of select="EnteredAt/Description/text()" />
+                              </content>
+                            </td>
+                            <td colspan="4">
+                              <content ID="{concat('lndResultType',position())}">
+                                <xsl:value-of select="OrderItem/Description/text()" />
+                              </content>
+                            </td>
+
+                            <td>
+                              <content ID="{concat('lndComment',position())}">
+                                <xsl:choose>
+                                  <xsl:when test="boolean(Specimen)">
+                                    Specimen Type: <xsl:value-of select="Specimen" />
+                                  </xsl:when>
+                                  <xsl:otherwise>
+                                    Specimen Type: Not Available.
+                                  </xsl:otherwise>
+                                </xsl:choose>
+                                <br />
+                                <xsl:choose>
+                                  <xsl:when test="boolean(Result/Comments)">
+                                    Comment: <xsl:value-of select="Result/Comments" />
+                                  </xsl:when>
+                                  <xsl:otherwise>
+                                    No comment entered.
+                                  </xsl:otherwise>
+                                </xsl:choose>
+                              </content>
+                            </td>
+                          </tr>
+                          <xsl:for-each select="Result/ResultItems/LabResultItem">
+                            <tr >
+                              <td />
+                              <td />
+                              <td>
+                                <content ID="{concat('loincLabValues',$lid,'-',position())}">
+                                  <xsl:value-of select="TestItemCode/Description/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('resultLabValues',$lid,'-',position())}">
+                                  <xsl:value-of select="ResultValue/text()" />
+                                  <xsl:value-of select="ResultValueUnits/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('interpLabValues',$lid,'-',position())}">
+                                  <xsl:value-of select="ResultInterpretation/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('rangeLabValues',$lid,'-',position())}">
+                                  <xsl:value-of select="ResultNormalRange/text()" />
+                                </content>
+                              </td>
+                              <td/>
+                            </tr>
+                          </xsl:for-each>
+                        </tbody>
+                      </xsl:for-each>
+                    </table>
+                  </text>
+                  <entry typeCode="DRIV">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01" />
+                      <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range" />
+                      <text>
+                        <reference value="#resultsTime" />
                       </text>
                       <statusCode code="completed" />
-                      <xsl:comment> 15.02 RESULT DATE/TIME, REQUIRED </xsl:comment>
-                      <effectiveTime />
-                      <xsl:comment> 15.05 RESULT VALUE, REQUIRED, xsi:type="PQ" </xsl:comment>
-                      <value xsi:type="PQ">
-                        <reference/>
-                      </value>
-                      <xsl:comment> 15.06 RESULT INTERPRETATION, R2, </xsl:comment>
-                      <interpretationCode nullFlavor="NAV">
-                        <originalText>
-                          <reference />
-                        </originalText>
-                      </interpretationCode>
-                      <xsl:comment> CCD METHOD CODE, Optional, Not provided by VA b/c data not 
-                                    yet available via VA VistA RPCs </xsl:comment>
-                      <xsl:comment> CCD TARGET SITE CODE, Optional, Not provided by VA b/c data 
-                                    not yet available via VA VistA RPCs </xsl:comment>
-                      <author>
-                        <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                        <time nullFlavor="NA" />
-                        <assignedAuthor>
-                          <id nullFlavor="NA" />
-                          <assignedPerson>
-                            <name />
-                          </assignedPerson>
-                        </assignedAuthor>
-                      </author>
-                      <entryRelationship typeCode="SUBJ" inversionInd="true">
-                        <act classCode="ACT" moodCode="EVN">
-                          <templateId root="2.16.840.1.113883.10.20.22.4.64" />
-                          <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment" />
-                          <text>
-                            <reference />
-                          </text>
-                        </act>
-                      </entryRelationship>
-                      <xsl:comment> 15.07 RESULT REFERENCE RANGE, R2, </xsl:comment>
-                      <referenceRange>
-                        <observationRange>
-                          <text>
-                            <reference />
-                          </text>
-                          <value xsi:type="IVL_PQ">
-                            <low />
-                            <high />
-                          </value>
-                        </observationRange>
-                      </referenceRange>
+                      <value xsi:type="IVL_TS">
+                        <low value="$resultsStart"/>
+                        <high value="$resultsEnd" />
+                      </value><!-- TODO section dates-->
                     </observation>
-                  </component>
-                </organizer>
-              </entry>
-            </section>
+                  </entry>
+
+                  <xsl:for-each select="LabOrders/LabOrder[not(isc:evaluate('dateDiff','mm',FromTime,isc:evaluate('xmltimestamp',isc:evaluate('timestamp'))) &lt; 1)]">
+                    <xsl:sort select="FromTime" order="descending" />
+                    <xsl:variable name="lid" select="position()" />
+                    <entry typeCode='DRIV1'>
+                      <xsl:comment> CCD Results Organizer = VA Lab Order Panel , REQUIRED </xsl:comment>
+                      <organizer classCode="BATTERY" moodCode="EVN">
+                        <templateId root="2.16.840.1.113883.10.20.22.4.1" extension="2014-06-09" />
+                        <id nullFlavor="NI" />
+                        <code nullFlavor="UNK">
+                          <originalText><xsl:value-of select="OrderItem/Description" /></originalText>
+                        </code>
+                        <statusCode code="completed" />
+                        <effectiveTime>
+                          <xsl:choose>
+                            <xsl:when test="boolean(SpecimenCollectedTime)">
+                          <low value="{SpecimenCollectedTime}"/>
+                          <high value="{SpecimenCollectedTime}"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                          <low nullFlavor="UNK"/>
+                          <high nullFlavor="UNK"/>
+                            </xsl:otherwise>
+                          </xsl:choose>
+                        </effectiveTime>
+                        <author>
+                          <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                          <time nullFlavor="NA" />
+                          <assignedAuthor>
+                            <id nullFlavor="NI" />
+                            <representedOrganization>
+                              <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
+                              <name><xsl:value-of select="EnteredAt/Description"/></name>
+                            </representedOrganization>
+                          </assignedAuthor>
+                        </author>
+                        <xsl:for-each select="Result/ResultItems/LabResultItem">
+                          <component><!-- TODO, verify ID and date-->
+                            <observation classCode="OBS" moodCode="EVN">
+                              <templateId root="2.16.840.1.113883.10.20.22.4.2" extension="2015-08-01"/>
+                              <xsl:comment> 15.01 RESULT ID, REQUIRED </xsl:comment>
+                              <id root="2.16.840.1.113883.4.349" extension="{ExternalId/text()}" />
+                              <xsl:comment> 15.03-RESULT TYPE, REQUIRED </xsl:comment>
+                              <code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" code="{ResultCodedValue/Code/text()}" displayName="{ResultCodedValue/Description/text()}">
+                                <originalText>
+                                  <reference value="{concat('#loincLabValues',$lid,'-',position())}"/>
+                                </originalText>
+                              </code>
+                              <text >
+                                <reference value="{concat('#labTest',$lid)}"/>
+                              </text>
+                              <statusCode code="completed" />
+                              <xsl:comment> 15.02 RESULT DATE/TIME, REQUIRED </xsl:comment>
+                              <effectiveTime value="{ObservationTime/text()}"/>
+                              <xsl:comment> 15.05 RESULT VALUE, REQUIRED, xsi:type="PQ" </xsl:comment>
+                              <xsl:choose>
+                                <xsl:when test="boolean(ResultValueUnits)">
+                                  <value xsi:type="PQ" value="{ResultValue/text()}" unit="{ResultValueUnits/text()}"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                  <value xsi:type="ST" representation="TXT"><xsl:value-of select="ResultValue"/></value>
+                                </xsl:otherwise>
+                              </xsl:choose>
+                              <xsl:comment> 15.06 RESULT INTERPRETATION, R2, </xsl:comment>
+                              <interpretationCode nullFlavor="NAV">
+                                <originalText>
+                                  <reference value="{concat('#interpLabValues',$lid,'-',position())}"/>
+                                </originalText>
+                              </interpretationCode>
+                              <xsl:comment>
+                                CCD METHOD CODE, Optional, Not provided by VA b/c data not
+                                yet available via VA VistA RPCs
+                              </xsl:comment>
+                              <xsl:comment>
+                                CCD TARGET SITE CODE, Optional, Not provided by VA b/c data
+                                not yet available via VA VistA RPCs
+                              </xsl:comment>
+                              <entryRelationship typeCode="SUBJ" inversionInd="true">
+                                <act classCode="ACT" moodCode="EVN">
+                                  <templateId root="2.16.840.1.113883.10.20.22.4.64" />
+                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment" />
+                                  <text>
+                                    <reference value="{concat('#lndComment',position())}"/>
+                                  </text>
+                                </act>
+                              </entryRelationship>
+                              <xsl:comment> 15.07 RESULT REFERENCE RANGE, R2, </xsl:comment>
+                              <xsl:choose>
+                                <xsl:when test="boolean(ResultValueUnits) and boolean(ResultNormalRange)">
+                                  <referenceRange>
+                                    <observationRange>
+                                      <text>
+                                        <reference value="{concat('#rangeLabValues',$lid,'-',position())}"/>
+                                      </text>
+                                      <value xsi:type="IVL_PQ">
+                                        <low value="{isc:evaluate('piece', ResultNormalRange/text(), '-', 1)}"/>
+                                        <high value="{isc:evaluate('piece', ResultNormalRange/text(), '-', 2)}"/>
+                                      </value>
+                                    </observationRange>
+                                  </referenceRange>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                  <referenceRange>
+                                    <observationRange>
+                                      <text>
+                                        <reference nullFlavor="NI"/>
+                                      </text>
+                                      <value xsi:type="IVL_PQ">
+                                        <low nullFlavor="NI"/>
+                                        <high nullFlavor="NI"/>
+                                      </value>
+                                    </observationRange>
+                                  </referenceRange>
+                                </xsl:otherwise>
+                              </xsl:choose>
+                            </observation>
+                          </component>
+                        </xsl:for-each>
+                      </organizer>
+                    </entry>
+                  </xsl:for-each>
+                </section>
+              </xsl:otherwise>
+            </xsl:choose>
           </component>
           <component>
             <xsl:comment> ******************************************************** SOCIAL 
