@@ -4,6 +4,7 @@
   xmlns:exsl="http://exslt.org/common" xmlns:set="http://exslt.org/sets" exclude-result-prefixes="isc xsi sdtc exsl set">
 
   <xsl:variable name="documentCreatedOn" select="isc:evaluate('xmltimestamp', isc:evaluate('timestamp'))" />
+  <xsl:key name="vitals" match="Observations/Observation" use="GroupId/text()" />
   
   <xsl:template match="/Container">
     <xsl:variable name="patientBirthDate" select="Patient/BirthTime/text()" />
@@ -4077,6 +4078,33 @@
                                     No comment entered.
                                   </xsl:otherwise>
                                 </xsl:choose>
+                                <br />
+                                <xsl:choose>
+                                  <xsl:when test="boolean(OrderedBy)">
+                                    Ordering Provider: <xsl:value-of select="OrderedBy/Description" />
+                                  </xsl:when>
+                                  <xsl:otherwise>
+                                    No Provider, they just decided to do this themselves.
+                                  </xsl:otherwise>
+                                </xsl:choose>
+                                <br />
+                                <xsl:choose>
+                                  <xsl:when test="boolean(AuthorizationTime)">
+                                    Report Released Date Time: <xsl:value-of select="AuthorizationTime" />
+                                  </xsl:when>
+                                  <xsl:otherwise>
+                                    Not yet released.
+                                  </xsl:otherwise>
+                                </xsl:choose>
+                                <br />
+                                <xsl:choose>
+                                  <xsl:when test="boolean(EnteredAt)">
+                                    Performing Lab: <xsl:value-of select="EnteredAt/Description" />
+                                  </xsl:when>
+                                  <xsl:otherwise>
+                                    No lab. Guy on the street did it. Free!
+                                  </xsl:otherwise>
+                                </xsl:choose>
                               </content>
                             </td>
                           </tr>
@@ -4091,8 +4119,7 @@
                               </td>
                               <td>
                                 <content ID="{concat('resultLabValues',$lid,'-',position())}">
-                                  <xsl:value-of select="ResultValue/text()" />
-                                  <xsl:value-of select="ResultValueUnits/text()" />
+                                  <xsl:value-of select="ResultValue/text()" />&#160; <xsl:value-of select="ResultValueUnits/text()" />
                                 </content>
                               </td>
                               <td>
@@ -4102,7 +4129,7 @@
                               </td>
                               <td>
                                 <content ID="{concat('rangeLabValues',$lid,'-',position())}">
-                                  <xsl:value-of select="ResultNormalRange/text()" />
+                                  <xsl:value-of select="isc:evaluate('strip', ResultNormalRange/text(),'&quot;')" />
                                 </content>
                               </td>
                               <td/>
@@ -4130,7 +4157,7 @@
                   <xsl:for-each select="LabOrders/LabOrder[not(isc:evaluate('dateDiff','mm',FromTime,isc:evaluate('xmltimestamp',isc:evaluate('timestamp'))) &lt; 1)]">
                     <xsl:sort select="FromTime" order="descending" />
                     <xsl:variable name="lid" select="position()" />
-                    <entry typeCode='DRIV1'>
+                    <entry typeCode='DRIV'>
                       <xsl:comment> CCD Results Organizer = VA Lab Order Panel , REQUIRED </xsl:comment>
                       <organizer classCode="BATTERY" moodCode="EVN">
                         <templateId root="2.16.840.1.113883.10.20.22.4.1" extension="2014-06-09" />
@@ -4522,165 +4549,223 @@
             </xsl:choose>
           </component>
           <component>
-            <xsl:comment> ******************************************************** VITAL SIGNS 
-                SECTION, REQUIRED ******************************************************** </xsl:comment>
-            <section>
-              <xsl:comment> C-CDA CCD VITAL SIGNS Section Template Entries REQUIRED </xsl:comment>
-              <templateId root="2.16.840.1.113883.10.20.22.2.4.1" extension="2015-08-01"/>
-              <templateId root="2.16.840.1.113883.10.20.22.2.4" />
-              <code code="8716-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Vital Signs" />
-              <title>Vital Signs</title>
-                <xsl:comment> VITAL SIGNS NARRATIVE BLOCK, REQUIRED </xsl:comment>
-              <text>
-                <paragraph>
-                  <content ID="vitalsTime">
-                    This section contains inpatient and outpatient Vital Signs on record at the VA for the
-                    patient. The data comes from all VA treatment facilities. It includes vital signs collected
-                    within the requested date range. If more than one set of vitals was taken in the same date,
-                    only the most recent set is populated for that date. If no date range was provided, it includes
-                    12 months of data, with a maximum of the 5 most recent sets of vitals. If more than one set of
-                    vitals was taken on the same date, only the most recent set is populated for that date.
-                  </content>
-                </paragraph>
-                <table MAP_ID="vitalNarrative">
-                  <thead>
-                    <tr>
-                      <th>Date/Time</th>
-                      <th>Temperature</th>
-                      <th>Pulse</th>
-                      <th>Blood Pressure</th>
-                      <th>Respiratory Rate</th>
-                      <th>SP02</th>
-                      <th>Pain</th>
-                      <th>Height</th>
-                      <th>Weight</th>
-                      <th>Body Mass Index</th>
-                      <th>Source</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td />
-
-                      <td />
-
-                      <td />
-
-                      <td />
-
-                      <td />
-
-                      <td />
-
-                      <td />
-
-                      <td />
-
-                      <td />
-
-                      <td />
-
-                      <td>
-                        <content ID="vndSource" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <xsl:comment> CDA Observation Text as a Reference tag </xsl:comment>
-                <content ID="vital1" revised='delete'>Vital Sign Observation Text Not Available</content>
-              </text>
-              <xsl:comment>  VITAL SIGNS STRUCTURED DATA </xsl:comment>
-              <entry typeCode="DRIV">
-                <observation classCode="OBS" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01" />
-                  <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range" />
+<xsl:comment> ******************************************************** VITAL SIGNS SECTION, REQUIRED ******************************************************** </xsl:comment>
+            <xsl:choose>
+              <xsl:when test="not(boolean(Observations/Observation))">
+                <section nullFlavor="NI">
+                  <xsl:comment> C-CDA CCD VITAL SIGNS Section Template Entries REQUIRED </xsl:comment>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.4.1" extension="2015-08-01"/>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.4" />
+                  <code code="8716-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Vital Signs" />
+                  <title>Vital Signs</title>
+                  <xsl:comment> VITAL SIGNS NARRATIVE BLOCK, REQUIRED </xsl:comment>
+                  <text>No Data Provided for This Section</text>
+                </section>
+              </xsl:when>
+              <xsl:otherwise>
+                <section>
+                  <xsl:comment> C-CDA CCD VITAL SIGNS Section Template Entries REQUIRED </xsl:comment>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.4.1" extension="2015-08-01"/>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.4" />
+                  <code code="8716-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Vital Signs" />
+                  <title>Vital Signs</title>
+                  <xsl:comment> VITAL SIGNS NARRATIVE BLOCK, REQUIRED </xsl:comment>
                   <text>
-                    <reference value="#vitalsTime" />
+                    <paragraph>
+                      <content ID="vitalsTime">
+                        This section contains inpatient and outpatient Vital Signs on record at the VA for the
+                        patient. The data comes from all VA treatment facilities. It includes vital signs collected
+                        within the requested date range. If more than one set of vitals was taken in the same date,
+                        only the most recent set is populated for that date. If no date range was provided, it includes
+                        12 months of data, with a maximum of the 5 most recent sets of vitals. If more than one set of
+                        vitals was taken on the same date, only the most recent set is populated for that date.
+                      </content>
+                    </paragraph>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Date/Time</th>
+                          <th>Temperature</th>
+                          <th>Pulse</th>
+                          <th>Blood Pressure</th>
+                          <th>Respiratory Rate</th>
+                          <th>SP02</th>
+                          <th>Pain</th>
+                          <th>Height</th>
+                          <th>Weight</th>
+                          <th>Body Mass Index</th>
+                          <th>Source</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="Observations/Observation[generate-id() = generate-id(key('vitals', GroupId)[1])]">
+                          <xsl:sort select="ObservationTime" order="descending" />
+                          <xsl:variable name="grp" select="GroupId/text()" />
+                            <tr>
+                              <td>
+                                <xsl:value-of select="ObservationTime" />
+                              </td>
+
+                              <td>
+                                <!-- Temp -->
+                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500638]/ObservationValue" />&#160; <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500638]/ObservationCode/ObservationValueUnits/OriginalText" />
+                              </td>
+
+                              <td>
+                                <!-- Pulse -->
+                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500636]/ObservationValue" />&#160; <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500636]/ObservationCode/ObservationValueUnits/OriginalText" />
+                              </td>
+
+                              <td>
+                                <!-- Blood Pressure -->
+                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500634]/ObservationValue" />&#160; <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500634]/ObservationCode/ObservationValueUnits/OriginalText" />
+                              </td>
+
+                              <td>
+                                <!-- Respiratory -->
+                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4688725]/ObservationValue" />&#160; <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4688725]/ObservationCode/ObservationValueUnits/OriginalText" />
+                              </td>
+
+                              <td>
+                                <!-- Pulse OX -->
+                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500637]/ObservationValue" /><xsl:if test="boolean(../Observation[GroupId = $grp and ObservationCode/Code = 4500637]/ObservationValue)">%</xsl:if>
+                              </td>
+
+                              <td>
+                                <!-- PAIN -->
+                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500635]/ObservationValue" />
+                              </td>
+
+                              <td>
+                                <!-- Height -->
+                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4688724]/ObservationValue" />&#160; <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4688724]/ObservationCode/ObservationValueUnits/OriginalText" />
+                              </td>
+
+                              <td>
+                                <!-- Weight -->
+                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500639]/ObservationValue" />&#160; <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500639]/ObservationCode/ObservationValueUnits/OriginalText" />
+                              </td>
+
+                              <td>
+                                <!-- BMI -->
+                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500639]/Extension/BMI" />
+                              </td>
+
+                              <td>
+                                <content ID="{concat('vndSource', position())}">
+                                  <xsl:value-of select="EnteredAt/Description" />
+                                </content>
+                              </td>
+                            </tr>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
+                    <xsl:comment> CDA Observation Text as a Reference tag </xsl:comment>
+                    <content ID="vital1" revised='delete'>Vital Sign Observation Text Not Available</content>
                   </text>
-                  <statusCode code="completed" />
-                  <value xsi:type="IVL_TS">
-                    <low value="$vitalsStart"/>
-                    <high value="$vitalsEnd" />
-                  </value>
-                </observation>
-              </entry>
-              <entry typeCode='DRIV'>
-                <xsl:comment>  Vital Signs Organizer Template, REQUIRED </xsl:comment>
-                <organizer classCode="CLUSTER" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.26" extension="2015-08-01"/>
-                  <xsl:comment>Vital Sign Organizer ID as nullFlavor b/c data not yet available via VA VistA RPCs
-                  </xsl:comment>
-                  <id nullFlavor="NA" />
-                  <code code="46680005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Vital signs" >
-                    <translation code="74728-7" codeSystem="2.16.840.1.113883.6.1" />
-                  </code>
-                  <statusCode code="completed" />
-                  <effectiveTime>
-                    <low nullFlavor ="UNK"/>
-                    <high nullFlavor ="UNK"/>
-                  </effectiveTime>
-                  <xsl:comment>
-                    INFORMATION SOURCE FOR VITAL SIGN ORGANIZER/PANEL, Optional </xsl:comment>
-                    <author>
-                    <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <time nullFlavor="NA" />
-                    <assignedAuthor>
-                      <id nullFlavor="NI" />
-                      <representedOrganization>
-                        <xsl:comment>
-                          INFORMATION SOURCE ID, root=VA OID, extension= VAMC TREATING
-                          FACILITY NBR </xsl:comment>
-                          <id root="2.16.840.1.113883.4.349" />
-                          <xsl:comment>INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME </xsl:comment>
-                            <name />
-                      </representedOrganization>
-                    </assignedAuthor>
-                  </author>
-                  <xsl:comment>One component block for each Vital Sign </xsl:comment>
-                      <component>
+                  <xsl:comment>  VITAL SIGNS STRUCTURED DATA </xsl:comment>
+                  <entry typeCode="DRIV">
                     <observation classCode="OBS" moodCode="EVN">
-                      <templateId root="2.16.840.1.113883.10.20.22.4.27" extension="2014-06-09"/>
-                    <xsl:comment>14.01-VITAL SIGN RESULT ID, REQUIRED </xsl:comment>
-                        <id root="2.16.840.1.113883.4.349" extension="vitalID"/>
-                    <xsl:comment>14.03-VITAL SIGN RESULT TYPE, REQUIRED, LOINC </xsl:comment>
-                        <code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
-                        <originalText>
-                          <reference />
-                        </originalText>
-                        <translation codeSystem="2.16.840.1.113883.6.233" codeSystemName="VHA Enterprise Reference Terminology" />
-                      </code>
+                      <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01" />
+                      <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range" />
                       <text>
-                        <reference />
+                        <reference value="#vitalsTime" />
                       </text>
-                      <xsl:comment> 14.04-VITAL SIGN RESULT STATUS, REQUIRED, Static value of completed </xsl:comment>
                       <statusCode code="completed" />
-                      <xsl:comment> 14.02-VITAL SIGN RESULT DATE/TIME, REQURIED </xsl:comment>
-                      <effectiveTime nullFlavor="UNK" />
-                      <xsl:comment> 14.05-VITAL SIGN RESULT VALUE, CONDITIONALLY REQUIRED when 
-                                    moodCode=EVN </xsl:comment>
-                      <xsl:comment> 14.05-VITAL SIGN RESULT VALUE with Unit of Measure </xsl:comment>
-                      <value xsi:type="PQ" >
-                        <translation code="vaUnit"  codeSystem="2.16.840.1.113883.4.349" codeSystemName="Department of Veterans Affairs VistA" displayName="vaUnit"/>
-                      </value>
-                      <interpretationCode nullFlavor="NI" />
-                      <xsl:comment> 14.06-VITAL SIGN RESULT INTERPRETATION, Optional, HL7 Result 
-                                    Normalcy Status Value Set </xsl:comment>
-                      <xsl:comment> 14.06-VITAL SIGN RESULT INTERPRETATION, Removed b/c data not 
-                                    yet available via VA VistA RPCs </xsl:comment>
-                      <xsl:comment> 14.07-VITAL SIGN RESULT REFERENCE RANGE, Optional, </xsl:comment>
-                      <xsl:comment> 14.07-VITAL SIGN RESULT REFERENCE RANGE, Removed b/c data not 
-                                    yet available via VA VistA RPCs </xsl:comment>
-                      <methodCode nullFlavor="UNK">
-                        <originalText/>
-                      </methodCode>
-                      <targetSiteCode nullFlavor="UNK">
-                        <originalText/>
-                      </targetSiteCode>
+                      <value xsi:type="IVL_TS">
+                        <low value="$vitalsStart"/>
+                        <high value="$vitalsEnd" />
+                      </value><!-- TODO section dates-->
                     </observation>
-                  </component>
-                </organizer>
-              </entry>
-            </section>
+                  </entry>
+                  <xsl:for-each select="Observations/Observation[generate-id() = generate-id(key('vitals', GroupId)[1])]">
+                    <xsl:sort select="ObservationTime" order="descending" />
+                    <xsl:variable name="grp" select="GroupId/text()" />
+                    <entry typeCode='DRIV'>
+                      <xsl:comment>  Vital Signs Organizer Template, REQUIRED </xsl:comment>
+                      <organizer classCode="CLUSTER" moodCode="EVN">
+                        <templateId root="2.16.840.1.113883.10.20.22.4.26" extension="2015-08-01"/>
+                        <xsl:comment>
+                          Vital Sign Organizer ID as nullFlavor b/c data not yet available via VA VistA RPCs
+                        </xsl:comment>
+                        <id nullFlavor="NA" />
+                        <code code="46680005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Vital signs" >
+                          <translation code="74728-7" codeSystem="2.16.840.1.113883.6.1" />
+                        </code>
+                        <statusCode code="completed" />
+                        <xsl:choose>
+                          <xsl:when test="boolean(ObservationTime)">
+                            <effectiveTime>
+                              <low value="{ObservationTime/text()}"/>
+                              <high value="{ObservationTime/text()}"/>
+                            </effectiveTime>
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <effectiveTime>
+                              <low nullFlavor="UNK"/>
+                              <high nullFlavor="UNK"/>
+                            </effectiveTime>
+                          </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:comment>
+                          INFORMATION SOURCE FOR VITAL SIGN ORGANIZER/PANEL, Optional
+                        </xsl:comment>
+                        <author>
+                          <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                          <time nullFlavor="NA" />
+                          <assignedAuthor>
+                            <id nullFlavor="NI" />
+                            <representedOrganization>
+                              <xsl:comment>
+                                INFORMATION SOURCE ID, root=VA OID, extension= VAMC TREATING
+                                FACILITY NBR
+                              </xsl:comment>
+                              <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
+                              <xsl:comment>INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME </xsl:comment>
+                              <name><xsl:value-of select="EnteredAt/Description"/></name>
+                            </representedOrganization>
+                          </assignedAuthor>
+                        </author>
+                        <xsl:comment>One component block for each Vital Sign </xsl:comment>
+                        <xsl:for-each select="../Observation[GroupId = $grp]">
+                          <xsl:choose>
+                            <xsl:when test="ObservationCode/Code = 4500634">
+                              <xsl:call-template name="standard-vitalsStink">
+                                <xsl:with-param name="grp" select="$grp" />
+                                <xsl:with-param name="ob" select="." />
+                                <xsl:with-param name="pressureIndex" select="'1'"/>
+                              </xsl:call-template>
+                              <xsl:call-template name="standard-vitalsStink">
+                                <xsl:with-param name="grp" select="$grp" />
+                                <xsl:with-param name="ob" select="." />
+                                <xsl:with-param name="pressureIndex" select="'2'"/>
+                              </xsl:call-template>
+                            </xsl:when>
+                            <xsl:when test="ObservationCode/Code = 4500639">
+                              <xsl:call-template name="standard-vitalsStink">
+                                <xsl:with-param name="grp" select="$grp" />
+                                <xsl:with-param name="ob" select="." />
+                              </xsl:call-template>
+                              <xsl:call-template name="standard-vitalsStink">
+                                <xsl:with-param name="grp" select="$grp" />
+                                <xsl:with-param name="ob" select="." />
+                                <xsl:with-param name="isBMI" select="'true'" />
+                              </xsl:call-template>
+                            </xsl:when>
+                            <xsl:otherwise>
+                              <xsl:call-template name="standard-vitalsStink">
+                                <xsl:with-param name="grp" select="$grp" />
+                                <xsl:with-param name="ob" select="." />
+                              </xsl:call-template>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        </xsl:for-each>
+                      </organizer>
+                    </entry>
+                  </xsl:for-each>
+                </section>
+              </xsl:otherwise>
+            </xsl:choose>
           </component>
 
           <xsl:comment> ************************* STANDALONE NOTE SECTIONS BELOW *************** </xsl:comment>
@@ -5541,4 +5626,116 @@
      </xsl:otherwise>
    </xsl:choose>
  </xsl:template>
+<xsl:template match="Observation" name="standard-vitalsStink">
+  <xsl:param name="isBMI" select="false" />
+  <xsl:param name="pressureIndex" select="false" />
+  <xsl:param name="grp" />
+  <xsl:param name="ob" />
+                          <component>
+                            <observation classCode="OBS" moodCode="EVN">
+                              <templateId root="2.16.840.1.113883.10.20.22.4.27" extension="2014-06-09"/>
+                              <xsl:comment>14.01-VITAL SIGN RESULT ID, REQUIRED </xsl:comment>
+                              <id root="2.16.840.1.113883.4.349" extension="{concat('.8716-3.',$ob/EnteredBy/Code/text(),$grp)}"/>
+                              <xsl:comment>14.03-VITAL SIGN RESULT TYPE, REQUIRED, LOINC </xsl:comment>
+                              <xsl:choose>
+                                <xsl:when test="$isBMI = 'true'">
+                                  <code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" code="39156-5" displayName="BMI">
+                                    <originalText>BMI</originalText>
+                                  </code>
+                                </xsl:when>
+                                <xsl:when test="$ob/ObservationCode/Code/text() = '4500635'">
+                                  <code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" code="72514-3" displayName="Pain Severity 0-10 Reported">
+                                    <originalText>
+                                      <xsl:value-of select="$ob/ObservationCode/Description" />
+                                    </originalText>
+                                  </code>
+                                </xsl:when>
+                                <xsl:when test="$pressureIndex = '1'">
+                                  <code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" code="8480-6" displayName="BP sys">
+                                    <originalText>SYSTOLIC BLOOD PRESSURE</originalText>
+                                    <translation code="4500634~1" displayName="SYSTOLIC BLOOD PRESSURE" codeSystem="2.16.840.1.113883.6.233" codeSystemName="VHA Enterprise Reference Terminology" />
+                                  </code>
+                                </xsl:when>
+                                <xsl:when test="$pressureIndex = '2'">
+                                  <code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" code="8462-4" displayName="BP dias">
+                                    <originalText>DIASTOLIC BLOOD PRESSURE</originalText>
+                                    <translation code="4500634~2" displayName="DIASTOLIC BLOOD PRESSURE" codeSystem="2.16.840.1.113883.6.233" codeSystemName="VHA Enterprise Reference Terminology" />
+                                  </code>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                  <code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+                                    <originalText>
+                                      <!-- TODO Vetsies -->
+                                      <xsl:value-of select="$ob/ObservationCode/Description" />
+                                    </originalText>
+                                    <translation codeSystem="2.16.840.1.113883.6.233" codeSystemName="VHA Enterprise Reference Terminology" />
+                                  </code>
+                                </xsl:otherwise>
+                              </xsl:choose>
+                              <text>
+                                <reference value="#vital1"/>
+                              </text>
+                              <xsl:comment> 14.04-VITAL SIGN RESULT STATUS, REQUIRED, Static value of completed </xsl:comment>
+                              <statusCode code="completed" />
+                              <xsl:comment> 14.02-VITAL SIGN RESULT DATE/TIME, REQURIED </xsl:comment>
+                              <xsl:choose><xsl:when test="$ob/ObservationTime"><effectiveTime value="{$ob/ObservationTime/text()}" /></xsl:when><xsl:otherwise><effectiveTime nullFlavor="UNK" /></xsl:otherwise></xsl:choose>
+                              <xsl:comment>
+                                14.05-VITAL SIGN RESULT VALUE, CONDITIONALLY REQUIRED when
+                                moodCode=EVN
+                              </xsl:comment>
+                              <xsl:comment> 14.05-VITAL SIGN RESULT VALUE with Unit of Measure </xsl:comment>
+
+                              <xsl:choose>
+                                <xsl:when test="$isBMI = 'true'">
+                                  <value xsi:type="PQ" unit="kg/m2" value="{$ob/Extension/BMI/text()}"></value>
+                                </xsl:when>
+                                <xsl:when test="$ob/ObservationCode/Code/text() = '4500637'">
+                                  <value xsi:type="PQ" unit="%" value="{$ob/ObservationValue}" >
+                                    <translation code="%" displayName="%" codeSystem="2.16.840.1.113883.4.349" codeSystemName="Department of Veterans Affairs VistA" />
+                                  </value>
+                                </xsl:when>
+                                <xsl:when test="$ob/ObservationCode/Code/text() = '4500635'">
+                                  <value xsi:type="PQ" nullFlavor="NA" value="{$ob/ObservationValue}" >
+                                    <translation nullFlavor="UNK" codeSystem="2.16.840.1.113883.4.349" codeSystemName="Department of Veterans Affairs VistA" />
+                                  </value>
+                                </xsl:when>
+                                <xsl:when test="$pressureIndex = '1'">
+                                  <value xsi:type="PQ" unit="{$ob/ObservationCode/ObservationValueUnits/Code/text()}" value="{isc:evaluate('piece', $ob/ObservationValue/text(), '/', 1)}" >
+                                    <translation code="{$ob/ObservationCode/ObservationValueUnits/OriginalText/text()}" codeSystem="2.16.840.1.113883.4.349" codeSystemName="Department of Veterans Affairs VistA" displayName="{$ob/ObservationCode/ObservationValueUnits/OriginalText/text()}"/>
+                                  </value>
+                                </xsl:when>
+                                <xsl:when test="$pressureIndex = '2'">
+                                  <value xsi:type="PQ" unit="{$ob/ObservationCode/ObservationValueUnits/Code/text()}" value="{isc:evaluate('piece', $ob/ObservationValue/text(), '/', 2)}" >
+                                    <translation code="{$ob/ObservationCode/ObservationValueUnits/OriginalText/text()}" codeSystem="2.16.840.1.113883.4.349" codeSystemName="Department of Veterans Affairs VistA" displayName="{$ob/ObservationCode/ObservationValueUnits/OriginalText/text()}"/>
+                                  </value>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                  <value xsi:type="PQ" value="{$ob/ObservationValue/text()}" unit="{$ob/ObservationCode/ObservationValueUnits/Code/text()}">
+                                    <translation code="{$ob/ObservationCode/ObservationValueUnits/OriginalText/text()}" codeSystem="2.16.840.1.113883.4.349" codeSystemName="Department of Veterans Affairs VistA" displayName="{$ob/ObservationCode/ObservationValueUnits/OriginalText/text()}"/>
+                                  </value>
+                                </xsl:otherwise>
+                              </xsl:choose>
+                              <interpretationCode nullFlavor="NI" />
+                              <xsl:comment>
+                                14.06-VITAL SIGN RESULT INTERPRETATION, Optional, HL7 Result
+                                Normalcy Status Value Set
+                              </xsl:comment>
+                              <xsl:comment>
+                                14.06-VITAL SIGN RESULT INTERPRETATION, Removed b/c data not
+                                yet available via VA VistA RPCs
+                              </xsl:comment>
+                              <xsl:comment> 14.07-VITAL SIGN RESULT REFERENCE RANGE, Optional, </xsl:comment>
+                              <xsl:comment>
+                                14.07-VITAL SIGN RESULT REFERENCE RANGE, Removed b/c data not
+                                yet available via VA VistA RPCs
+                              </xsl:comment>
+                              <methodCode nullFlavor="UNK">
+                                <originalText/>
+                              </methodCode><!-- VETS cause, yeah-->
+                              <targetSiteCode nullFlavor="UNK">
+                                <originalText/>
+                              </targetSiteCode>
+                            </observation>
+                          </component>
+</xsl:template>
 </xsl:stylesheet>

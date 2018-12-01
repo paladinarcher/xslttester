@@ -689,7 +689,7 @@ namespace XSLTest.XSLT.Extensions
 
             private string strip(string code, string system, string def)
             {
-                return " UNKNOWN_FUNC["+MethodBase.GetCurrentMethod().Name+"(["+code+"],["+system+"],["+def+"])]";
+                return code.Trim(system.ToCharArray());
             }
 
             private string pieceStrip(string code, string system, string def)
