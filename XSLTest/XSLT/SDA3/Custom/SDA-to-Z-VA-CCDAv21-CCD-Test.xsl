@@ -4771,114 +4771,159 @@
           <xsl:comment> ************************* STANDALONE NOTE SECTIONS BELOW *************** </xsl:comment>
           <component>
             <xsl:comment>Consultation Notes </xsl:comment>
-            <section>
-              <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01" />
-              <code code="11488-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Consultation Note" />
-              <title>Consult Notes</title>
-              <text>
-                <xsl:comment> Start Consult Notes Narrative </xsl:comment>
-                <paragraph MAP_ID="ConsultNotesSectionTitle">
-                  <content styleCode="Bold">Consult Notes</content>
-                </paragraph>
-                  <xsl:comment> Consult notes begin </xsl:comment>
-                <paragraph MAP_ID="conTitle">
-                  The list of Consult Notes with complete text includes all notes within the requested date range. If no date range was provided, the list of Consult Notes with complete text includes the 5 most recent notes within the last 18 months. The data comes from all VA treatment facilities.
-                </paragraph>
-                <table MAP_ID="NoteNarrative">
-                  <thead>
-                    <tr>
-                      <th>Date/Time</th>
-                      <th>Consult Note with Text</th>
-                      <th>Provider</th>
-                      <th>Source</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <content ID="noteDateTime" />
-                      </td>
-                      <td>
-                        <content ID="noteEncounterDescription" />
-                      </td>
-                      <td>
-                        <content ID="noteProvider" />
-                      </td>
-                      <td>
-                        <content ID="noteSource" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <xsl:comment> Condensed Consult notes begin title only </xsl:comment>
-                <paragraph MAP_ID="conTitle2">
-                  The list of ADDITIONAL Consult Note TITLES includes all notes signed within the last 18 months. The data comes from all VA treatment facilities.
-                </paragraph>
-                <table MAP_ID="NoteNarrative2">
-                  <thead>
-                    <tr>
-                      <th>Date/Time</th>
-                      <th>Consult Note Title</th>
-                      <th>Provider</th>
-                      <th>Source</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <content ID="noteDateTime" />
-                      </td>
-                      <td>
-                        <content ID="noteEncounterDescription" />
-                      </td>
-                      <td>
-                        <content ID="noteProvider" />
-                      </td>
-                      <td>
-                        <content ID="noteSource" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <xsl:comment> Stop Consult Notes Narrative </xsl:comment>
-              </text>
-              <entry>
-                <xsl:comment>Note Activity Entry </xsl:comment>
-                <act classCode="ACT" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
-                  <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
-                    <translation code="11488-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Consultation Note"/>
-                  </code>
+            <xsl:choose>
+              <xsl:when test="not(boolean(Documents/Document[DocumentType/Code/text() = 'CR' and not(Extension/NationalTitle/Code/text() = 217)]))">
+                <section nullFlavor="NI">
+                  <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01" />
+                  <code code="11488-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Consultation Note" />
+                  <title>Consult Notes</title>
+                  <text>No Data Provided for This Section</text>
+                </section>
+              </xsl:when>
+              <xsl:otherwise>
+                <section>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01" />
+                  <code code="11488-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Consultation Note" />
+                  <title>Consult Notes</title>
                   <text>
-                    <reference />
+                    <xsl:comment> Start Consult Notes Narrative </xsl:comment>
+                    <paragraph>
+                      <content styleCode="Bold">Consult Notes</content>
+                    </paragraph>
+                    <xsl:comment> Consult notes begin </xsl:comment>
+                    <paragraph>
+                      The list of Consult Notes with complete text includes all notes within the requested date range. If no date range was provided, the list of Consult Notes with complete text includes the 5 most recent notes within the last 18 months. The data comes from all VA treatment facilities.
+                    </paragraph>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Date/Time</th>
+                          <th>Consult Note with Text</th>
+                          <th>Provider</th>
+                          <th>Source</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CR' and not(Extension/NationalTitle/Code/text() = 217)]">
+                          <xsl:sort select="DocumentTime" order="descending" />
+                          <xsl:if test="position() &lt; 6">
+                            <tr>
+                              <td>
+                                <content ID="{concat('noteDateTime',position())}">
+                                  <xsl:value-of select="DocumentTime/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('noteEncounterDescription',position())}">
+                                  <xsl:call-template name="standard-insertBreaks">
+                                    <xsl:with-param name="pText" select="NoteText/text()"/>
+                                  </xsl:call-template>
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('noteProvider',position())}">
+                                  <xsl:value-of select="Clinician/Description/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('noteSource',position())}">
+                                  <xsl:value-of select="EnteredAt/Description/text()" />
+                                </content>
+                              </td>
+                            </tr>
+                          </xsl:if>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
+                    <xsl:comment> Condensed Consult notes begin title only </xsl:comment>
+                    <xsl:if test="count(Documents/Document[DocumentType/Code/text() = 'CR' and not(Extension/NationalTitle/Code/text() = 217)]) &gt; 5">
+                      <paragraph>
+                        The list of ADDITIONAL Consult Note TITLES includes all notes signed within the last 18 months. The data comes from all VA treatment facilities.
+                      </paragraph>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Date/Time</th>
+                            <th>Consult Note Title</th>
+                            <th>Provider</th>
+                            <th>Source</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CR' and not(Extension/NationalTitle/Code/text() = 217)]">
+                            <xsl:sort select="DocumentTime" order="descending" />
+                            <xsl:if test="position() &gt; 5">
+                              <tr>
+                                <td>
+                                  <content ID="{concat('noteDateTime',position())}">
+                                    <xsl:value-of select="DocumentTime/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('noteEncounterDescription',position())}">
+                                    <xsl:value-of select="Extension/NationalTitle/Description/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('noteProvider',position())}">
+                                    <xsl:value-of select="Clinician/Description/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('noteSource',position())}">
+                                    <xsl:value-of select="EnteredAt/Description/text()" />
+                                  </content>
+                                </td>
+                              </tr>
+                            </xsl:if>
+                          </xsl:for-each>
+                        </tbody>
+                      </table>
+                    </xsl:if>
+                    <xsl:comment> Stop Consult Notes Narrative </xsl:comment>
                   </text>
-                  <statusCode code="completed" />
-                  <xsl:comment>Clinically relevant time of the note </xsl:comment>
-                  <effectiveTime />
-                  <author>
-                    <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <xsl:comment>Time note was actually written</xsl:comment>
-                    <time />
-                    <assignedAuthor>
-                      <id nullFlavor="NI" />
-                      <assignedPerson>
-                        <name />
-                      </assignedPerson>
-                      <representedOrganization>
-                        <id root="2.16.840.1.113883.4.349" />
-                        <name />
-                      </representedOrganization>
-                    </assignedAuthor>
-                  </author>
-                  <!--Reference to Encounter
+                  <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CR' and not(Extension/NationalTitle/Code/text() = 217)]">
+                    <xsl:sort select="DocumentTime" order="descending" />
+                    <entry>
+                      <xsl:comment>Note Activity Entry </xsl:comment>
+                      <act classCode="ACT" moodCode="EVN">
+                        <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
+                        <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
+                          <translation code="11488-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Consultation Note"/>
+                        </code>
+                        <text>
+                          <reference value="{concat('#noteEncounterDescription',position())}"/>
+                        </text>
+                        <statusCode code="completed" />
+                        <xsl:comment>Clinically relevant time of the note </xsl:comment>
+                        <effectiveTime value="{DocumentTime/text()}" />
+                        <author>
+                          <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                          <xsl:comment>Time note was actually written</xsl:comment>
+                          <time value="{DocumentTime/text()}"/>
+                          <assignedAuthor>
+                            <id nullFlavor="NI" />
+                            <assignedPerson>
+                              <name><xsl:value-of select="Clinician/Description/text()"/></name>
+                            </assignedPerson>
+                            <representedOrganization>
+                              <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
+                              <name><xsl:value-of select="EnteredAt/Description/text()"/></name>
+                            </representedOrganization>
+                          </assignedAuthor>
+                        </author>
+                        <!--Reference to Encounter
 							<entryRelationship typeCode="COMP" inversionInd="true">
 								<encounter>
 									<id root="2.16.840.1.113883.4.349" />
 								</encounter>
 							</entryRelationship>-->
-                </act>
-              </entry>
-            </section>
+                      </act>
+                    </entry>
+                  </xsl:for-each>
+                </section>
+              </xsl:otherwise>
+            </xsl:choose>
           </component>
           <component>
             <xsl:comment>History and Physical Notes</xsl:comment>
