@@ -3762,191 +3762,252 @@
           <component>
             <xsl:comment> ******************************************************** PROBLEM/CONDITION 
                 SECTION, REQUIRED ******************************************************** </xsl:comment>
-            <section>
-              <xsl:comment> C-CDA Problem Section Template. Entries REQUIRED </xsl:comment>
-              <templateId root="2.16.840.1.113883.10.20.22.2.5.1" extension="2015-08-01"/>
-              <templateId root="2.16.840.1.113883.10.20.22.2.5" />
-              <code code="11450-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Problem List" />
-              <title>Problems (Conditions): All on record at VA</title>
-                <xsl:comment> PROBLEMS NARRATIVE BLOCK </xsl:comment>
-              <text>
-                <paragraph>
-                  <content ID="problemTime" >Section Date Range: From patient's date of birth to the date document was created.</content>
-                </paragraph>
-                <xsl:comment> VA Problem/Condition Business Rules for Medical Content </xsl:comment>
-                <paragraph>
-                  This section includes a list of Problems (Conditions) known to VA for the patient.
-                  It includes both active and inactive problems (conditions). The data comes from all VA treatment facilities.
-                </paragraph>
-                <table MAP_ID="problemNarrative">
-                  <thead>
-                    <tr>
-                      <th>Problem</th>
-                      <th>Status</th>
-                      <th>Problem Code</th>
-                      <th>Date of Onset</th>
-                      <th>Date of Resolution</th>
-                      <th>Comment(s)</th>
-                      <th>Provider</th>
-                      <th>Source</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <content ID="pndProblem" />
-                      </td>
-                      <td>
-                        <content ID="pndStatus" />
-                      </td>
-                      <td>
-                        <content ID="pndProblemCode" />
-                      </td>
-                      <td>
-                        <content ID="pndDateOfOnset" />
-                      </td>
-                      <td>
-                        <content ID="pndDateOfResolution" />
-                      </td>
-                      <td>
-                        <list>
-                          <item>
-                            <content ID="pndComment" />
-                          </item>
-                        </list>
-                      </td>
-                      <td>
-                        <content ID="pndProvider" />
-                      </td>
-                      <td>
-                        <content ID="pndSource" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </text>
-              <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
-              <entry typeCode="DRIV" >
-                <observation classCode="OBS" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
-                  <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range"/>
+            <xsl:choose>
+              <xsl:when test="not(boolean(Problems/Problem[not(Problem/Code/text() = '408907016')]))">
+                <section nullFlavor="NI">
+                  <xsl:comment> C-CDA Problem Section Template. Entries REQUIRED </xsl:comment>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.5.1" extension="2015-08-01"/>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.5" />
+                  <code code="11450-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Problem List" />
+                  <title>Problems (Conditions): All on record at VA</title>
+                  <xsl:comment> PROBLEMS NARRATIVE BLOCK </xsl:comment>
+                  <text>No Data Provided for This Section</text>
+                </section>
+              </xsl:when>
+              <xsl:otherwise>
+                <section>
+                  <xsl:comment> C-CDA Problem Section Template. Entries REQUIRED </xsl:comment>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.5.1" extension="2015-08-01"/>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.5" />
+                  <code code="11450-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Problem List" />
+                  <title>Problems (Conditions): All on record at VA</title>
+                  <xsl:comment> PROBLEMS NARRATIVE BLOCK </xsl:comment>
                   <text>
-                    <reference value="#problemTime"/>
-                    <!-- <td ID="adsectionTime">Section Date Range: From patient's date of birth to the date document was created."</td> -->
+                    <paragraph>
+                      <content ID="problemTime" >Section Date Range: From patient's date of birth to the date document was created.</content>
+                    </paragraph>
+                    <xsl:comment> VA Problem/Condition Business Rules for Medical Content </xsl:comment>
+                    <paragraph>
+                      This section includes a list of Problems (Conditions) known to VA for the patient.
+                      It includes both active and inactive problems (conditions). The data comes from all VA treatment facilities.
+                    </paragraph>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Problem</th>
+                          <th>Status</th>
+                          <th>Problem Code</th>
+                          <th>Date of Onset</th>
+                          <th>Date of Resolution</th>
+                          <th>Comment(s)</th>
+                          <th>Provider</th>
+                          <th>Source</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="Problems/Problem[not(Problem/Code/text() = '408907016')]">
+                          <xsl:sort select="Status/Description" />
+                          <xsl:sort select="ProblemDetails" />
+                          <xsl:variable name="prid" select="position()" />
+                          <tr>
+                            <td>
+                              <content ID="{concat('pndProblem',position())}">
+                                <xsl:value-of select="ProblemDetails/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('pndStatus',position())}">
+                                <xsl:value-of select="Status/Description/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('pndProblemCode',position())}">
+                                <xsl:value-of select="Problem/Description/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('pndDateOfOnset',position())}">
+                                <xsl:value-of select="FromTime/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('pndDateOfResolution',position())}">
+                                <xsl:value-of select="ToTime/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <list>
+                                <xsl:for-each select="Extension/Comments/Comment" >
+                                  <item>
+                                    <content ID="{concat('pndComment',$prid,'-',position())}">
+                                      <xsl:value-of select="CommentText/text()" />
+                                    </content>
+                                  </item>
+                                </xsl:for-each>
+                              </list>
+                            </td>
+                            <td>
+                              <content ID="{concat('pndProvider',position())}">
+                                <xsl:value-of select="Clinician/Description/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('pndSource',position())}">
+                                <xsl:value-of select="EnteredAt/Description/text()" />
+                              </content>
+                            </td>
+                          </tr>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
                   </text>
-                  <statusCode code="completed"/>
-                  <value xsi:type="IVL_TS">
-                    <low value="{$patientBirthDate}" />
-                    <high value="{$documentCreatedOn}" />
-                  </value>
-                </observation>
-              </entry>
-              <xsl:comment> PROBLEMS STRUCTURED DATA </xsl:comment>
-              <xsl:comment> Problem Concern Activty Entry </xsl:comment>
-              <entry>
-                <act classCode="ACT" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.3" extension="2015-08-01" />
-                  <id nullFlavor="NA" />
-                  <code code="CONC" codeSystem="2.16.840.1.113883.5.6" codeSystemName="HL7ActClass" displayName="Concern" />
-                  <statusCode code="active" />
-                  <xsl:comment> C-CDA R2.1 PROBLEM CONCERN DATE,  Date Recorded/Entered, Required </xsl:comment>
-                  <xsl:comment> 7.01 PROBLEM DATE, R2 </xsl:comment>
-                  <effectiveTime>
-                    <xsl:comment> 7.01 PROBLEM DATE, cda:low=Date of Entry </xsl:comment>
-                    <low />
-                      <xsl:comment> 7.01 PROBLEM DATE, cda:high=Date Resolved </xsl:comment>
-                    <high nullFlavor="UNK"/>
-                  </effectiveTime>
-                    <xsl:comment> TREATING PROVIDER Performer Block, Optional </xsl:comment>
-                  <performer>
-                    <assignedEntity>
-                   <xsl:comment> 7.05 TREATING PROVIDER </xsl:comment>
-                      <id nullFlavor="NI" />
-                      <assignedPerson>
-                        <name />
-                      </assignedPerson>
-                    </assignedEntity>
-                  </performer>
-                  <xsl:comment> INFORMATION SOURCE FOR PROBLEM, Optional </xsl:comment>
-                  <author>
-                    <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <time nullFlavor="NA" />
-                    <assignedAuthor>
-                      <id nullFlavor="NI" />
-                      <code nullFlavor="NA" />
-                      <representedOrganization>
-                        <xsl:comment> INFORMATION SOURCE ID, root=VA OID, extension= VAMC TREATING 
-                                        FACILITY NBR </xsl:comment>
-                        <id root="2.16.840.1.113883.4.349" />
-                        <xsl:comment> INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME </xsl:comment>
-                        <name />
-                        <telecom nullFlavor="NA" />
-                        <addr nullFlavor="NA" />
-                      </representedOrganization>
-                    </assignedAuthor>
-                  </author>
-                  <entryRelationship typeCode="SUBJ">
-                    <xsl:comment> CCD Problem Observation </xsl:comment>
+                  <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
+                  <entry typeCode="DRIV" >
                     <observation classCode="OBS" moodCode="EVN">
-                      <templateId root="2.16.840.1.113883.10.20.22.4.4" extension="2015-08-01"/>
-                      <id nullFlavor="NI" />
-                      <xsl:comment> 7.02 PROBLEM TYPE, REQUIRED, SNOMED CT, provided as nullFlavor 
-                                    b/c data not yet available via VA VistA RPCs </xsl:comment>
-                      <code nullFlavor="NA" />
-                      <xsl:comment> 7.03 PROBLEM NAME, R2 </xsl:comment>
+                      <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
+                      <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range"/>
                       <text>
-                        <reference value="#pndProblem" />
+                        <reference value="#problemTime"/>
+                        <!-- <td ID="adsectionTime">Section Date Range: From patient's date of birth to the date document was created."</td> -->
                       </text>
-                      <statusCode code="completed" />
-                      <xsl:comment> 7.01 Problem Observation Date </xsl:comment>
-                      <effectiveTime>
-                        <xsl:comment> Date of onset </xsl:comment>
-                        <low />
-                        <xsl:comment> Date of resolution </xsl:comment>
-                        <high />
-                      </effectiveTime>
-                      <xsl:comment> 7.04 PROBLEM CODE, Optional, When uncoded only xsi:type="CD" 
-                                    allowed, Available as ICD-9, not SNOMED CT, </xsl:comment>
-                      <value xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
-                        <originalText>
-                          <reference />
-                        </originalText>
-                        <translation codeSystem='2.16.840.1.113883.6.103' codeSystemName='ICD-9-CM' />
+                      <statusCode code="completed"/>
+                      <value xsi:type="IVL_TS">
+                        <low value="{$patientBirthDate}" />
+                        <high value="{$documentCreatedOn}" />
                       </value>
-                      <xsl:comment> PROBLEM STATUS entryRelationship block, Optional, </xsl:comment>
-                      <entryRelationship typeCode="SUBJ">
-                        <observation classCode="OBS" moodCode="EVN">
-                          <templateId root="2.16.840.1.113883.10.20.22.4.6" />
-                          <code code="33999-4" codeSystem="2.16.840.1.113883.6.1"
-                                                                                                  codeSystemName="LOINC" displayName="Status" />
-                          <statusCode code="completed" />
-                          <xsl:comment> PROBLEM STATUS VALUE, Deprecated R2,1 </xsl:comment>
-                          <value xsi:type="CE" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" >
-                            <originalText>
-                              <reference />
-                            </originalText>
-                          </value>
-                        </observation>
-                      </entryRelationship>
-                      <xsl:comment> PROBLEM COMMENT (for SSA) entryRelationship block, Optional, </xsl:comment>
-                      <entryRelationship inversionInd="true" typeCode="SUBJ">
-                        <act classCode="ACT" moodCode="EVN">
-                          <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                          <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation Comment"/>
-                          <text>
-                            <reference value="#pndComment"/>
-                          </text>
-                        </act>
-                      </entryRelationship>
                     </observation>
-                  </entryRelationship>
-                  <xsl:comment> CCD Problem Age Observation, not provided b/c data not yet available 
-                            via VA VistA RPCs </xsl:comment>
-                  <xsl:comment> CCD Health Status Observation, not provided b/c data not yet 
-                            available via VA VistA RPCs </xsl:comment>
-                </act>
-              </entry>
-            </section>
+                  </entry>
+                  <xsl:comment> PROBLEMS STRUCTURED DATA </xsl:comment>
+                  <xsl:comment> Problem Concern Activty Entry </xsl:comment>
+                  <xsl:for-each select="Problems/Problem[not(Problem/Code/text() = '408907016')]">
+                    <xsl:sort select="Status/Description" />
+                    <xsl:sort select="ProblemDetails" />
+                    <xsl:variable name="prid" select="position()" />
+                    <entry>
+                      <act classCode="ACT" moodCode="EVN">
+                        <templateId root="2.16.840.1.113883.10.20.22.4.3" extension="2015-08-01" />
+                        <id nullFlavor="NA" />
+                        <code code="CONC" codeSystem="2.16.840.1.113883.5.6" codeSystemName="HL7ActClass" displayName="Concern" />
+                        <statusCode code="active" />
+                        <xsl:comment> C-CDA R2.1 PROBLEM CONCERN DATE,  Date Recorded/Entered, Required </xsl:comment>
+                        <xsl:comment> 7.01 PROBLEM DATE, R2 </xsl:comment>
+                        <effectiveTime>
+                          <xsl:comment> 7.01 PROBLEM DATE, cda:low=Date of Entry </xsl:comment>
+                          <low value="{FromTime/text()}"/>
+                          <xsl:comment> 7.01 PROBLEM DATE, cda:high=Date Resolved </xsl:comment>
+                          <high nullFlavor="UNK"/>
+                        </effectiveTime>
+                        <xsl:comment> TREATING PROVIDER Performer Block, Optional </xsl:comment>
+                        <performer>
+                          <assignedEntity>
+                            <xsl:comment> 7.05 TREATING PROVIDER </xsl:comment>
+                            <id nullFlavor="NI" />
+                            <assignedPerson>
+                              <name><xsl:value-of select="Clinician/Description/text()"/></name>
+                            </assignedPerson>
+                          </assignedEntity>
+                        </performer>
+                        <xsl:comment> INFORMATION SOURCE FOR PROBLEM, Optional </xsl:comment>
+                        <author>
+                          <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                          <time nullFlavor="NA" />
+                          <assignedAuthor>
+                            <id nullFlavor="NI" />
+                            <code nullFlavor="NA" />
+                            <representedOrganization>
+                              <xsl:comment>
+                                INFORMATION SOURCE ID, root=VA OID, extension= VAMC TREATING
+                                FACILITY NBR
+                              </xsl:comment>
+                              <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
+                              <xsl:comment> INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME </xsl:comment>
+                              <name><xsl:value-of select="EnteredAt/Description/text()"/></name>
+                              <telecom nullFlavor="NA" />
+                              <addr nullFlavor="NA" />
+                            </representedOrganization>
+                          </assignedAuthor>
+                        </author>
+                        <entryRelationship typeCode="SUBJ">
+                          <xsl:comment> CCD Problem Observation </xsl:comment>
+                          <observation classCode="OBS" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.22.4.4" extension="2015-08-01"/>
+                            <id nullFlavor="NI" />
+                            <xsl:comment>
+                              7.02 PROBLEM TYPE, REQUIRED, SNOMED CT, provided as nullFlavor
+                              b/c data not yet available via VA VistA RPCs
+                            </xsl:comment>
+                            <code nullFlavor="NA" />
+                            <xsl:comment> 7.03 PROBLEM NAME, R2 </xsl:comment>
+                            <text>
+                              <reference value="{concat('#pndProblem',position())}" />
+                            </text>
+                            <statusCode code="completed" />
+                            <xsl:comment> 7.01 Problem Observation Date </xsl:comment>
+                            <effectiveTime>
+                              <xsl:comment> Date of onset </xsl:comment>
+                              <low value="{FromTime/text()}"/>
+                              <xsl:comment> Date of resolution </xsl:comment>
+                              <xsl:choose>
+                                <xsl:when test="boolean(ToTime)">
+                                  <high value="{ToTime/text()}"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                  <high nullFlavor="UNK"/>
+                                </xsl:otherwise>
+                              </xsl:choose>
+                            </effectiveTime>
+                            <xsl:comment>
+                              7.04 PROBLEM CODE, Optional, When uncoded only xsi:type="CD"
+                              allowed, Available as ICD-9, not SNOMED CT,
+                            </xsl:comment><!-- TODO see how it comes back from VETS -->
+                            <value xsi:type="CD" code="{Problem/Code/text()}" displayName="{Problem/Description/text()}" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                              <originalText>
+                                <reference value="{concat('#pndProblem',position())}"/>
+                              </originalText>
+                              <translation codeSystem='2.16.840.1.113883.6.103' codeSystemName='ICD-9-CM' />
+                            </value>
+                            <xsl:comment> PROBLEM STATUS entryRelationship block, Optional, </xsl:comment>
+                            <entryRelationship typeCode="SUBJ">
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.6" />
+                                <code code="33999-4" codeSystem="2.16.840.1.113883.6.1"  codeSystemName="LOINC" displayName="Status" />
+                                <statusCode code="completed" />
+                                <xsl:comment> PROBLEM STATUS VALUE, Deprecated R2,1 </xsl:comment>
+                                <value xsi:type="CE" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" >
+                                  <originalText><!-- TODO Sno Mappin'-->
+                                    <reference value="{concat('#pndStatus',position())}"/>
+                                  </originalText>
+                                </value>
+                              </observation>
+                            </entryRelationship>
+                            <xsl:comment> PROBLEM COMMENT (for SSA) entryRelationship block, Optional, </xsl:comment>
+                            <xsl:for-each select="Extension/Comments/Comment" >
+                              <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                <act classCode="ACT" moodCode="EVN">
+                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation Comment"/>
+                                  <text>
+                                    <reference value="{concat('#pndComment',$prid,'-',position())}"/>
+                                  </text>
+                                </act>
+                              </entryRelationship>
+                            </xsl:for-each>
+                          </observation>
+                        </entryRelationship>
+                        <xsl:comment>
+                          CCD Problem Age Observation, not provided b/c data not yet available
+                          via VA VistA RPCs
+                        </xsl:comment>
+                        <xsl:comment>
+                          CCD Health Status Observation, not provided b/c data not yet
+                          available via VA VistA RPCs
+                        </xsl:comment>
+                      </act>
+                    </entry>
+                  </xsl:for-each>
+                </section>
+              </xsl:otherwise>
+            </xsl:choose>
           </component>
           <component>
             <xsl:comment> ******************************************************** RESULTS 
