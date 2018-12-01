@@ -4252,193 +4252,274 @@
             </xsl:choose>
           </component>
           <component>
-            <xsl:comment> ******************************************************** SOCIAL 
-                HISTORY SECTION, Optional ******************************************************** </xsl:comment>
-            <section>
-              <xsl:comment> CCD Social History Section Entries </xsl:comment>
-              <templateId root="2.16.840.1.113883.10.20.22.2.17" extension="2015-08-01" />
-              <code code="29762-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Social History" />
-              <title>Social History: All on record at VA</title>
-              <text>
-                <xsl:comment> VA Procedure Business Rules for Medical Content </xsl:comment>
-                <paragraph>
-                  <content ID="socialHistTime">Section Date Range: From patient's date of birth to the date the document was created.</content>
-                </paragraph>
-                <paragraph>
-                  This section includes all smoking or tobacco-related health factors on record at VA for the patient. The data comes from all VA treatment facilities.
-                </paragraph>
-                <paragraph>
-                  <content styleCode="Bold">Current Smoking Status</content>
-                </paragraph>
-                <paragraph>
-                  This section includes the MOST CURRENT smoking, or tobacco-related health factor, on record at VA for the patient.
-                </paragraph>
-                <table MAP_ID="factorsNarrative">
-                  <thead>
-                    <tr>
-                      <th>Date/Time</th>
-                      <th>Current Smoking Status</th>
-                      <th>Comment</th>
-                      <th>Facility</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <content ID="hfDate" />
-                      </td>
-                      <td>
-                        <content ID="hfName" />
-                      </td>
-                      <td>
-                        <content ID="hfSeverity"/>
-                        <br/>
-                        <content ID="hfComment" />
-                      </td>
-                      <td>
-                        <content ID="hfFacility" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <paragraph>
-                  <content styleCode="Bold">Tobacco Use History</content>
-                </paragraph>
-                <paragraph>
-                  This section includes a history of the smoking, or tobacco-related health factors, on record at VA for the patient.
-                </paragraph>
-                <table MAP_ID="factorsNarrative2">
-                  <thead>
-                    <tr>
-                      <th>Date/Time</th>
-                      <th>Smoking Status/Tobacco Use</th>
-                      <th>Comment</th>
-                      <th>Facility</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <content ID="hfDate2" />
-                      </td>
-                      <td>
-                        <content ID="hfName2" />
-                      </td>
-                      <td>
-                        <content ID="hfSeverity2"/>
-                        <br/>
-                        <content ID="hfComment2" />
-                      </td>
-                      <td>
-                        <content ID="hfFacility2" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </text>
-              <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
-              <entry typeCode="DRIV">
-                <observation classCode="OBS" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
-                  <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range"/>
+<xsl:comment> ******************************************************** SOCIAL HISTORY SECTION, Optional ******************************************************** </xsl:comment>
+            <xsl:choose>
+              <xsl:when test="not(boolean(SocialHistories/SocialHistory))">
+                <section nullFlavor="NI">
+                  <xsl:comment> CCD Social History Section Entries </xsl:comment>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.17" extension="2015-08-01" />
+                  <code code="29762-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Social History" />
+                  <title>Social History: All on record at VA</title>
+                  <text>No Data Provided for This Section</text>
+                </section>
+              </xsl:when>
+              <xsl:otherwise>
+                <section>
+                  <xsl:comment> CCD Social History Section Entries </xsl:comment>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.17" extension="2015-08-01" />
+                  <code code="29762-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Social History" />
+                  <title>Social History: All on record at VA</title>
                   <text>
-                    <reference value='#socialHistTime' />
+                    <xsl:comment> VA Procedure Business Rules for Medical Content </xsl:comment>
+                    <paragraph>
+                      <content ID="socialHistTime">Section Date Range: From patient's date of birth to the date the document was created.</content>
+                    </paragraph>
+                    <paragraph>
+                      This section includes all smoking or tobacco-related health factors on record at VA for the patient. The data comes from all VA treatment facilities.
+                    </paragraph>
+                    <paragraph>
+                      <content styleCode="Bold">Current Smoking Status</content>
+                    </paragraph>
+                    <paragraph>
+                      This section includes the MOST CURRENT smoking, or tobacco-related health factor, on record at VA for the patient.
+                    </paragraph>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Date/Time</th>
+                          <th>Current Smoking Status</th>
+                          <th>Comment</th>
+                          <th>Facility</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="SocialHistories/SocialHistory">
+                          <xsl:sort select="EnteredOn" order="descending" />
+                          <xsl:if test="position() = 1">
+                            <tr>
+                              <td>
+                                <content ID="{concat('hfDate',position())}">
+                                  <xsl:value-of select="EnteredOn/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('hfName',position())}">
+                                  <xsl:value-of select="SocialHabit/Code/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('hfSeverity',position())}">
+                                  <xsl:value-of select="SocialHabitSeverity/text()" />
+                                </content>
+                                <!-- TODO: I made this one up-->
+                                <br/>
+                                <content ID="{concat('hfComment',position())}">
+                                  <xsl:value-of select="SocialHabitComments/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('hfFacility',position())}">
+                                  <xsl:value-of select="EnteredAt/Description/text()" />
+                                </content>
+                              </td>
+                            </tr>
+                          </xsl:if>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
+                    <paragraph>
+                      <content styleCode="Bold">Tobacco Use History</content>
+                    </paragraph>
+                    <paragraph>
+                      This section includes a history of the smoking, or tobacco-related health factors, on record at VA for the patient.
+                    </paragraph>
+                    <table >
+                      <thead>
+                        <tr>
+                          <th>Date/Time</th>
+                          <th>Smoking Status/Tobacco Use</th>
+                          <th>Comment</th>
+                          <th>Facility</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="SocialHistories/SocialHistory">
+                          <xsl:sort select="EnteredOn" order="descending" />
+                          <xsl:if test="not(position() = 1)">
+                            <tr>
+                              <td>
+                                <content ID="{concat('hfDate',position())}">
+                                  <xsl:value-of select="EnteredOn/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('hfName',position())}">
+                                  <xsl:value-of select="SocialHabit/Code/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('hfSeverity',position())}">
+                                  <xsl:value-of select="SocialHabitSeverity/text()" />
+                                </content>
+                                <!-- TODO: I made this one up-->
+                                <br/>
+                                <content ID="{concat('hfComment',position())}">
+                                  <xsl:value-of select="SocialHabitComments/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('hfFacility',position())}">
+                                  <xsl:value-of select="EnteredAt/Description/text()" />
+                                </content>
+                              </td>
+                            </tr>
+                          </xsl:if>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
                   </text>
-                  <statusCode code="completed"/>
-                  <value xsi:type="IVL_TS">
-                    <low value="{$patientBirthDate}" />
-                    <high value="{$documentCreatedOn}" />
-                  </value>
-                </observation>
-              </entry>
-              <entry MAP_ID="currentHealthFactors">
-                <observation classCode="OBS" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.78" extension="2014-06-09" />
-                  <id nullFlavor="NI" />
-                  <code code="72166-2" codeSystem="2.16.840.1.113883.6.1" displayName="Tobacco smoking status NHIS" />
-                  <statusCode code="completed" />
-                  <xsl:comment> CCD Smoking Status Effective Time, R2 </xsl:comment>
-                  <effectiveTime />
-                  <xsl:comment> CCD Smoking Status Value, REQURIED, SNOMED CT </xsl:comment>
-                  <value xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" nullFlavor="UNK">
-                    <originalText>
-                      <reference />
-                    </originalText>
-                  </value>
-                  <xsl:comment> INFORMATION SOURCE FOR SMOKING STATUS, Optional </xsl:comment>
-                  <author>
-                    <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <time nullFlavor="UNK" />
-                    <assignedAuthor>
-                      <id nullFlavor="UNK" />
-                      <representedOrganization>
-                        <xsl:comment> INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING 
-                                        FACILITY NBR) </xsl:comment>
-                        <id extension="facilityNumber" root="2.16.840.1.113883.4.349" />
-                        <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
-                        <name>facilityName</name>
-                      </representedOrganization>
-                    </assignedAuthor>
-                  </author>
-                  <xsl:comment> CCD Smoking Status Comment Entry, Optional </xsl:comment>
-                  <entryRelationship typeCode="SUBJ" inversionInd="true">
-                    <act classCode="ACT" moodCode="EVN">
-                      <templateId root="2.16.840.1.113883.10.20.22.4.64" />
-                      <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment" />
-                      <xsl:comment> CCD Smoking Status Comment, REQUIRED </xsl:comment>
+                  <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
+                  <entry typeCode="DRIV">
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
+                      <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range"/>
                       <text>
-                        <reference />
+                        <reference value='#socialHistTime' />
                       </text>
-                    </act>
-                  </entryRelationship>
-                </observation>
-              </entry>
-              <entry MAP_ID="pastHealthFactors">
-                <observation classCode="OBS" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.85" extension="2014-06-09"/>
-                  <id nullFlavor="NI" />
-                  <code code="11367-0" codeSystem="2.16.840.1.113883.6.1" displayName="History of tobacco use" />
-                  <statusCode code="completed" />
-                  <xsl:comment> CCD Smoking Status Effective Time, R2 </xsl:comment>
-                  <effectiveTime>
-                    <low nullFlavor="UNK" />
-                    <high nullFlavor="NAV" />
-                  </effectiveTime>
-                    <xsl:comment> CCD Smoking Status Value, REQURIED, SNOMED CT </xsl:comment>
-                  <value xsi:type="CD" nullFlavor="UNK" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
-                    <originalText>
-                      <reference />
-                    </originalText>
-                  </value>
-                      <xsl:comment> INFORMATION SOURCE FOR SMOKING STATUS, Optional </xsl:comment>
-                  <author>
-                    <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <time nullFlavor="UNK" />
-                    <assignedAuthor>
-                      <id nullFlavor="UNK" />
-                      <representedOrganization>
-                        <xsl:comment> INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING 
-                                        FACILITY NBR) </xsl:comment>
-                        <id extension="facilityNumber" root="2.16.840.1.113883.4.349" />
-                          <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
-                        <name>facilityName</name>
-                      </representedOrganization>
-                    </assignedAuthor>
-                  </author>
-                        <xsl:comment> CCD Smoking Status Comment Entry, Optional </xsl:comment>
-                  <entryRelationship typeCode="SUBJ" inversionInd="true">
-                    <act classCode="ACT" moodCode="EVN">
-                      <templateId root="2.16.840.1.113883.10.20.22.4.64" />
-                      <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment" />
-                      <xsl:comment> CCD Smoking Status Comment, REQUIRED </xsl:comment>
-                      <text>
-                        <reference />
-                      </text>
-                    </act>
-                  </entryRelationship>
-                </observation>
-              </entry>
-            </section>
+                      <statusCode code="completed"/>
+                      <value xsi:type="IVL_TS">
+                        <low value="{$patientBirthDate}" />
+                        <high value="{$documentCreatedOn}" />
+                      </value>
+                    </observation>
+                  </entry>
+                  <xsl:for-each select="SocialHistories/SocialHistory">
+                    <xsl:sort select="EnteredOn" order="descending" />
+                    <xsl:if test="position() = 1">
+                      <entry>
+                        <observation classCode="OBS" moodCode="EVN">
+                          <templateId root="2.16.840.1.113883.10.20.22.4.78" extension="2014-06-09" />
+                          <id nullFlavor="NI" />
+                          <code code="72166-2" codeSystem="2.16.840.1.113883.6.1" displayName="Tobacco smoking status NHIS" />
+                          <statusCode code="completed" />
+                          <xsl:comment> CCD Smoking Status Effective Time, R2 </xsl:comment>
+                          <xsl:choose>
+                            <xsl:when test="boolean(EnteredOn)">
+                              <effectiveTime value="{EnteredOn/text()}"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                              <effectiveTime nullFlavor="UNK"/>
+                            </xsl:otherwise>
+                          </xsl:choose>
+                          <xsl:comment> CCD Smoking Status Value, REQURIED, SNOMED CT </xsl:comment>
+                          <value xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" nullFlavor="UNK">
+                            <originalText>
+                              <!-- TODO Vetsies -->
+                              <reference value="{concat('#hfName',position())}"/>
+                            </originalText>
+                          </value>
+                          <xsl:comment> INFORMATION SOURCE FOR SMOKING STATUS, Optional </xsl:comment>
+                          <author>
+                            <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                            <time nullFlavor="UNK" />
+                            <assignedAuthor>
+                              <id nullFlavor="UNK" />
+                              <representedOrganization>
+                                <xsl:comment>
+                                  INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING
+                                  FACILITY NBR)
+                                </xsl:comment>
+                                <id extension="{EnteredAt/Code/text()}" root="2.16.840.1.113883.4.349" />
+                                <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
+                                <name>
+                                  <xsl:value-of select="EnteredAt/Description"/>
+                                </name>
+                              </representedOrganization>
+                            </assignedAuthor>
+                          </author>
+                          <xsl:comment> CCD Smoking Status Comment Entry, Optional </xsl:comment>
+                          <entryRelationship typeCode="SUBJ" inversionInd="true">
+                            <act classCode="ACT" moodCode="EVN">
+                              <templateId root="2.16.840.1.113883.10.20.22.4.64" />
+                              <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment" />
+                              <xsl:comment> CCD Smoking Status Comment, REQUIRED </xsl:comment>
+                              <text>
+                                <reference value="{concat('#hfComment',position())}"/>
+                              </text>
+                            </act>
+                          </entryRelationship>
+                        </observation>
+                      </entry>
+                    </xsl:if>
+                  </xsl:for-each>
+                  <xsl:for-each select="SocialHistories/SocialHistory">
+                    <xsl:sort select="EnteredOn" order="descending" />
+                    <xsl:if test="not(position() = 1)">
+                      <entry>
+                        <observation classCode="OBS" moodCode="EVN">
+                          <templateId root="2.16.840.1.113883.10.20.22.4.85" extension="2014-06-09"/>
+                          <id nullFlavor="NI" />
+                          <code code="11367-0" codeSystem="2.16.840.1.113883.6.1" displayName="History of tobacco use" />
+                          <statusCode code="completed" />
+                          <xsl:comment> CCD Smoking Status Effective Time, R2 </xsl:comment>
+                          <xsl:choose>
+                            <xsl:when test="boolean(EnteredOn)">
+                              <effectiveTime>
+                                <low value="{EnteredOn/text()}"/>
+                                <high nullFlavor="NAV" />
+                              </effectiveTime>
+                            </xsl:when>
+                            <xsl:otherwise>
+                              <effectiveTime>
+                                <low nullFlavor="UNK"/>
+                                <high nullFlavor="NAV" />
+                              </effectiveTime>
+                            </xsl:otherwise>
+                          </xsl:choose>
+                          <xsl:comment> CCD Smoking Status Value, REQURIED, SNOMED CT </xsl:comment>
+                          <value xsi:type="CD" nullFlavor="UNK" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                            <originalText>
+                              <!-- Vets is the suck-->
+                              <reference value="{concat('#hfName',position())}"/>
+                            </originalText>
+                          </value>
+                          <xsl:comment> INFORMATION SOURCE FOR SMOKING STATUS, Optional </xsl:comment>
+                          <author>
+                            <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                            <time nullFlavor="UNK" />
+                            <assignedAuthor>
+                              <id nullFlavor="UNK" />
+                              <representedOrganization>
+                                <xsl:comment>
+                                  INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING
+                                  FACILITY NBR)
+                                </xsl:comment>
+                                <id extension="{EnteredAt/Code/text()}" root="2.16.840.1.113883.4.349" />
+                                <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
+                                <name>
+                                  <xsl:value-of select="EnteredAt/Description"/>
+                                </name>
+                              </representedOrganization>
+                            </assignedAuthor>
+                          </author>
+                          <xsl:comment> CCD Smoking Status Comment Entry, Optional </xsl:comment>
+                          <entryRelationship typeCode="SUBJ" inversionInd="true">
+                            <act classCode="ACT" moodCode="EVN">
+                              <templateId root="2.16.840.1.113883.10.20.22.4.64" />
+                              <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment" />
+                              <xsl:comment> CCD Smoking Status Comment, REQUIRED </xsl:comment>
+                              <text>
+                                <reference value="{concat('#hfComment',position())}"/>
+                              </text>
+                            </act>
+                          </entryRelationship>
+                        </observation>
+                      </entry>
+                    </xsl:if>
+                  </xsl:for-each>
+                </section>
+              </xsl:otherwise>
+            </xsl:choose>
           </component>
           <component>
             <xsl:comment> ******************************************************** VITAL SIGNS 
