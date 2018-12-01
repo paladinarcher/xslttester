@@ -109,7 +109,7 @@
               </xsl:choose>
             </languageCommunication>
             <!-- TODO: find out if there will be secondary languages in the SDA, not seeing them in test data
-            <languageCommunication MAP_ID="OL">
+            <languageCommunication >
               <- 2.01 LANGUAGE, REQUIRED, languageCode ISO 639-1 ->
               <languageCode nullFlavor="NA" />
               <modeCode nullFlavor="NA" />
@@ -689,7 +689,7 @@
                       The data comes from all VA treatment facilities. It does not list Allergies/ADRs that were removed or entered in error.
                       Some allergies/ADRs may be reported in the Immunization section.
                     </paragraph>
-                    <table MAP_ID="allergyNarrative">
+                    <table>
                       <thead>
                         <tr>
                           <th>Allergen</th>
@@ -2461,7 +2461,7 @@
                       <content styleCode='Underline'>Non-VA</content> = A medication that came from someplace other than a VA pharmacy. This may be a prescription from either the VA or other providers that was filled outside the VA. Or, it may be an over the counter (OTC), herbal, dietary supplement or sample medication.
                       <content styleCode='Underline'>Pending</content> = This prescription order has been sent to the Pharmacy for review and is not ready yet.
                     </paragraph>
-                    <table MAP_ID="medicationNarrative">
+                    <table>
                       <thead>
                         <tr>
                           <th>Medication Name and Strength</th>
@@ -3066,7 +3066,7 @@
                     </paragraph>
                     <xsl:comment> VA Immunization Business Rules for Medical Content </xsl:comment>
                     <paragraph>This section includes Immunizations on record with VA for the patient. The data comes from all VA treatment facilities. A reaction to an immunization may also be reported in the Allergy section.</paragraph>
-                    <table MAP_ID="immunizationNarrative">
+                    <table>
                       <thead>
                         <tr>
                           <th>Immunization</th>
@@ -3640,13 +3640,13 @@
                         </xsl:for-each>
                       </tbody>
                     </table>
-                    <paragraph MAP_ID="futureScheduledTestsTitle">
+                    <paragraph>
                       <content styleCode="Bold">Active, Pending, and Scheduled Orders</content>
                     </paragraph>
-                    <paragraph MAP_ID="futureScheduledTestsRules">
+                    <paragraph>
                       This section includes a listing of several types of active, pending, and scheduled orders, including clinic medication orders, diagnostic test orders, procedure orders, and consult orders; where the start date of the order is 45 days before or after the date this document was created.
                     </paragraph>
-                    <table MAP_ID="futureScheduledTests">
+                    <table>
                       <thead>
                         <tr>
                           <th>Test Date/Time</th>
@@ -4927,501 +4927,709 @@
           </component>
           <component>
             <xsl:comment>History and Physical Notes</xsl:comment>
-            <section>
-              <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01" />
-              <code code="34117-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="HandP Note" />
-              <title>History and Physical Notes</title>
-              <text>
-                <xsl:comment> Start H&amp;P Notes Narrative</xsl:comment>
-                <paragraph MAP_ID="HandPNotesSectionTitle">
-                  <content styleCode="Bold">History &amp; Physical Notes</content>
-                </paragraph>
-                <xsl:comment> history and physical notes begin </xsl:comment>
-                <paragraph MAP_ID="hnpTitle">
-                  The list of H &amp; P Notes with complete text includes all notes within the requested date range. If no date range was provided, the list of H &amp; P Notes with complete text includes the 2 most recent notes within the last 18 months. The data comes from all VA treatment facilities.
-                </paragraph>
-                <table MAP_ID="HnPNoteNarrative">
-                  <thead>
-                    <tr>
-                      <th>Date/Time</th>
-                      <th>History &amp; Physical Note with Text</th>
-                      <th>Provider</th>
-                      <th>Source</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <content ID="noteDateTime" />
-                      </td>
-                      <td>
-                        <content ID="noteEncounterDescription" />
-                      </td>
-                      <td>
-                        <content ID="noteProvider" />
-                      </td>
-                      <td>
-                        <content ID="noteSource" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <xsl:comment> history and physical notes titles only begin </xsl:comment>
-                <paragraph MAP_ID="hnpTitle2">
-                  The list of ADDITIONAL H &amp; P Note TITLES includes all notes signed within the last 18 months. The data comes from all VA treatment facilities.
-                </paragraph>
-                <table MAP_ID="HnPNoteNarrative2">
-                  <thead>
-                    <tr>
-                      <th>Date/Time</th>
-                      <th>History &amp; Physical Note Title</th>
-                      <th>Provider</th>
-                      <th>Source</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <content ID="noteDateTime" />
-                      </td>
-                      <td>
-                        <content ID="noteEncounterDescription" />
-                      </td>
-                      <td>
-                        <content ID="noteProvider" />
-                      </td>
-                      <td>
-                        <content ID="noteSource" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </text>
-              <entry>
-                <xsl:comment>Note Activity Entry</xsl:comment>
-                <act classCode="ACT" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
-                  <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
-                    <translation code="34117-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="HandP Note"/>
-                  </code>
+            <xsl:choose>
+              <xsl:when test="not(boolean(Documents/Document[DocumentType/Code/text() = 'HP' and not(Extension/NationalTitle/Code/text() = 217)]))">
+                <section nullFlavor="NI">
+                  <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01" />
+                  <code code="34117-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="HandP Note" />
+                  <title>History and Physical Notes</title>
+                  <text>No Data Provided for This Section</text>
+                </section>
+              </xsl:when>
+              <xsl:otherwise>
+                <section>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01" />
+                  <code code="34117-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="HandP Note" />
+                  <title>History and Physical Notes</title>
                   <text>
-                    <reference />
+                    <xsl:comment> Start H&amp;P Notes Narrative</xsl:comment>
+                    <paragraph>
+                      <content styleCode="Bold">History &amp; Physical Notes</content>
+                    </paragraph>
+                    <xsl:comment> history and physical notes begin </xsl:comment>
+                    <paragraph>
+                      The list of H &amp; P Notes with complete text includes all notes within the requested date range. If no date range was provided, the list of H &amp; P Notes with complete text includes the 2 most recent notes within the last 18 months. The data comes from all VA treatment facilities.
+                    </paragraph>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Date/Time</th>
+                          <th>History &amp; Physical Note with Text</th>
+                          <th>Provider</th>
+                          <th>Source</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'HP' and not(Extension/NationalTitle/Code/text() = 217)]">
+                          <xsl:sort select="DocumentTime" order="descending" />
+                          <xsl:if test="position() &lt; 3">
+                            <tr>
+                              <td>
+                                <content ID="{concat('hpnoteDateTime',position())}">
+                                  <xsl:value-of select="DocumentTime/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('hpnoteEncounterDescription',position())}">
+                                  <xsl:call-template name="standard-insertBreaks">
+                                    <xsl:with-param name="pText" select="NoteText/text()"/>
+                                  </xsl:call-template>
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('hpnoteProvider',position())}">
+                                  <xsl:value-of select="Clinician/Description/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('hpnoteSource',position())}">
+                                  <xsl:value-of select="EnteredAt/Description/text()" />
+                                </content>
+                              </td>
+                            </tr>
+                          </xsl:if>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
+                    <xsl:comment> history and physical notes titles only begin </xsl:comment>
+                    <xsl:if test="count(Documents/Document[DocumentType/Code/text() = 'HP' and not(Extension/NationalTitle/Code/text() = 217)]) &gt; 2">
+                      <paragraph >
+                        The list of ADDITIONAL H &amp; P Note TITLES includes all notes signed within the last 18 months. The data comes from all VA treatment facilities.
+                      </paragraph>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Date/Time</th>
+                            <th>History &amp; Physical Note Title</th>
+                            <th>Provider</th>
+                            <th>Source</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'HP' and not(Extension/NationalTitle/Code/text() = 217)]">
+                            <xsl:sort select="DocumentTime" order="descending" />
+                            <xsl:if test="position() &gt; 2">
+                              <tr>
+                                <td>
+                                  <content ID="{concat('hpnoteDateTime',position())}">
+                                    <xsl:value-of select="DocumentTime/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('hpnoteEncounterDescription',position())}">
+                                    <xsl:value-of select="Extension/NationalTitle/Description/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('hpnoteProvider',position())}">
+                                    <xsl:value-of select="Clinician/Description/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('hpnoteSource',position())}">
+                                    <xsl:value-of select="EnteredAt/Description/text()" />
+                                  </content>
+                                </td>
+                              </tr>
+                            </xsl:if>
+                          </xsl:for-each>
+                        </tbody>
+                      </table>
+                    </xsl:if>
                   </text>
-                  <statusCode code="completed" />
-                  <xsl:comment>Clinically relevant time of the note</xsl:comment>
-                  <effectiveTime />
-                  <author>
-                    <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <xsl:comment>Time note was actually written</xsl:comment>
-                    <time />
-                    <assignedAuthor>
-                      <id nullFlavor="NI" />
-                      <assignedPerson>
-                        <name />
-                      </assignedPerson>
-                      <representedOrganization>
-                        <id root="2.16.840.1.113883.4.349" />
-                        <name />
-                      </representedOrganization>
-                    </assignedAuthor>
-                  </author>
-                  <!--Reference to Encounter
+                  <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'HP' and not(Extension/NationalTitle/Code/text() = 217)]">
+                    <xsl:sort select="DocumentTime" order="descending" />
+                    <entry>
+                      <xsl:comment>Note Activity Entry </xsl:comment>
+                      <act classCode="ACT" moodCode="EVN">
+                        <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
+                        <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
+                          <translation code="11488-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Consultation Note"/>
+                        </code>
+                        <text>
+                          <reference value="{concat('#hpnoteEncounterDescription',position())}"/>
+                        </text>
+                        <statusCode code="completed" />
+                        <xsl:comment>Clinically relevant time of the note </xsl:comment>
+                        <effectiveTime value="{DocumentTime/text()}" />
+                        <author>
+                          <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                          <xsl:comment>Time note was actually written</xsl:comment>
+                          <time value="{DocumentTime/text()}"/>
+                          <assignedAuthor>
+                            <id nullFlavor="NI" />
+                            <assignedPerson>
+                              <name><xsl:value-of select="Clinician/Description/text()"/></name>
+                            </assignedPerson>
+                            <representedOrganization>
+                              <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
+                              <name><xsl:value-of select="EnteredAt/Description/text()"/></name>
+                            </representedOrganization>
+                          </assignedAuthor>
+                        </author>
+                        <!--Reference to Encounter
 							<entryRelationship typeCode="COMP" inversionInd="true">
 								<encounter>
 									<id root="2.16.840.1.113883.4.349" />
 								</encounter>
 							</entryRelationship>-->
-                </act>
-              </entry>
-            </section>
+                      </act>
+                    </entry>
+                  </xsl:for-each>
+                </section>
+              </xsl:otherwise>
+            </xsl:choose>
           </component>
           <component>
             <xsl:comment> Discharge Summaries Section </xsl:comment>
-            <section>
-              <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01" />
-              <code code="18842-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Discharge Note" />
-              <title>Discharge Summaries</title>
-              <text>
-                <paragraph MAP_ID="DischargeSumSectionTitle">
-                  <content styleCode="Bold">Discharge Summaries</content>
-                </paragraph>
-                <xsl:comment> Discharge summary notes begin </xsl:comment>
-                <paragraph MAP_ID="disTitle">
-                  The list of Discharge Summaries with complete text includes all summaries within the requested date range. If no date range was provided, the list of Discharge Summaries includes the 2 most recent summaries within the last 18 months. The data comes from all VA treatment facilities.
-                </paragraph>
-                <table MAP_ID="DisNoteNarrative">
-                  <thead>
-                    <tr>
-                      <th>Date/Time</th>
-                      <th>Discharge Summary with Text</th>
-                      <th>Provider</th>
-                      <th>Source</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <content ID="noteDateTime" />
-                      </td>
-                      <td>
-                        <content ID="noteEncounterDescription" />
-                      </td>
-                      <td>
-                        <content ID="noteProvider" />
-                      </td>
-                      <td>
-                        <content ID="noteSource" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <xsl:comment> Discharge summary titles only notes begin  </xsl:comment>
-                <paragraph MAP_ID="disTitle2">
-                  The list of ADDITIONAL Discharge Summary TITLES includes all summaries signed within the last 18 months. The data comes from all VA treatment facilities.
-                </paragraph>
-                <table MAP_ID="DisNoteNarrative2">
-                  <thead>
-                    <tr>
-                      <th>Date/Time</th>
-                      <th>Discharge Summary Title</th>
-                      <th>Provider</th>
-                      <th>Source</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <content ID="noteDateTime" />
-                      </td>
-                      <td>
-                        <content ID="noteEncounterDescription" />
-                      </td>
-                      <td>
-                        <content ID="noteProvider" />
-                      </td>
-                      <td>
-                        <content ID="noteSource" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </text>
-              <entry>
-                <xsl:comment>Note Activity Entry</xsl:comment>
-                <act classCode="ACT" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
-                  <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
-                    <translation codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" />
-                  </code>
+            <xsl:choose>
+              <xsl:when test="not(boolean(Documents/Document[DocumentType/Code/text() = 'DS' and not(Extension/NationalTitle/Code/text() = 217)]))">
+                <section>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01" />
+                  <code code="18842-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Discharge Note" />
+                  <title>Discharge Summaries</title>
+                  <text>No Data Provided for This Section</text>
+                </section>
+              </xsl:when>
+              <xsl:otherwise>
+                <section>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01" />
+                  <code code="18842-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Discharge Note" />
+                  <title>Discharge Summaries</title>
                   <text>
-                    <reference />
+                    <paragraph>
+                      <content styleCode="Bold">Discharge Summaries</content>
+                    </paragraph>
+                    <xsl:comment> Discharge summary notes begin </xsl:comment>
+                    <paragraph>
+                      The list of Discharge Summaries with complete text includes all summaries within the requested date range. If no date range was provided, the list of Discharge Summaries includes the 2 most recent summaries within the last 18 months. The data comes from all VA treatment facilities.
+                    </paragraph>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Date/Time</th>
+                          <th>Discharge Summary with Text</th>
+                          <th>Provider</th>
+                          <th>Source</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'DS' and not(Extension/NationalTitle/Code/text() = 217)]">
+                          <xsl:sort select="DocumentTime" order="descending" />
+                          <xsl:if test="position() &lt; 3">
+                            <tr>
+                              <td>
+                                <content ID="{concat('dsnoteDateTime',position())}">
+                                  <xsl:value-of select="DocumentTime/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('dsnoteEncounterDescription',position())}">
+                                  <xsl:call-template name="standard-insertBreaks">
+                                    <xsl:with-param name="pText" select="NoteText/text()"/>
+                                  </xsl:call-template>
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('dsnoteProvider',position())}">
+                                  <xsl:value-of select="Clinician/Description/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('dsnoteSource',position())}">
+                                  <xsl:value-of select="EnteredAt/Description/text()" />
+                                </content>
+                              </td>
+                            </tr>
+                          </xsl:if>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
+                    <xsl:comment> Discharge summary titles only notes begin  </xsl:comment>
+                    <xsl:if test="count(Documents/Document[DocumentType/Code/text() = 'DS' and not(Extension/NationalTitle/Code/text() = 217)]) &gt; 2">
+                      <paragraph>
+                        The list of ADDITIONAL Discharge Summary TITLES includes all summaries signed within the last 18 months. The data comes from all VA treatment facilities.
+                      </paragraph>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Date/Time</th>
+                            <th>Discharge Summary Title</th>
+                            <th>Provider</th>
+                            <th>Source</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'DS' and not(Extension/NationalTitle/Code/text() = 217)]">
+                            <xsl:sort select="DocumentTime" order="descending" />
+                            <xsl:if test="position() &gt; 2">
+                              <tr>
+                                <td>
+                                  <content ID="{concat('dsnoteDateTime',position())}">
+                                    <xsl:value-of select="DocumentTime/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('dsnoteEncounterDescription',position())}">
+                                    <xsl:value-of select="Extension/NationalTitle/Description/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('dsnoteProvider',position())}">
+                                    <xsl:value-of select="Clinician/Description/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('dsnoteSource',position())}">
+                                    <xsl:value-of select="EnteredAt/Description/text()" />
+                                  </content>
+                                </td>
+                              </tr>
+                            </xsl:if>
+                          </xsl:for-each>
+                        </tbody>
+                      </table>
+                    </xsl:if>
                   </text>
-                  <statusCode code="completed" />
-                  <xsl:comment>Clinically relevant time of the note</xsl:comment>
-                  <effectiveTime />
-                  <author>
-                    <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <xsl:comment>Time note was actually written</xsl:comment>
-                    <time />
-                    <assignedAuthor>
-                      <id nullFlavor="NI" />
-                      <assignedPerson>
-                        <name />
-                      </assignedPerson>
-                      <representedOrganization>
-                        <id root="2.16.840.1.113883.4.349" />
-                        <name />
-                      </representedOrganization>
-                    </assignedAuthor>
-                  </author>
-                  <!--Reference to Encounter
+                  <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'DS' and not(Extension/NationalTitle/Code/text() = 217)]">
+                    <xsl:sort select="DocumentTime" order="descending" />
+                    <entry>
+                      <xsl:comment>Note Activity Entry </xsl:comment>
+                      <act classCode="ACT" moodCode="EVN">
+                        <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
+                        <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
+                          <translation code="11488-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Consultation Note"/>
+                        </code>
+                        <text>
+                          <reference value="{concat('#dsnoteEncounterDescription',position())}"/>
+                        </text>
+                        <statusCode code="completed" />
+                        <xsl:comment>Clinically relevant time of the note </xsl:comment>
+                        <effectiveTime value="{DocumentTime/text()}" />
+                        <author>
+                          <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                          <xsl:comment>Time note was actually written</xsl:comment>
+                          <time value="{DocumentTime/text()}"/>
+                          <assignedAuthor>
+                            <id nullFlavor="NI" />
+                            <assignedPerson>
+                              <name>
+                                <xsl:value-of select="Clinician/Description/text()"/>
+                              </name>
+                            </assignedPerson>
+                            <representedOrganization>
+                              <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
+                              <name>
+                                <xsl:value-of select="EnteredAt/Description/text()"/>
+                              </name>
+                            </representedOrganization>
+                          </assignedAuthor>
+                        </author>
+                        <!--Reference to Encounter
 							<entryRelationship typeCode="COMP" inversionInd="true">
 								<encounter>
 									<id root="2.16.840.1.113883.4.349" />
 								</encounter>
 							</entryRelationship>-->
-                </act>
-              </entry>
-            </section>
+                      </act>
+                    </entry>
+                  </xsl:for-each>
+                </section>
+              </xsl:otherwise>
+            </xsl:choose>
           </component>
-          <component MAP_ID="RADPATH">
+          <component>
             <xsl:comment>Radiology Studies</xsl:comment>
-            <section>
-              <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01"/>
-              <code code="18726-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Radiology Reports"/>
-              <title>Radiology Reports</title>
-              <text>
-                <paragraph MAP_ID="radiologyTitle">
-                  <content styleCode="Bold">Radiology Reports</content>
-                </paragraph>
-                <paragraph MAP_ID="radiologyRules">
-                  This section includes all Radiology Reports within the requested date range. If no date range was provided, the included Radiology Reports are the 5 most recent reports within the last 24 months. The data comes from all VA treatment facilities.
-                </paragraph>
-                <table MAP_ID="radiologyNarrative">
-                  <thead>
-                    <tr>
-                      <th>Date/Time</th>
-                      <th>Radiology Report</th>
-                      <th>Provider</th>
-                      <th>Source</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td />
-
-                      <td>
-                        <content />
-                      </td>
-                      <td>
-                        <content />
-                      </td>
-                      <td>
-                        <content />
-                      </td>
-
-                    </tr>
-                  </tbody>
-                </table>
-              </text>
-              <entry typeCode='DRIV'>
-                <xsl:comment>Note Activity Entry</xsl:comment>
-                <act classCode="ACT" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
-                  <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
-                    <translation code="18726-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Radiology Report" />
-                  </code>
+            <xsl:choose>
+              <xsl:when test="not(boolean(Documents/Document[DocumentType/Code/text() = 'RA' and not(Extension/NationalTitle/Code/text() = 217)]))">
+                <section nullFlavor="Ni">
+                  <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01"/>
+                  <code code="18726-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Radiology Reports"/>
+                  <title>Radiology Reports</title>
+                  <text>No Data Provided for This Section</text>
+                </section>
+              </xsl:when>
+              <xsl:otherwise>
+                <section>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01"/>
+                  <code code="18726-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Radiology Reports"/>
+                  <title>Radiology Reports</title>
                   <text>
-                    <reference />
+                    <paragraph>
+                      <content styleCode="Bold">Radiology Reports</content>
+                    </paragraph>
+                    <paragraph>
+                      This section includes all Radiology Reports within the requested date range. If no date range was provided, the included Radiology Reports are the 5 most recent reports within the last 24 months. The data comes from all VA treatment facilities.
+                    </paragraph>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Date/Time</th>
+                          <th>Radiology Report</th>
+                          <th>Provider</th>
+                          <th>Source</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'RA' and not(Extension/NationalTitle/Code/text() = 217)]">
+                          <xsl:sort select="DocumentTime" order="descending" />
+                          <tr>
+                            <td>
+                              <content ID="{concat('ranoteDateTime',position())}">
+                                <xsl:value-of select="DocumentTime/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('ranoteEncounterDescription',position())}">
+                                <xsl:call-template name="standard-insertBreaks">
+                                  <xsl:with-param name="pText" select="NoteText/text()"/>
+                                </xsl:call-template>
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('ranoteProvider',position())}">
+                                <xsl:value-of select="Clinician/Description/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('ranoteSource',position())}">
+                                <xsl:value-of select="EnteredAt/Description/text()" />
+                              </content>
+                            </td>
+                          </tr>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
                   </text>
-                  <statusCode code="completed" />
-                  <xsl:comment>Clinically relevant time of the note</xsl:comment>
-                  <effectiveTime />
-                  <author>
-                    <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <xsl:comment>Time note was actually written</xsl:comment>
-                    <time />
-                    <assignedAuthor>
-                      <id nullFlavor="NI" />
-                      <assignedPerson>
-                        <name />
-                      </assignedPerson>
-                      <representedOrganization>
-                        <id root="2.16.840.1.113883.4.349" />
-                        <name />
-                      </representedOrganization>
-                    </assignedAuthor>
-                  </author>
-                  <!--Reference to Encounter
+                  <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'RA' and not(Extension/NationalTitle/Code/text() = 217)]">
+                    <xsl:sort select="DocumentTime" order="descending" />
+                    <entry>
+                      <xsl:comment>Note Activity Entry </xsl:comment>
+                      <act classCode="ACT" moodCode="EVN">
+                        <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
+                        <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
+                          <translation code="11488-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Consultation Note"/>
+                        </code>
+                        <text>
+                          <reference value="{concat('#ranoteEncounterDescription',position())}"/>
+                        </text>
+                        <statusCode code="completed" />
+                        <xsl:comment>Clinically relevant time of the note </xsl:comment>
+                        <effectiveTime value="{DocumentTime/text()}" />
+                        <author>
+                          <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                          <xsl:comment>Time note was actually written</xsl:comment>
+                          <time value="{DocumentTime/text()}"/>
+                          <assignedAuthor>
+                            <id nullFlavor="NI" />
+                            <assignedPerson>
+                              <name>
+                                <xsl:value-of select="Clinician/Description/text()"/>
+                              </name>
+                            </assignedPerson>
+                            <representedOrganization>
+                              <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
+                              <name>
+                                <xsl:value-of select="EnteredAt/Description/text()"/>
+                              </name>
+                            </representedOrganization>
+                          </assignedAuthor>
+                        </author>
+                        <!--Reference to Encounter
 							<entryRelationship typeCode="COMP" inversionInd="true">
 								<encounter>
 									<id root="2.16.840.1.113883.4.349" />
 								</encounter>
 							</entryRelationship>-->
-                </act>
-              </entry>
-            </section>
+                      </act>
+                    </entry>
+                  </xsl:for-each>
+                </section>
+              </xsl:otherwise>
+            </xsl:choose>
           </component>
-          <component MAP_ID="RADPATH">
+          <component>
             <xsl:comment>Pathology Studies</xsl:comment>
-            <section>
-              <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01"/>
-              <code code="27898-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Pathology Reports"/>
-              <title>Pathology Reports</title>
-              <text>
-                <paragraph MAP_ID="pathologyTitle">
-                  <content styleCode="Bold">Pathology Reports</content>
-                </paragraph>
-                <paragraph MAP_ID="pathologyRules">
-                  This section includes all Pathology Reports within the requested date range. If no date range was provided, the included Pathology Reports are the 5 most recent reports within the last 24 months. The data comes from all VA treatment facilities.
-                </paragraph>
-                <table MAP_ID="pathologyNarrative">
-                  <thead>
-                    <tr>
-                      <th>Date/Time</th>
-                      <th>Pathology Report</th>
-                      <th>Provider</th>
-                      <th>Source</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td />
-
-                      <td>
-                        <content />
-                      </td>
-                      <td>
-                        <content />
-                      </td>
-                      <td>
-                        <content />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </text>
-              <entry typeCode='DRIV'>
-                <xsl:comment>Note Activity Entry</xsl:comment>
-                <act classCode="ACT" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
-                  <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
-                    <translation code="27898-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Pathology Note" />
-                  </code>
+            <xsl:choose>
+              <xsl:when test="not(boolean(Documents/Document[DocumentType/Code/text() = 'LR' and not(Extension/NationalTitle/Code/text() = 217)]))">
+                <section nullFlavor="NI">
+                  <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01"/>
+                  <code code="27898-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Pathology Reports"/>
+                  <title>Pathology Reports</title>
+                  <text>No Data Provided for This Section</text>
+                </section>
+              </xsl:when>
+              <xsl:otherwise>
+                <section>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01"/>
+                  <code code="27898-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Pathology Reports"/>
+                  <title>Pathology Reports</title>
                   <text>
-                    <reference />
+                    <paragraph>
+                      <content styleCode="Bold">Pathology Reports</content>
+                    </paragraph>
+                    <paragraph>
+                      This section includes all Pathology Reports within the requested date range. If no date range was provided, the included Pathology Reports are the 5 most recent reports within the last 24 months. The data comes from all VA treatment facilities.
+                    </paragraph>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Date/Time</th>
+                          <th>Pathology Report</th>
+                          <th>Provider</th>
+                          <th>Source</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'LR' and not(Extension/NationalTitle/Code/text() = 217)]">
+                          <xsl:sort select="DocumentTime" order="descending" />
+                          <tr>
+                            <td>
+                              <content ID="{concat('panoteDateTime',position())}">
+                                <xsl:value-of select="DocumentTime/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('panoteEncounterDescription',position())}">
+                                <xsl:call-template name="standard-insertBreaks">
+                                  <xsl:with-param name="pText" select="NoteText/text()"/>
+                                </xsl:call-template>
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('panoteProvider',position())}">
+                                <xsl:value-of select="Clinician/Description/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('panoteSource',position())}">
+                                <xsl:value-of select="EnteredAt/Description/text()" />
+                              </content>
+                            </td>
+                          </tr>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
                   </text>
-                  <statusCode code="completed" />
-                  <xsl:comment>Clinically relevant time of the note</xsl:comment>
-                  <effectiveTime />
-                  <author>
-                    <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <xsl:comment>Time note was actually written</xsl:comment>
-                    <time />
-                    <assignedAuthor>
-                      <id nullFlavor="NI" />
-                      <assignedPerson>
-                        <name />
-                      </assignedPerson>
-                      <representedOrganization>
-                        <id root="2.16.840.1.113883.4.349" />
-                        <name />
-                      </representedOrganization>
-                    </assignedAuthor>
-                  </author>
-                  <!--Reference to Encounter
+                  <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'LR' and not(Extension/NationalTitle/Code/text() = 217)]">
+                    <xsl:sort select="DocumentTime" order="descending" />
+                    <entry>
+                      <xsl:comment>Note Activity Entry </xsl:comment>
+                      <act classCode="ACT" moodCode="EVN">
+                        <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
+                        <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
+                          <translation code="11488-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Consultation Note"/>
+                        </code>
+                        <text>
+                          <reference value="{concat('#panoteEncounterDescription',position())}"/>
+                        </text>
+                        <statusCode code="completed" />
+                        <xsl:comment>Clinically relevant time of the note </xsl:comment>
+                        <effectiveTime value="{DocumentTime/text()}" />
+                        <author>
+                          <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                          <xsl:comment>Time note was actually written</xsl:comment>
+                          <time value="{DocumentTime/text()}"/>
+                          <assignedAuthor>
+                            <id nullFlavor="NI" />
+                            <assignedPerson>
+                              <name>
+                                <xsl:value-of select="Clinician/Description/text()"/>
+                              </name>
+                            </assignedPerson>
+                            <representedOrganization>
+                              <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
+                              <name>
+                                <xsl:value-of select="EnteredAt/Description/text()"/>
+                              </name>
+                            </representedOrganization>
+                          </assignedAuthor>
+                        </author>
+                        <!--Reference to Encounter
 							<entryRelationship typeCode="COMP" inversionInd="true">
 								<encounter>
 									<id root="2.16.840.1.113883.4.349" />
 								</encounter>
 							</entryRelationship>-->
-                </act>
-              </entry>
-            </section>
+                      </act>
+                    </entry>
+                  </xsl:for-each>
+                </section>
+              </xsl:otherwise>
+            </xsl:choose>
           </component>
-          <component MAP_ID="ClinProcNotes">
+          <component>
             <xsl:comment> Clinical Procedure Notes </xsl:comment>
-            <section>
-              <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01" />
-              <code code="28570-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Procedure Note" />
-              <title>Clinical Procedure Notes</title>
-              <text>
-                <paragraph MAP_ID="clinPNotesTitle">
-                  <content styleCode="Bold">Clinical Procedure Notes</content>
-                </paragraph>
-                <paragraph MAP_ID="clinPNotesTitleNote">
-                  This section contains all Clinical Procedure Notes, with complete text, that have procedure dates within the requested date range. If no date range was provided, the section contains the 10 most recent Clinical Procedure Notes, with complete text, that have procedure dates within the last 18 months. The data comes from all VA treatment facilities.
-                </paragraph>
-                <table MAP_ID="ClinicalNotesNarrative">
-                  <thead>
-                    <tr>
-                      <th>Date/Time</th>
-                      <th>Clinical Procedure Note with Text</th>
-                      <th>Provider</th>
-                      <th>Source</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <content ID="clinicalNoteDateTime" />
-                      </td>
-                      <td>
-                        <content ID="clinicalNoteEncounterDescription" />
-                      </td>
-                      <td>
-                        <content ID="clinicalNoteProvider" />
-                      </td>
-                      <td>
-                        <content ID="clinicalNoteSource" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                <xsl:comment> Additional Clinical Procedure Notes </xsl:comment>
-                <paragraph MAP_ID="clinPNotesTitle2" styleCode="Bold">Additional Clinical Procedure Notes</paragraph>
-                <paragraph MAP_ID="clinPNotesTitleNote2">
-                  The list of ADDITIONAL Clinical Procedure Note TITLES includes all notes signed within the last 18 months. The data comes from all VA treatment facilities.
-                </paragraph>
-                <table MAP_ID="ClinicalNotesNarrative2">
-                  <thead>
-                    <tr>
-                      <th>Date/Time</th>
-                      <th>Clinical Procedure Note Title</th>
-                      <th>Provider</th>
-                      <th>Source</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <content ID="clinicalNoteDateTime" />
-                      </td>
-                      <td>
-                        <content ID="clinicalNoteEncounterDescription" />
-                      </td>
-                      <td>
-                        <content ID="clinicalNoteProvider" />
-                      </td>
-                      <td>
-                        <content ID="clinicalNoteSource" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </text>
-              <entry typeCode="DRIV" >
-                <observation classCode="OBS" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
-                  <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range"/>
+            <xsl:choose>
+              <xsl:when test="not(boolean(Documents/Document[DocumentType/Code/text() = 'CP' and not(Extension/NationalTitle/Code/text() = 217)]))">
+                <section nullFlavor="NI">
+                  <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01" />
+                  <code code="28570-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Procedure Note" />
+                  <title>Clinical Procedure Notes</title>
+                  <text>No Data Provided for This Section</text>
+                </section>
+              </xsl:when>
+              <xsl:otherwise>
+                <section>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01" />
+                  <code code="28570-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Procedure Note" />
+                  <title>Clinical Procedure Notes</title>
                   <text>
-                    <reference value="#procedureTime"/>
+                    <paragraph>
+                      <content styleCode="Bold">Clinical Procedure Notes</content>
+                    </paragraph>
+                    <paragraph>
+                      This section contains all Clinical Procedure Notes, with complete text, that have procedure dates within the requested date range. If no date range was provided, the section contains the 10 most recent Clinical Procedure Notes, with complete text, that have procedure dates within the last 18 months. The data comes from all VA treatment facilities.
+                    </paragraph>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Date/Time</th>
+                          <th>Clinical Procedure Note with Text</th>
+                          <th>Provider</th>
+                          <th>Source</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CP' and not(Extension/NationalTitle/Code/text() = 217)]">
+                          <xsl:sort select="DocumentTime" order="descending" />
+                          <xsl:if test="position() &lt; 3">
+                            <tr>
+                              <td>
+                                <content ID="{concat('cpnoteDateTime',position())}">
+                                  <xsl:value-of select="DocumentTime/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('cpnoteEncounterDescription',position())}">
+                                  <xsl:call-template name="standard-insertBreaks">
+                                    <xsl:with-param name="pText" select="NoteText/text()"/>
+                                  </xsl:call-template>
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('cpnoteProvider',position())}">
+                                  <xsl:value-of select="Clinician/Description/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('cpnoteSource',position())}">
+                                  <xsl:value-of select="EnteredAt/Description/text()" />
+                                </content>
+                              </td>
+                            </tr>
+                          </xsl:if>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
+                    <xsl:comment> Additional Clinical Procedure Notes </xsl:comment>
+                    <xsl:if test="count(Documents/Document[DocumentType/Code/text() = 'CP' and not(Extension/NationalTitle/Code/text() = 217)]) &gt; 2">
+                      <paragraph styleCode="Bold">Additional Clinical Procedure Notes</paragraph>
+                      <paragraph>
+                        The list of ADDITIONAL Clinical Procedure Note TITLES includes all notes signed within the last 18 months. The data comes from all VA treatment facilities.
+                      </paragraph>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Date/Time</th>
+                            <th>Clinical Procedure Note Title</th>
+                            <th>Provider</th>
+                            <th>Source</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CP' and not(Extension/NationalTitle/Code/text() = 217)]">
+                            <xsl:sort select="DocumentTime" order="descending" />
+                            <xsl:if test="position() &gt; 2">
+                              <tr>
+                                <td>
+                                  <content ID="{concat('cpnoteDateTime',position())}">
+                                    <xsl:value-of select="DocumentTime/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('cpnoteEncounterDescription',position())}">
+                                    <xsl:value-of select="Extension/NationalTitle/Description/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('cpnoteProvider',position())}">
+                                    <xsl:value-of select="Clinician/Description/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('cpnoteSource',position())}">
+                                    <xsl:value-of select="EnteredAt/Description/text()" />
+                                  </content>
+                                </td>
+                              </tr>
+                            </xsl:if>
+                          </xsl:for-each>
+                        </tbody>
+                      </table>
+                    </xsl:if>
                   </text>
-                  <statusCode code="completed"/>
-                  <value xsi:type="IVL_TS">
-                    <low value="$proceduresStart" />
-                    <high value="$proceduresEnd" />
-                  </value>
-                </observation>
-              </entry>
-              <xsl:comment> Note Entry </xsl:comment>
-              <entry>
-                <act classCode="ACT" moodCode="EVN">
-                  <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
-                  <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
-                    <translation code="28570-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Clinical Procedure Note" />
-                  </code>
-                  <text>
-                    <reference />
-                  </text>
-                  <statusCode code="completed" />
-                  <xsl:comment> Clinically relevant time of the note </xsl:comment>
-                  <effectiveTime />
-                  <author>
-                    <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                    <xsl:comment> Time note was actually written </xsl:comment>
-                    <time />
-                    <assignedAuthor>
-                      <id nullFlavor="NI" />
-                      <assignedPerson>
-                        <name />
-                      </assignedPerson>
-                      <representedOrganization>
-                        <id root="2.16.840.1.113883.4.349" />
-                        <name />
-                      </representedOrganization>
-                    </assignedAuthor>
-                  </author>
-                  <!--Reference to Encounter
-                                                <entryRelationship typeCode="COMP" inversionInd="true">
-                                                        <encounter>
-                                                                <id root="2.16.840.1.113883.4.349" />
-                                                        </encounter>
-                                                </entryRelationship>-->
-                </act>
-              </entry>
-            </section>
+                  <entry typeCode="DRIV" >
+                    <observation classCode="OBS" moodCode="EVN">
+                      <templateId root="2.16.840.1.113883.10.20.22.4.201" extension="2016-06-01"/>
+                      <code code="82607-3" codeSystem="2.16.840.1.113883.6.1" displayName="Section Date and Time Range"/>
+                      <text>
+                        <reference value="#procedureTime"/>
+                      </text>
+                      <statusCode code="completed"/>
+                      <value xsi:type="IVL_TS">
+                        <low value="$proceduresStart" />
+                        <high value="$proceduresEnd" />
+                      </value>
+                    </observation>
+                  </entry>
+                  <xsl:comment> Note Entry </xsl:comment>
+                  <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CP' and not(Extension/NationalTitle/Code/text() = 217)]">
+                    <xsl:sort select="DocumentTime" order="descending" />
+                    <entry>
+                      <xsl:comment>Note Activity Entry </xsl:comment>
+                      <act classCode="ACT" moodCode="EVN">
+                        <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
+                        <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
+                          <translation code="28570-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Clinical Procedure Note" />
+                        </code>
+                        <text>
+                          <reference value="{concat('#cpnoteEncounterDescription',position())}"/>
+                        </text>
+                        <statusCode code="completed" />
+                        <xsl:comment>Clinically relevant time of the note </xsl:comment>
+                        <effectiveTime value="{DocumentTime/text()}" />
+                        <author>
+                          <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                          <xsl:comment>Time note was actually written</xsl:comment>
+                          <time value="{DocumentTime/text()}"/>
+                          <assignedAuthor>
+                            <id nullFlavor="NI" />
+                            <assignedPerson>
+                              <name>
+                                <xsl:value-of select="Clinician/Description/text()"/>
+                              </name>
+                            </assignedPerson>
+                            <representedOrganization>
+                              <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
+                              <name>
+                                <xsl:value-of select="EnteredAt/Description/text()"/>
+                              </name>
+                            </representedOrganization>
+                          </assignedAuthor>
+                        </author>
+                        <!--Reference to Encounter
+							<entryRelationship typeCode="COMP" inversionInd="true">
+								<encounter>
+									<id root="2.16.840.1.113883.4.349" />
+								</encounter>
+							</entryRelationship>-->
+                      </act>
+                    </entry>
+                  </xsl:for-each>
+                </section>
+              </xsl:otherwise>
+            </xsl:choose>
           </component>
         </structuredBody>
       </component>
