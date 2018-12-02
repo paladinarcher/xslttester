@@ -314,7 +314,10 @@
                             </td>
                             <td>
                               <content ID="{concat('insEffectiveDate',position())}">
-                                <xsl:value-of select="HealthFund/FromTime/text()" /> <!-- TODO? Pretty print? -->
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="HealthFund/FromTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy'" />
+                                </xsl:call-template>
                               </content>
                             </td>
                             <td>
@@ -535,7 +538,12 @@
                         <xsl:for-each select="AdvanceDirectives/AdvanceDirective">
                           <xsl:sort select="FromTime" />
                           <tr>
-                            <td><xsl:value-of select="FromTime/text()"/></td>
+                            <td>
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="FromTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy'" />
+                                </xsl:call-template>
+                            </td>
                             <td>
                               <content>
                                 <xsl:attribute name="ID"><xsl:value-of select="concat('advanceDirective',position())" /></xsl:attribute>
@@ -703,19 +711,18 @@
                                 <xsl:variable name="allergyIndex" select="position()" />
                                 <tr>
                                   <td>
-                                    <content>
-                                      <xsl:attribute name="ID">
-                                        <xsl:value-of select="concat('andAllergy',position())" />
-                                      </xsl:attribute>
+                                    <content ID="{concat('andAllergy',position())}">
                                       <xsl:value-of select="Allergy/Description/text()" />
                                     </content>
                                   </td>
-                                  <td></td>
                                   <td>
-                                    <content>
-                                      <xsl:attribute name="ID">
-                                        <xsl:value-of select="concat('andEventType',position())" />
-                                      </xsl:attribute><!-- TODO: get translation from VETS ? -->
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="(VerifiedTime | EnteredOn)/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy'" />
+                                </xsl:call-template>
+                                  </td>
+                                  <td>
+                                    <content ID="{concat('andEventType',position())}">
                                       <xsl:value-of select="AllergyCategory/Description/text()" />
                                     </content>
                                   </td>
@@ -723,10 +730,7 @@
                                     <list>
                                       <xsl:for-each select="Extension/Reactions/Reaction">
                                         <item>
-                                          <content>
-                                            <xsl:attribute name="ID">
-                                              <xsl:value-of select="concat('andReaction', $allergyIndex, '-', position())" />
-                                            </xsl:attribute>
+                                          <content ID="{concat('andReaction', $allergyIndex, '-', position())}">
                                             <xsl:value-of select="Description/text()" />
                                           </content>
                                         </item>
@@ -734,18 +738,12 @@
                                     </list></xsl:if>
                                   </td>
                                   <td>
-                                    <content>
-                                      <xsl:attribute name="ID">
-                                        <xsl:value-of select="concat('andSeverity',position())" />
-                                      </xsl:attribute>
+                                    <content ID="concat('andSeverity',position())">
                                       <xsl:value-of select="Severity/Description/text()" />
                                     </content>
                                   </td>
                                   <td>
-                                    <content>
-                                      <xsl:attribute name="ID">
-                                        <xsl:value-of select="concat('andSource',position())" />
-                                      </xsl:attribute>
+                                    <content ID="{concat('andSource',position())}">
                                       <xsl:value-of select="EnteredAt/Description/text()" />
                                     </content>
                                   </td>
@@ -755,10 +753,7 @@
                                 <tr>
                                   <td colspan="5"><xsl:value-of select="Allergy/Description/text()" /></td>
                                   <td>
-                                    <content>
-                                      <xsl:attribute name="ID">
-                                        <xsl:value-of select="concat('andSource',position())" />
-                                      </xsl:attribute>
+                                    <content ID="{concat('andSource',position())}">
                                       <xsl:value-of select="EnteredAt/Description/text()" />
                                     </content>
                                   </td>
@@ -1025,7 +1020,11 @@
                         </thead>
                         <tbody>
                           <tr>
-                            <td><xsl:value-of select="FromTime/text()" /></td>
+                            <td>
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="FromTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template></td>
                             <td>
                               <content ID="{concat('endEncounterType',position())}">
                                 <xsl:value-of select="$procs/Procedure/Description/text()" />
@@ -1085,7 +1084,10 @@
                                             <tr>
                                               <td>
                                                 <content ID="{concat('anNoteDateTime', $index, '-', position())}">
-                                                  <xsl:value-of select="FromTime/text()" />
+                                                  <xsl:call-template name="date:format-date" >
+                                                    <xsl:with-param name="date-time" select="FromTime/text()" />
+                                                    <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                                  </xsl:call-template>
                                                 </content>
                                               </td>
                                               <td>
@@ -1377,7 +1379,10 @@
                             <tr>
                               <td>
                                 <content ID="{concat('fimAssessmentDate',position())}">
-                                  <xsl:value-of select="(EnteredOn | FromTime)/text()" />
+                                  <xsl:call-template name="date:format-date" >
+                                    <xsl:with-param name="date-time" select="(EnteredOn | FromTime)/text()" />
+                                    <xsl:with-param name="pattern" select="'MMM dd, yyyy'" />
+                                  </xsl:call-template>
                                 </content>
                               </td>
                               <td>
@@ -2518,7 +2523,10 @@
                             </td>
                             <td>
                               <content ID="{concat('mndExpires', position())}">
-                                <xsl:value-of select="Extension/Expires/text()" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="Extension/Expires/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy'" />
+                                </xsl:call-template>
                               </content>
                             </td>
                             <td>
@@ -2535,7 +2543,10 @@
                             </td>
                             <td>
                               <content ID="{concat('mndLastDispensed', position())}">
-                                <xsl:value-of select="Extension/LastFilled/text()" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="Extension/LastFilled/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
                               </content>
                             </td>
                             <td>
@@ -3102,7 +3113,10 @@
                               </content>
                             </td>
                             <td >
-                              <xsl:value-of select="FromTime/text()" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="FromTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy'" />
+                                </xsl:call-template>
                             </td>
 
                             <td>
@@ -3365,7 +3379,10 @@
                           <tr>
                             <td>
                               <content ID="{concat('prndDateTime', position())}"  >
-                                <xsl:value-of select="ProcedureTime" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="ProcedureTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
                               </content>
                             </td>
                             <td>
@@ -3436,7 +3453,10 @@
                                             <tr>
                                               <td>
                                                 <content ID="{concat('surgicalNoteDateTime', $pid, '-', position())}" >
-                                                  <xsl:value-of select="$docs/DocumentTime/text()" />
+                                                  <xsl:call-template name="date:format-date" >
+                                                    <xsl:with-param name="date-time" select="$docs/DocumentTime/text()" />
+                                                    <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                                  </xsl:call-template>
                                                 </content>
                                               </td>
                                               <td>
@@ -3639,7 +3659,10 @@
                             <tr>
                               <td>
                                 <content ID="{concat('apptDateTime',position())}">
-                                  <xsl:value-of select="FromTime/text()" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="FromTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
                                 </content>
                               </td>
                               <td>
@@ -3678,7 +3701,10 @@
                             <tr>
                               <td>
                                 <content ID="{concat('orderDateTime',position())}">
-                                  <xsl:value-of select="FromTime/text()" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="FromTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
                                 </content>
                               </td>
                               <td>
@@ -3838,7 +3864,10 @@
                             </td>
                             <td>
                               <content ID="{concat('pndDateOfOnset',position())}">
-                                <xsl:value-of select="FromTime/text()" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="FromTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
                               </content>
                             </td>
                             <td>
@@ -4091,7 +4120,10 @@
                         <tbody>
                           <tr ID="{concat('labTest',position())}">
                             <td >
-                              <xsl:value-of select="FromTime/text()" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="FromTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
                             </td>
 
                             <td>
@@ -4391,7 +4423,10 @@
                             <tr>
                               <td>
                                 <content ID="{concat('hfDate',position())}">
-                                  <xsl:value-of select="EnteredOn/text()" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="EnteredOn/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
                                 </content>
                               </td>
                               <td>
@@ -4441,7 +4476,10 @@
                             <tr>
                               <td>
                                 <content ID="{concat('hfDate',position())}">
-                                  <xsl:value-of select="EnteredOn/text()" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="EnteredOn/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
                                 </content>
                               </td>
                               <td>
@@ -4677,7 +4715,10 @@
                           <xsl:variable name="grp" select="GroupId/text()" />
                             <tr>
                               <td>
-                                <xsl:value-of select="ObservationTime" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="ObservationTome/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
                               </td>
 
                               <td>
@@ -4892,7 +4933,10 @@
                             <tr>
                               <td>
                                 <content ID="{concat('noteDateTime',position())}">
-                                  <xsl:value-of select="DocumentTime/text()" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
                                 </content>
                               </td>
                               <td>
@@ -4938,7 +4982,10 @@
                               <tr>
                                 <td>
                                   <content ID="{concat('noteDateTime',position())}">
-                                    <xsl:value-of select="DocumentTime/text()" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
                                   </content>
                                 </td>
                                 <td>
@@ -5048,7 +5095,10 @@
                             <tr>
                               <td>
                                 <content ID="{concat('hpnoteDateTime',position())}">
-                                  <xsl:value-of select="DocumentTime/text()" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
                                 </content>
                               </td>
                               <td>
@@ -5094,7 +5144,10 @@
                               <tr>
                                 <td>
                                   <content ID="{concat('hpnoteDateTime',position())}">
-                                    <xsl:value-of select="DocumentTime/text()" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
                                   </content>
                                 </td>
                                 <td>
@@ -5202,7 +5255,10 @@
                             <tr>
                               <td>
                                 <content ID="{concat('dsnoteDateTime',position())}">
-                                  <xsl:value-of select="DocumentTime/text()" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
                                 </content>
                               </td>
                               <td>
@@ -5248,7 +5304,10 @@
                               <tr>
                                 <td>
                                   <content ID="{concat('dsnoteDateTime',position())}">
-                                    <xsl:value-of select="DocumentTime/text()" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
                                   </content>
                                 </td>
                                 <td>
@@ -5358,7 +5417,10 @@
                           <tr>
                             <td>
                               <content ID="{concat('ranoteDateTime',position())}">
-                                <xsl:value-of select="DocumentTime/text()" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
                               </content>
                             </td>
                             <td>
@@ -5468,7 +5530,10 @@
                           <tr>
                             <td>
                               <content ID="{concat('panoteDateTime',position())}">
-                                <xsl:value-of select="DocumentTime/text()" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
                               </content>
                             </td>
                             <td>
@@ -5579,7 +5644,10 @@
                             <tr>
                               <td>
                                 <content ID="{concat('cpnoteDateTime',position())}">
-                                  <xsl:value-of select="DocumentTime/text()" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
                                 </content>
                               </td>
                               <td>
@@ -5626,7 +5694,10 @@
                               <tr>
                                 <td>
                                   <content ID="{concat('cpnoteDateTime',position())}">
-                                    <xsl:value-of select="DocumentTime/text()" />
+                                <xsl:call-template name="date:format-date" >
+                                  <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
                                   </content>
                                 </td>
                                 <td>

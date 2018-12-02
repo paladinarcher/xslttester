@@ -143,12 +143,21 @@ namespace XSLTest.XSLT
         {
             List<string> buffer = new List<string>();
             buffer.Add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-            buffer.Add("<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" >");
-            foreach(KeyValuePair<string, string> nv in args)
+            buffer.Add("<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:date=\"http://exslt.org/dates-and-times\" >");
+            foreach (KeyValuePair<string, string> nv in args)
             {
                 buffer.Add("  <xsl:param name=\""+nv.Key+"\" select=\"'"+nv.Value+"'\" />");
             }
             buffer.Add("  <xsl:include href=\"" + filename + "\"/>");
+            buffer.Add(@"
+    <!-- Adding Date functions that the exslt lib adds as templates that the c# lib add as functions -->
+    <xsl:template name='date:format-date'>
+        <xsl:param name='date-time' />
+        <xsl:param name='pattern' />
+        <xsl:value-of select='date:formatDate($date-time, $pattern)' />
+    </xsl:template>
+
+            ");
             buffer.Add("</xsl:stylesheet>");
 
             File.WriteAllLines(tmpWrapperFilename, buffer.ToArray());
