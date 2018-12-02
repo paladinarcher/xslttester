@@ -5960,7 +5960,8 @@
           <xsl:with-param name="use">WP</xsl:with-param>
         </xsl:apply-templates>
         <xsl:comment> Telecom Required for iassignedEntity, but VA VistA data not yet available </xsl:comment>
-        <xsl:apply-templates select="." mode="standard-contact-info" />
+        <!-- <xsl:apply-templates select="." mode="standard-contact-info" /> -->
+        <telecom nullFlavor="NA" />
         <xsl:comment> 4.07-PROVIDER NAME, REQUIRED </xsl:comment>
         <assignedPerson>
           <xsl:apply-templates select="Name" mode="standard-name" />
