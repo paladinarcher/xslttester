@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns="urn:hl7-org:v3" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sdtc="urn:hl7-org:sdtc" xmlns:isc="http://extension-functions.intersystems.com"
-  xmlns:exsl="http://exslt.org/common" xmlns:set="http://exslt.org/sets" exclude-result-prefixes="isc xsi sdtc exsl set">
+  xmlns:exsl="http://exslt.org/common" xmlns:set="http://exslt.org/sets" xmlns:date="http://exslt.org/dates-and-times" exclude-result-prefixes="isc xsi sdtc exsl set date">
 
-  <xsl:variable name="documentCreatedOn" select="isc:evaluate('xmltimestamp', isc:evaluate('timestamp'))" />
+  <xsl:variable name="documentCreatedOn" select="isc:evaluate('timestamp')" />
   <xsl:key name="vitals" match="Observations/Observation" use="GroupId/text()" />
   
   <xsl:template match="/Container">
-    <xsl:variable name="patientBirthDate" select="Patient/BirthTime/text()" />
+    <xsl:variable name="patientBirthDate" select="translate(Patient/BirthTime/text(), 'TZ:- ', '')" />
     <xsl:processing-instruction name="xml-stylesheet">
       <xsl:value-of select="'type=&#34;text/xsl&#34; href=&#34;cda.xsl&#34;'"/>
     </xsl:processing-instruction>
@@ -138,12 +138,6 @@
           <assignedPerson>
             <name>Department of Veterans Affairs</name>
           </assignedPerson>
-          
-          <assignedAuthoringDevice>
-           <manufacturerModelName>InterSystems</manufacturerModelName>
-           <softwareName>InterSystems HealthShare</softwareName>
-          </assignedAuthoringDevice>
-
           <xsl:comment>10.02 AUTHOR NAME REQUIRED as representedOrganization </xsl:comment> 
           <representedOrganization>
             <xsl:comment>
@@ -404,11 +398,11 @@
                             <xsl:comment>5.07 - Health Plan Coverage Dates, R2-Optional </xsl:comment> 
                             <effectiveTime>
                               <xsl:comment>5.07 VistA Policy Effective Date</xsl:comment> 
-                              <low value="{HealthFund/FromTime/text()}"/>
+                              <low value="{translate(HealthFund/FromTime/text(), 'TZ:- ', '')}"/>
                               <xsl:comment>5.07 VistA Policy Expiration  Date</xsl:comment> 
                               <xsl:choose>
                                 <xsl:when test="boolean(HealthFund/ToTime)"> <!-- TODO: Where is the exp date really? DS: changed to 'ToTime'-->
-                                  <high value="{HealthFund/ToTime/text()}" />
+                                  <high value="{translate(HealthFund/ToTime/text(), 'TZ:- ', '')}" />
                                 </xsl:when>
                                 <xsl:otherwise>
                                   <high nullFlavor="NA" />                                  
@@ -598,7 +592,7 @@
                         <xsl:comment>12.03 ADVANCED DIRECTIVE EFFECTIVE DATE, REQUIRED </xsl:comment>
                         <effectiveTime>
                           <xsl:comment> ADVANCED DIRECTIVE EFFECTIVE DATE low = starting time, REQUIRED </xsl:comment>
-                          <low value="{FromTime/text()}"/>
+                          <low value="{translate(FromTime/text(), 'TZ:- ', '')}"/>
                           <xsl:comment> ADVANCED DIRECTIVE EFFECTIVE DATE high= ending time, REQUIRED </xsl:comment>
                           <high nullFlavor="NA" />
                         </effectiveTime>
@@ -725,7 +719,7 @@
                                       <xsl:value-of select="AllergyCategory/Description/text()" />
                                     </content>
                                   </td>
-                                  <td>
+                                  <td><xsl:if test="boolean(Extension/Reactions/Reaction)">
                                     <list>
                                       <xsl:for-each select="Extension/Reactions/Reaction">
                                         <item>
@@ -737,7 +731,7 @@
                                           </content>
                                         </item>
                                       </xsl:for-each>
-                                    </list>
+                                    </list></xsl:if>
                                   </td>
                                   <td>
                                     <content>
@@ -810,10 +804,10 @@
                               <effectiveTime>
                                 <xsl:choose>
                                   <xsl:when test="boolean(VerifiedTime)">
-                                    <low value="{VerifiedTime/text()}" />
+                                    <low value="{translate(VerifiedTime/text(), 'TZ:- ','')}" />
                                   </xsl:when>
                                   <xsl:otherwise>
-                                    <low value="{EnteredOn/text()}" />
+                                    <low value="{translate(EnteredOn/text(), 'TZ:- ','')}" />
                                   </xsl:otherwise>
                                 </xsl:choose>
                               </effectiveTime>
@@ -845,10 +839,10 @@
                                   <effectiveTime>
                                     <xsl:choose>
                                       <xsl:when test="boolean(VerifiedTime)">
-                                        <low value="{VerifiedTime/text()}" />
+                                        <low value="{translate(VerifiedTime/text(), 'TZ:- ','')}" />
                                       </xsl:when>
                                       <xsl:otherwise>
-                                        <low value="{EnteredOn/text()}" />
+                                        <low value="{translate(EnteredOn/text(), 'TZ:- ','')}" />
                                       </xsl:otherwise>
                                     </xsl:choose>
                                   </effectiveTime>
@@ -1132,8 +1126,16 @@
                       </text>
                       <statusCode code="completed"/>
                       <value xsi:type="IVL_TS">
-                        <low value="$encountersStart" /><!-- TODO: LATER -->
-                        <high value="$encountersEnd" />
+                        <xsl:choose>
+                          <xsl:when test="boolean(Encounters/@startTime)">
+                            <low value="{translate(Encounters/@startTime, 'TZ:- ','')}" />
+                            <high value="{translate(Encounters/@endTime, 'TZ:- ','')}" />
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <low nullFlavor="UNK" />
+                            <high nullFlavor="UNK" />
+                          </xsl:otherwise>
+                        </xsl:choose>
                       </value>
                     </observation>
                   </entry>
@@ -1167,7 +1169,7 @@
                       </code>
                       <xsl:comment> 16.04 ENCOUNTER DATE/TIME, REQUIRED </xsl:comment>
                       <effectiveTime xsi:type="IVL_TS">
-                        <low value="{FromTime/text()}"/>
+                        <low value="{translate(FromTime/text(), 'TZ:- ', '')}"/>
                       </effectiveTime>
                       <xsl:if test="boolean(ConsultingClinicians/CareProvider[1])">
                         <performer>
@@ -1192,7 +1194,7 @@
                               <xsl:choose>
                                 <xsl:when test="boolean(EnteredOn)">
                                   <xsl:attribute name="value">
-                                    <xsl:value-of select="EnteredOn" />
+                                    <xsl:value-of select="translate(EnteredOn/text(), 'TZ:- ','')" />
                                   </xsl:attribute>
                                 </xsl:when>
                                 <xsl:otherwise>
@@ -1205,7 +1207,7 @@
                               <xsl:choose>
                                 <xsl:when test="boolean(EndTime)">
                                   <xsl:attribute name="value">
-                                    <xsl:value-of select="EndTime" />
+                                    <xsl:value-of select="translate(EndTime/text(), 'TZ:- ','')" />
                                   </xsl:attribute>
                                 </xsl:when>
                                 <xsl:otherwise>
@@ -1294,18 +1296,17 @@
                             <act classCode="ACT" moodCode="EVN">
                               <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
                               <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
-                                <translation codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" code="{($code)[1]/node()[1]/text()}" displayName="{($code)[1]/node()[2]/text()}" DEBUG="{DocumentNumber/text()}" />
-                              </code>
+                                <translation codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" code="{($code)[1]/node()[1]/text()}" displayName="{($code)[1]/node()[2]/text()}" />                              </code>
                               <text>
                                 <reference value="{concat('#anNoteEncounterDescription', $index, '-', position())}"/>
                               </text>
                               <statusCode code="completed" />
                               <xsl:comment> Clinically relevant time of the note </xsl:comment>
-                              <effectiveTime value="{DocumentTime/text()}"/>
+                              <effectiveTime value="{translate(DocumentTime/text(), 'TZ:- ','')}"/>
                               <author>
                                 <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                                 <xsl:comment> Time note was actually written </xsl:comment>
-                                <time value="{DocumentTime/text()}"/>
+                                <time value="{translate(DocumentTime/text(), 'TZ:- ','')}"/>
                                 <assignedAuthor>
                                   <id nullFlavor="NI" />
                                   <assignedPerson>
@@ -1314,7 +1315,7 @@
                                     </name>
                                   </assignedPerson>
                                   <representedOrganization>
-                                    <id root="2.16.840.1.113883.3.349" extesion="{EnteredAt/Code/text()}" />
+                                    <id root="2.16.840.1.113883.3.349" extension="{EnteredAt/Code/text()}" />
                                     <name><xsl:value-of select="EnteredAt/Description/text()"/></name>
                                     <addr nullFlavor="UNK" />
                                   </representedOrganization>
@@ -1396,7 +1397,7 @@
                               <td/>
                               <td/>
                               <td>
-                                <content ID="{concat('#fimEatName',position())}">Eating</content>
+                                <content ID="{concat('fimEatName',position())}">Eating</content>
                               </td>
                               <td>
                                 <content ID="{concat('fimEat',position())}">
@@ -1404,14 +1405,14 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('#fimEatDetail',position())}">Self Care</content>
+                                <content ID="{concat('fimEatDetail',position())}">Self Care</content>
                               </td>
                             </tr>
                             <tr>
                               <td/>
                               <td/>
                               <td>
-                                <content ID="{concat('#fimGroomName',position())}">Grooming</content>
+                                <content ID="{concat('fimGroomName',position())}">Grooming</content>
                               </td>
                               <td>
                                 <content ID="{concat('fimGroom',position())}">
@@ -1419,14 +1420,14 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('#fimGroomDetail',position())}">Self Care</content>
+                                <content ID="{concat('fimGroomDetail',position())}">Self Care</content>
                               </td>
                             </tr>
                             <tr>
                               <td/>
                               <td/>
                               <td>
-                                <content ID="{concat('#fimBathName',position())}">Bathing</content>
+                                <content ID="{concat('fimBathName',position())}">Bathing</content>
                               </td>
                               <td>
                                 <content ID="{concat('fimBath',position())}">
@@ -1434,14 +1435,14 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('#fimBathDetail',position())}">Self Care</content>
+                                <content ID="{concat('fimBathDetail',position())}">Self Care</content>
                               </td>
                             </tr>
                             <tr>
                               <td/>
                               <td/>
                               <td>
-                                <content ID="{concat('#fimDressUpName',position())}">Dressing - Upper Body</content>
+                                <content ID="{concat('fimDressUpName',position())}">Dressing - Upper Body</content>
                               </td>
                               <td>
                                 <content ID="{concat('fimDressUp',position())}">
@@ -1449,14 +1450,14 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('#fimDressUpDetail',position())}">Self Care</content>
+                                <content ID="{concat('fimDressUpDetail',position())}">Self Care</content>
                               </td>
                             </tr>
                             <tr>
                               <td/>
                               <td/>
                               <td>
-                                <content ID="{concat('#fimDressLoName',position())}">Dressing - Lower Body</content>
+                                <content ID="{concat('fimDressLoName',position())}">Dressing - Lower Body</content>
                               </td>
                               <td>
                                 <content ID="{concat('fimDressLo',position())}">
@@ -1464,14 +1465,14 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('#fimDressLoDetail',position())}">Self Care</content>
+                                <content ID="{concat('fimDressLoDetail',position())}">Self Care</content>
                               </td>
                             </tr>
                             <tr>
                               <td/>
                               <td/>
                               <td>
-                                <content ID="{concat('#fimToiletName',position())}">Toileting</content>
+                                <content ID="{concat('fimToiletName',position())}">Toileting</content>
                               </td>
                               <td>
                                 <content ID="{concat('fimToilet',position())}">
@@ -1479,14 +1480,14 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('#fimToiletDetail',position())}">Self Care</content>
+                                <content ID="{concat('fimToiletDetail',position())}">Self Care</content>
                               </td>
                             </tr>
                             <tr>
                               <td/>
                               <td/>
                               <td>
-                                <content ID="{concat('#fimBladderName',position())}">Bladder Management</content>
+                                <content ID="{concat('fimBladderName',position())}">Bladder Management</content>
                               </td>
                               <td>
                                 <content ID="{concat('fimBladder',position())}">
@@ -1494,14 +1495,14 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('#fimBladderDetail',position())}">Sphincter Control</content>
+                                <content ID="{concat('fimBladderDetail',position())}">Sphincter Control</content>
                               </td>
                             </tr>
                             <tr>
                               <td/>
                               <td/>
                               <td>
-                                <content ID="{concat('#fimBowelName',position())}">Bowel Management</content>
+                                <content ID="{concat('fimBowelName',position())}">Bowel Management</content>
                               </td>
                               <td>
                                 <content ID="{concat('fimBowel',position())}">
@@ -1509,14 +1510,14 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('#fimBowelDetail',position())}">Sphincter Control</content>
+                                <content ID="{concat('fimBowelDetail',position())}">Sphincter Control</content>
                               </td>
                             </tr>
                             <tr>
                               <td/>
                               <td/>
                               <td>
-                                <content ID="{concat('#fimTransChairName',position())}">Bed, Chair, Wheelchair</content>
+                                <content ID="{concat('fimTransChairName',position())}">Bed, Chair, Wheelchair</content>
                               </td>
                               <td>
                                 <content ID="{concat('fimTransChair',position())}">
@@ -1524,14 +1525,14 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('#fimTransChairDetail',position())}">Transfers</content>
+                                <content ID="{concat('fimTransChairDetail',position())}">Transfers</content>
                               </td>
                             </tr>
                             <tr>
                               <td/>
                               <td/>
                               <td>
-                                <content ID="{concat('#fimTransToiletName',position())}">Toilet</content>
+                                <content ID="{concat('fimTransToiletName',position())}">Toilet</content>
                               </td>
                               <td>
                                 <content ID="{concat('fimTransToilet',position())}">
@@ -1539,14 +1540,14 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('#fimTransToiletDetail',position())}">Transfers</content>
+                                <content ID="{concat('fimTransToiletDetail',position())}">Transfers</content>
                               </td>
                             </tr>
                             <tr>
                               <td/>
                               <td/>
                               <td>
-                                <content ID="{concat('#fimTransTubName',position())}">Tub, Shower</content>
+                                <content ID="{concat('fimTransTubName',position())}">Tub, Shower</content>
                               </td>
                               <td>
                                 <content ID="{concat('fimTransTub',position())}">
@@ -1554,14 +1555,14 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('#fimTransTubDetail',position())}">Transfers</content>
+                                <content ID="{concat('fimTransTubDetail',position())}">Transfers</content>
                               </td>
                             </tr>
                             <tr>
                               <td/>
                               <td/>
                               <td>
-                                <content ID="{concat('#fimLocomWalkName',position())}">Walk/Wheelchair</content>
+                                <content ID="{concat('fimLocomWalkName',position())}">Walk/Wheelchair</content>
                               </td>
                               <td>
                                 <content ID="{concat('fimLocomWalk',position())}">
@@ -1569,14 +1570,14 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('#fimLocomWalkDetail',position())}">Locomotion</content>
+                                <content ID="{concat('fimLocomWalkDetail',position())}">Locomotion</content>
                               </td>
                             </tr>
                             <tr>
                               <td/>
                               <td/>
                               <td>
-                                <content ID="{concat('#fimLocomStairName',position())}">Stairs</content>
+                                <content ID="{concat('fimLocomStairName',position())}">Stairs</content>
                               </td>
                               <td>
                                 <content ID="{concat('fimLocomStair',position())}">
@@ -1584,14 +1585,14 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('#fimLocomStairDetail',position())}">Locomotion</content>
+                                <content ID="{concat('fimLocomStairDetail',position())}">Locomotion</content>
                               </td>
                             </tr>
                             <tr>
                               <td/>
                               <td/>
                               <td>
-                                <content ID="{concat('#fimComprehendName',position())}">Comprehension</content>
+                                <content ID="{concat('fimComprehendName',position())}">Comprehension</content>
                               </td>
                               <td>
                                 <content ID="{concat('fimComprehend',position())}">
@@ -1599,14 +1600,14 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('#fimComprehendDetail',position())}">Communication</content>
+                                <content ID="{concat('fimComprehendDetail',position())}">Communication</content>
                               </td>
                             </tr>
                             <tr>
                               <td/>
                               <td/>
                               <td>
-                                <content ID="{concat('#fimExpressName',position())}">Expression</content>
+                                <content ID="{concat('fimExpressName',position())}">Expression</content>
                               </td>
                               <td>
                                 <content ID="{concat('fimExpress',position())}">
@@ -1614,14 +1615,14 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('#fimExpressDetail',position())}">Communication</content>
+                                <content ID="{concat('fimExpressDetail',position())}">Communication</content>
                               </td>
                             </tr>
                             <tr>
                               <td/>
                               <td/>
                               <td>
-                                <content ID="{concat('#fimInteractName',position())}">Social Interaction</content>
+                                <content ID="{concat('fimInteractName',position())}">Social Interaction</content>
                               </td>
                               <td>
                                 <content ID="{concat('fimInteract',position())}">
@@ -1629,14 +1630,14 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('#fimInteractDetail',position())}">Social Cognition</content>
+                                <content ID="{concat('fimInteractDetail',position())}">Social Cognition</content>
                               </td>
                             </tr>
                             <tr>
                               <td/>
                               <td/>
                               <td>
-                                <content ID="{concat('#fimProblemName',position())}">Problem Solving</content>
+                                <content ID="{concat('fimProblemName',position())}">Problem Solving</content>
                               </td>
                               <td>
                                 <content ID="{concat('fimProblem',position())}">
@@ -1644,14 +1645,14 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('#fimProblemDetail',position())}">Social Cognition</content>
+                                <content ID="{concat('fimProblemDetail',position())}">Social Cognition</content>
                               </td>
                             </tr>
                             <tr>
                               <td/>
                               <td/>
                               <td>
-                                <content ID="{concat('#fimMemoryName',position())}">Memory</content>
+                                <content ID="{concat('fimMemoryName',position())}">Memory</content>
                               </td>
                               <td>
                                 <content ID="{concat('fimMemory',position())}">
@@ -1659,14 +1660,14 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('#fimMemoryDetail',position())}">Social Cognition</content>
+                                <content ID="{concat('fimMemoryDetail',position())}">Social Cognition</content>
                               </td>
                             </tr>
                             <tr>
                               <td/>
                               <td/>
                               <td>
-                                <content ID="{concat('#fimTotalName',position())}">FIM Total</content>
+                                <content ID="{concat('fimTotalName',position())}">FIM Total</content>
                               </td>
                               <td>
                                 <content ID="{concat('fimTotal',position())}">
@@ -1674,7 +1675,7 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('#fimTotalDetail',position())}" />
+                                <content ID="{concat('fimTotalDetail',position())}" />
                               </td>
                             </tr>
                             <tr>
@@ -1698,8 +1699,16 @@
                         </text>
                         <statusCode code="completed" />
                         <value xsi:type="IVL_TS">
-                          <low value="$fimsStart"/><!-- TODO: Date Ranges-->
-                          <high value="$fimsEnd" />
+                        <xsl:choose>
+                          <xsl:when test="boolean(Problems/@fimStartTime)">
+                            <low value="{translate(Problems/@fimStartTime, 'TZ:- ','')}" />
+                            <high value="{translate(Problems/@fimEndTime, 'TZ:- ','')}" />
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <low nullFlavor="UNK" />
+                            <high nullFlavor="UNK" />
+                          </xsl:otherwise>
+                        </xsl:choose>
                         </value>
                       </observation>
                     </entry>
@@ -1746,7 +1755,7 @@
                               <statusCode code="completed"/>
                               <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                               <effectiveTime>
-                                <low value="{(EnteredOn | FromTime)/text()}"/>
+                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ','')}"/>
                               </effectiveTime>
                               <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                               <value nullFlavor="NA" xsi:type="CD">
@@ -1782,7 +1791,7 @@
                               <statusCode code="completed"/>
                               <xsl:comment>  Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                               <effectiveTime>
-                                <low value="{(EnteredOn | FromTime)/text()}"/>
+                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
                               </effectiveTime>
                               <xsl:comment>   Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                               <value nullFlavor="NA" xsi:type="CD">
@@ -1818,7 +1827,7 @@
                               <statusCode code="completed"/>
                               <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                               <effectiveTime>
-                                <low value="{(EnteredOn | FromTime)/text()}"/>
+                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
                               </effectiveTime>
                               <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                               <value nullFlavor="NA" xsi:type="CD">
@@ -1854,7 +1863,7 @@
                               <statusCode code="completed"/>
                               <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                               <effectiveTime>
-                                <low value="{(EnteredOn | FromTime)/text()}"/>
+                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
                               </effectiveTime>
                               <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                               <value nullFlavor="NA" xsi:type="CD">
@@ -1890,7 +1899,7 @@
                               <statusCode code="completed"/>
                               <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                               <effectiveTime>
-                                <low value="{(EnteredOn | FromTime)/text()}"/>
+                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
                               </effectiveTime>
                               <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                               <value nullFlavor="NA" xsi:type="CD">
@@ -1926,7 +1935,7 @@
                               <statusCode code="completed"/>
                               <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                               <effectiveTime>
-                                <low value="{(EnteredOn | FromTime)/text()}"/>
+                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
                               </effectiveTime>
                               <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                               <value nullFlavor="NA" xsi:type="CD">
@@ -1962,7 +1971,7 @@
                               <statusCode code="completed"/>
                               <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                               <effectiveTime>
-                                <low value="{(EnteredOn | FromTime)/text()}"/>
+                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
                               </effectiveTime>
                               <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                               <value nullFlavor="NA" xsi:type="CD">
@@ -1998,7 +2007,7 @@
                               <statusCode code="completed"/>
                               <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                               <effectiveTime>
-                                <low value="{(EnteredOn | FromTime)/text()}"/>
+                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
                               </effectiveTime>
                               <xsl:comment>Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                               <value nullFlavor="NA" xsi:type="CD">
@@ -2034,7 +2043,7 @@
                               <statusCode code="completed"/>
                               <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                               <effectiveTime>
-                                <low value="{(EnteredOn | FromTime)/text()}"/>
+                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
                               </effectiveTime>
                               <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                               <value nullFlavor="NA" xsi:type="CD">
@@ -2070,7 +2079,7 @@
                               <statusCode code="completed"/>
                               <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                               <effectiveTime>
-                                <low value="{(EnteredOn | FromTime)/text()}"/>
+                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
                               </effectiveTime>
                               <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                               <value nullFlavor="NA" xsi:type="CD">
@@ -2106,7 +2115,7 @@
                               <statusCode code="completed"/>
                               <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                               <effectiveTime>
-                                <low value="{(EnteredOn | FromTime)/text()}"/>
+                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
                               </effectiveTime>
                               <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                               <value nullFlavor="NA" xsi:type="CD">
@@ -2142,7 +2151,7 @@
                               <statusCode code="completed"/>
                               <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                               <effectiveTime>
-                                <low value="{(EnteredOn | FromTime)/text()}"/>
+                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
                               </effectiveTime>
                               <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                               <value nullFlavor="NA" xsi:type="CD">
@@ -2178,7 +2187,7 @@
                               <statusCode code="completed"/>
                               <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                               <effectiveTime>
-                                <low value="{(EnteredOn | FromTime)/text()}"/>
+                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
                               </effectiveTime>
                               <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                               <value nullFlavor="NA" xsi:type="CD">
@@ -2214,7 +2223,7 @@
                               <statusCode code="completed"/>
                               <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                               <effectiveTime>
-                                <low value="{(EnteredOn | FromTime)/text()}"/>
+                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
                               </effectiveTime>
                               <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                               <value nullFlavor="NA" xsi:type="CD">
@@ -2250,7 +2259,7 @@
                               <statusCode code="completed"/>
                               <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                               <effectiveTime>
-                                <low value="{(EnteredOn | FromTime)/text()}"/>
+                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
                               </effectiveTime>
                               <xsl:comment>-  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                               <value nullFlavor="NA" xsi:type="CD">
@@ -2286,7 +2295,7 @@
                               <statusCode code="completed"/>
                               <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                               <effectiveTime>
-                                <low value="{(EnteredOn | FromTime)/text()}"/>
+                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
                               </effectiveTime>
                               <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                               <value nullFlavor="NA" xsi:type="CD">
@@ -2322,7 +2331,7 @@
                               <statusCode code="completed"/>
                               <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                               <effectiveTime>
-                                <low value="{(EnteredOn | FromTime)/text()}"/>
+                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
                               </effectiveTime>
                               <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                               <value nullFlavor="NA" xsi:type="CD">
@@ -2358,7 +2367,7 @@
                               <statusCode code="completed"/>
                               <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                               <effectiveTime>
-                                <low value="{(EnteredOn | FromTime)/text()}"/>
+                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
                               </effectiveTime>
                               <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                               <value nullFlavor="NA" xsi:type="CD">
@@ -2394,7 +2403,7 @@
                               <statusCode code="completed"/>
                               <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
                               <effectiveTime>
-                                <low value="{(EnteredOn | FromTime)/text()}"/>
+                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
                               </effectiveTime>
                               <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                               <value nullFlavor="NA" xsi:type="CD">
@@ -2425,7 +2434,7 @@
           </component>
           <component>
 <xsl:comment> **************************************************************** MEDICATIONS (RX &amp; Non-RX) SECTION, REQUIRED **************************************************************** </xsl:comment>
-            <xsl:choose><!-- TODO Meds Filtering [((OrderCategory/Code/text() = 'O RX' or OrderCategory/Code/text() = 'O') and isc:evaluate('dateDiff', 'mm', (Extension/LastFilled | Extension/Expires)/text(), isc:evaluate('xmltimestamp', isc:evaluate('timestamp'))) &lt; 16 and not(Status/text() = 'DELETED')) or (OrderCategory/Code/text() = 'NV RX' and not(Status/text() = 'DISCONTINUED'))]-->
+            <xsl:choose><!-- TODO Meds Filtering [((OrderCategory/Code/text() = 'O RX' or OrderCategory/Code/text() = 'O') and isc:evaluate('dateDiff', 'mm', translate((Extension/LastFilled | Extension/Expires)/text(), 'TZ', ' ')) &lt; 16 and not(Status/text() = 'DELETED')) or (OrderCategory/Code/text() = 'NV RX' and not(Status/text() = 'DISCONTINUED'))]-->
               <xsl:when test="not(boolean(Medications/Medication))">
                 <section nullFlavor="NI">
                   <xsl:comment> C-CDA Medications Section Template Entries REQUIRED </xsl:comment>
@@ -2519,7 +2528,7 @@
                                     Non-VA
                                   </xsl:when>
                                   <xsl:otherwise>
-                                    <xsl:value-of select="PlacerId/text()" />
+                                    <xsl:value-of select="PrescriptionNumber/text()" />
                                   </xsl:otherwise>
                                 </xsl:choose>
                               </content>
@@ -2722,7 +2731,7 @@
                                 <xsl:comment> 8.29 ORDER EXPIRATION DATE/TIME, Optional-R2 </xsl:comment>
                                 <effectiveTime xsi:type="IVL_TS">
                                   <low nullFlavor="UNK" />
-                                  <high value="{Extension/Expires/text()}"/>
+                                  <high value="{translate(Extension/Expires/text(),'TZ:- ','')}"/>
                                 </effectiveTime>
                                 <xsl:comment> VLER SEG 1B: 8.27 FILLS, Optional </xsl:comment>
                                 <xsl:choose>
@@ -2750,7 +2759,7 @@
                                 <author>
                                   <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                                   <xsl:comment> 8.30 ORDER DATE/TIME, Optional </xsl:comment>
-                                  <time value="{FromTime/text()}"/>
+                                  <time value="{translate(FromTime/text(), 'TZ:- ', '')}"/>
                                   <assignedAuthor>
                                     <id nullFlavor="NI" />
                                     <assignedPerson>
@@ -2785,7 +2794,7 @@
                                 <id extension="{PrescriptionNumber/text()}" root="2.16.840.1.113883.4.349"/>
                                 <statusCode nullFlavor="UNK" />
                                 <xsl:if test="boolean(Extension/LastFilled)">
-                                  <effectiveTime value="{Extension/LastFilled/text()}"/>
+                                  <effectiveTime value="{translate(Extension/LastFilled/text(),'TZ:- ','')}"/>
                                 </xsl:if>
                               </supply>
                             </entryRelationship>
@@ -2984,7 +2993,7 @@
                                 <author>
                                   <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                                   <xsl:comment> 8.30 ORDER DATE/TIME, Optional </xsl:comment>
-                                  <time value="{FromTime/text()}"/>
+                                  <time value="{translate(FromTime/text(), 'TZ:- ', '')}"/>
                                   <assignedAuthor>
                                     <id nullFlavor="NI" />
                                     <assignedPerson>
@@ -3009,7 +3018,7 @@
                                 <id nullFlavor="UNK" />
                                 <statusCode nullFlavor="UNK" />
                                 <xsl:if test="boolean(Extension/LastFilled)">
-                                  <effectiveTime value="{Extension/LastFilled/text()}"/>
+                                  <effectiveTime value="{translate(Extension/LastFilled/text(),'TZ:- ','')}"/>
                                 </xsl:if>
                               </supply>
                             </entryRelationship>
@@ -3151,11 +3160,11 @@
                           <reference value="{concat('#indComments', position())}" />
                         </text>
                         <statusCode code="completed" />
-                        <effectiveTime value="{FromTime/text()}" />
+                        <effectiveTime value="{translate(FromTime/text(), 'TZ:- ', '')}" />
                         <xsl:comment> C-CDA R2.1 Immunization Medication Series Nbr </xsl:comment>
                         <xsl:choose>
-                          <xsl:when test="boolean(Administrations/Administration/AdministrationStatus/Description)">
-                            <repeatNumber value="{Administrations/Administration/AdministrationStatus/Description/text()}"/>
+                          <xsl:when test="boolean(Administrations/Administration/AdministrationStatus/Code) and number(Administrations/Administration/AdministrationStatus/Code/text()) = Administrations/Administration/AdministrationStatus/Code/text()">
+                            <repeatNumber value="{Administrations/Administration/AdministrationStatus/Code/text()}"/>
                           </xsl:when>
                           <xsl:otherwise>
                             <repeatNumber nullFlavor="NI" />
@@ -3369,7 +3378,7 @@
                                 <xsl:value-of select="Procedure/OriginalText/text()" />
                               </content>
                             </td>
-                            <td>
+                            <td><xsl:if test="boolean(Extension/CPTModifiers/Modifier)">
                               <list><!-- TODO where is this, for real? -->
                                 <xsl:for-each select="Extension/CPTModifiers/Modifier">
                                   <item>
@@ -3378,7 +3387,7 @@
                                     </content>
                                   </item>
                                 </xsl:for-each>
-                              </list>
+                              </list></xsl:if>
                             </td>
                             <td>
                               <content ID="{concat('prndProvider', position())}"  >
@@ -3467,9 +3476,17 @@
                       </text>
                       <statusCode code="completed"/>
                       <value xsi:type="IVL_TS">
-                        <low value="$proceduresStart" />
-                        <high value="$proceduresEnd" />
-                      </value><!-- TODO times-->
+                        <xsl:choose>
+                          <xsl:when test="boolean(Procedures/@startTime)">
+                            <low value="{translate(Procedures/@startTime, 'TZ:- ','')}" />
+                            <high value="{translate(Procedures/@endTime, 'TZ:- ','')}" />
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <low nullFlavor="UNK" />
+                            <high nullFlavor="UNK" />
+                          </xsl:otherwise>
+                        </xsl:choose>
+                      </value>
                     </observation>
                   </entry>
 
@@ -3507,7 +3524,7 @@
                           </qualifier>
                         </xsl:if>                       
                         <statusCode code="completed" />
-                        <effectiveTime value="{ProcedureTime/text()}"/>
+                        <effectiveTime value="{translate(ProcedureTime/text(), 'TZ:- ','')}"/>
                         <performer>
                           <assignedEntity>
                             <id nullFlavor="NA" />
@@ -3548,11 +3565,11 @@
                               </text>
                               <statusCode code="completed" />
                               <xsl:comment> Clinically relevant time of the note </xsl:comment>
-                              <effectiveTime value="{$docs/DocumentTime/text()}"/>
+                              <effectiveTime value="{translate($docs/DocumentTime/text(), 'TZ:- ','')}"/>
                               <author>
                                 <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                                 <xsl:comment> Time note was actually written </xsl:comment>
-                                <time value="{$docs/DocumentTime/text()}"/>
+                                <time value="{translate($docs/DocumentTime/text(), 'TZ:- ','')}"/>
                                 <assignedAuthor>
                                   <id nullFlavor="NI" />
                                   <assignedPerson>
@@ -3581,7 +3598,7 @@
           </component>
           <component>
 <xsl:comment> ******************************************************** PLAN OF CARE SECTION, Optional ******************************************************** </xsl:comment>
-            <xsl:variable name="planOfCare" select="Appointments/Appointment[isc:evaluate('dateDiff','mm',FromTime,isc:evaluate('xmltimestamp',isc:evaluate('timestamp'))) &lt; 1] | LabOrders/LabOrder[isc:evaluate('dateDiff','mm',FromTime,isc:evaluate('xmltimestamp',isc:evaluate('timestamp'))) &lt; 1] | OtherOrders/OtherOrder[isc:evaluate('dateDiff','mm',FromTime,isc:evaluate('xmltimestamp',isc:evaluate('timestamp'))) &lt; 1] | RadOrders/RadOrder[isc:evaluate('dateDiff','mm',FromTime,isc:evaluate('xmltimestamp',isc:evaluate('timestamp'))) &lt; 1]" />
+            <xsl:variable name="planOfCare" select="Appointments/Appointment[isc:evaluate('dateDiff','mm',translate(FromTime/text(), 'TZ', ' ')) &lt; 1] | LabOrders/LabOrder[isc:evaluate('dateDiff','mm',translate(FromTime/text(), 'TZ', ' ')) &lt; 1] | OtherOrders/OtherOrder[isc:evaluate('dateDiff','mm',translate(FromTime/text(), 'TZ', ' ')) &lt; 1] | RadOrders/RadOrder[isc:evaluate('dateDiff','mm',translate(FromTime/text(), 'TZ', ' ')) &lt; 1]" />
             <xsl:choose>
               <xsl:when test="not(boolean($planOfCare))">
                 <section nullFlavor="NI">
@@ -3602,23 +3619,23 @@
                     <paragraph>
                       <content ID="treatmentTime">The Plan of Treatment section contains future care activities for the patient from all VA treatment facilities. This section includes future appointments (within the next 6 months) and future orders (within +/- 45 days) which are active, pending or scheduled.</content>
                     </paragraph>
-                    <paragraph>
-                      <content styleCode="Bold">Future Appointments</content>
-                    </paragraph>
-                    <paragraph>
-                      This section includes up to a maximum of 20 appointments scheduled over the next 6 months. Some types of appointments may not be included. Contact the VA health care team if there are questions.
-                    </paragraph>
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Appointment Date/Time</th>
-                          <th>Appointment Type</th>
-                          <th>Appointment Facility Name</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <xsl:for-each select="$planOfCare">
-                          <xsl:if test="local-name() = 'Appointment'">
+                    <xsl:if test="not(count($planOfCare[self::Appointment]) = 0)">
+                      <paragraph>
+                        <content styleCode="Bold">Future Appointments</content>
+                      </paragraph>
+                      <paragraph>
+                        This section includes up to a maximum of 20 appointments scheduled over the next 6 months. Some types of appointments may not be included. Contact the VA health care team if there are questions.
+                      </paragraph>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Appointment Date/Time</th>
+                            <th>Appointment Type</th>
+                            <th>Appointment Facility Name</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <xsl:for-each select="$planOfCare[self::Appointment]">
                             <tr>
                               <td>
                                 <content ID="{concat('apptDateTime',position())}">
@@ -3636,28 +3653,28 @@
                                 </content>
                               </td>
                             </tr>
-                          </xsl:if>
-                        </xsl:for-each>
-                      </tbody>
-                    </table>
-                    <paragraph>
-                      <content styleCode="Bold">Active, Pending, and Scheduled Orders</content>
-                    </paragraph>
-                    <paragraph>
-                      This section includes a listing of several types of active, pending, and scheduled orders, including clinic medication orders, diagnostic test orders, procedure orders, and consult orders; where the start date of the order is 45 days before or after the date this document was created.
-                    </paragraph>
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Test Date/Time</th>
-                          <th>Test Type</th>
-                          <th>Test Details</th>
-                          <th>Facility Name</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <xsl:for-each select="$planOfCare">
-                          <xsl:if test="not(local-name() = 'Appointment')">
+                          </xsl:for-each>
+                        </tbody>
+                      </table>
+                    </xsl:if>
+                    <xsl:if test="not(count($planOfCare[not(self::Appointment)]) = 0)">
+                      <paragraph>
+                        <content styleCode="Bold">Active, Pending, and Scheduled Orders</content>
+                      </paragraph>
+                      <paragraph>
+                        This section includes a listing of several types of active, pending, and scheduled orders, including clinic medication orders, diagnostic test orders, procedure orders, and consult orders; where the start date of the order is 45 days before or after the date this document was created.
+                      </paragraph>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Test Date/Time</th>
+                            <th>Test Type</th>
+                            <th>Test Details</th>
+                            <th>Facility Name</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <xsl:for-each select="$planOfCare[not(self::Appointment)]">
                             <tr>
                               <td>
                                 <content ID="{concat('orderDateTime',position())}">
@@ -3680,10 +3697,10 @@
                                 </content>
                               </td>
                             </tr>
-                          </xsl:if>
-                        </xsl:for-each>
-                      </tbody>
-                    </table>
+                          </xsl:for-each>
+                        </tbody>
+                      </table>
+                    </xsl:if>
                   </text>
                   <xsl:comment> C-CDA R2.1 Section Time Range, Optional </xsl:comment>
                   <entry typeCode="DRIV" >
@@ -3695,9 +3712,17 @@
                       </text>
                       <statusCode code="completed"/>
                       <value xsi:type="IVL_TS">
-                        <low value="$planOfCareStart" />
-                        <high value="$planOfCareEnd" />
-                      </value><!-- TODO: Dates-->
+                        <xsl:choose>
+                          <xsl:when test="boolean(Appointments/@pocStartTime)">
+                            <low value="{translate(Appointments/@pocStartTime, 'TZ:- ','')}" />
+                            <high value="{translate(Appointments/@pocEndTime, 'TZ:- ','')}" />
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <low nullFlavor="UNK" />
+                            <high nullFlavor="UNK" />
+                          </xsl:otherwise>
+                        </xsl:choose>
+                      </value>
                     </observation>
                   </entry>
                   <xsl:comment> PLAN OF CARE (POC) STRUCTURED DATA </xsl:comment>
@@ -3717,7 +3742,7 @@
                           </originalText>
                         </code>
                         <statusCode code="active"/>
-                        <effectiveTime value="{FromTime/text()}"/>
+                        <effectiveTime value="{translate(FromTime/text(), 'TZ:- ', '')}"/>
                         <participant typeCode="LOC">
                           <participantRole classCode="SDLOC">
                             <templateId root="2.16.840.1.113883.10.20.22.4.32"/>
@@ -3822,15 +3847,17 @@
                               </content>
                             </td>
                             <td>
-                              <list>
-                                <xsl:for-each select="Extension/Comments/Comment" >
-                                  <item>
-                                    <content ID="{concat('pndComment',$prid,'-',position())}">
-                                      <xsl:value-of select="CommentText/text()" />
-                                    </content>
-                                  </item>
-                                </xsl:for-each>
-                              </list>
+                              <xsl:if test="boolean(Extension/Comments/Comment)">
+                                <list>
+                                  <xsl:for-each select="Extension/Comments/Comment" >
+                                    <item>
+                                      <content ID="{concat('pndComment',$prid,'-',position())}">
+                                        <xsl:value-of select="CommentText/text()" />
+                                      </content>
+                                    </item>
+                                  </xsl:for-each>
+                                </list>
+                              </xsl:if>
                             </td>
                             <td>
                               <content ID="{concat('pndProvider',position())}">
@@ -3877,12 +3904,24 @@
                         <statusCode code="active" />
                         <xsl:comment> C-CDA R2.1 PROBLEM CONCERN DATE,  Date Recorded/Entered, Required </xsl:comment>
                         <xsl:comment> 7.01 PROBLEM DATE, R2 </xsl:comment>
-                        <effectiveTime>
-                          <xsl:comment> 7.01 PROBLEM DATE, cda:low=Date of Entry </xsl:comment>
-                          <low value="{FromTime/text()}"/>
-                          <xsl:comment> 7.01 PROBLEM DATE, cda:high=Date Resolved </xsl:comment>
-                          <high nullFlavor="UNK"/>
-                        </effectiveTime>
+                        <xsl:choose>
+                          <xsl:when test="boolean(EnteredOn)">
+                            <effectiveTime>
+                              <xsl:comment> 7.01 PROBLEM DATE, cda:low=Date of Entry </xsl:comment>
+                              <low value="{translate(EnteredOn/text(), 'TZ:- ', '')}"/>
+                              <xsl:comment> 7.01 PROBLEM DATE, cda:high=Date Resolved </xsl:comment>
+                              <high nullFlavor="UNK"/>
+                            </effectiveTime>
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <effectiveTime>
+                              <xsl:comment> 7.01 PROBLEM DATE, cda:low=Date of Entry </xsl:comment>
+                              <low nullFlavor="UNK"/>
+                              <xsl:comment> 7.01 PROBLEM DATE, cda:high=Date Resolved </xsl:comment>
+                              <high nullFlavor="UNK"/>
+                            </effectiveTime>
+                          </xsl:otherwise>
+                        </xsl:choose>
                         <xsl:comment> TREATING PROVIDER Performer Block, Optional </xsl:comment>
                         <performer>
                           <assignedEntity>
@@ -3931,11 +3970,18 @@
                             <xsl:comment> 7.01 Problem Observation Date </xsl:comment>
                             <effectiveTime>
                               <xsl:comment> Date of onset </xsl:comment>
-                              <low value="{FromTime/text()}"/>
+                              <xsl:choose>
+                                <xsl:when test="boolean(FromTime)">
+                              <low value="{translate(FromTime/text(), 'TZ:- ', '')}"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                  <low nullFlavor="UNK"/>
+                                </xsl:otherwise>
+                              </xsl:choose>
                               <xsl:comment> Date of resolution </xsl:comment>
                               <xsl:choose>
                                 <xsl:when test="boolean(ToTime)">
-                                  <high value="{ToTime/text()}"/>
+                                  <high value="{translate(ToTime/text(), 'TZ:- ','')}"/>
                                 </xsl:when>
                                 <xsl:otherwise>
                                   <high nullFlavor="UNK"/>
@@ -3998,7 +4044,7 @@
           <component>
 <xsl:comment> ******************************************************** RESULTS SECTION, REQUIRED ******************************************************** </xsl:comment>
             <xsl:choose>
-              <xsl:when test="not(boolean(LabOrders/LabOrder[not(isc:evaluate('dateDiff','mm',FromTime,isc:evaluate('xmltimestamp',isc:evaluate('timestamp'))) &lt; 1)]))">
+              <xsl:when test="not(boolean(LabOrders/LabOrder[not(isc:evaluate('dateDiff','dd',translate(FromTime/text(), 'TZ', ' ')) &lt; 1)]))">
                 <section nullFlavor="NI">
                   <xsl:comment> CCD Results Section Entries REQUIRED </xsl:comment>
                   <templateId root="2.16.840.1.113883.10.20.22.2.3.1" extension="2015-08-01"/>
@@ -4039,7 +4085,7 @@
                           <th>Comment</th>
                         </tr>
                       </thead>
-                      <xsl:for-each select="LabOrders/LabOrder[not(isc:evaluate('dateDiff','mm',FromTime,isc:evaluate('xmltimestamp',isc:evaluate('timestamp'))) &lt; 1)]">
+                      <xsl:for-each select="LabOrders/LabOrder[not(isc:evaluate('dateDiff','dd',translate(FromTime/text(), 'TZ', ' ')) &lt; 1)]">
                         <xsl:sort select="FromTime" order="descending" />
                         <xsl:variable name="lid" select="position()" />
                         <tbody>
@@ -4119,7 +4165,7 @@
                               </td>
                               <td>
                                 <content ID="{concat('resultLabValues',$lid,'-',position())}">
-                                  <xsl:value-of select="ResultValue/text()" />&#160; <xsl:value-of select="ResultValueUnits/text()" />
+                                  <xsl:value-of select="ResultValue/text()" /> <xsl:value-of select="ResultValueUnits/text()" />
                                 </content>
                               </td>
                               <td>
@@ -4129,7 +4175,7 @@
                               </td>
                               <td>
                                 <content ID="{concat('rangeLabValues',$lid,'-',position())}">
-                                  <xsl:value-of select="isc:evaluate('strip', ResultNormalRange/text(),'&quot;')" />
+                                  <xsl:value-of select="isc:evaluate('strip', ResultNormalRange/text(),'P')" />
                                 </content>
                               </td>
                               <td/>
@@ -4148,13 +4194,21 @@
                       </text>
                       <statusCode code="completed" />
                       <value xsi:type="IVL_TS">
-                        <low value="$resultsStart"/>
-                        <high value="$resultsEnd" />
+                        <xsl:choose>
+                          <xsl:when test="boolean(LabOrders/@resStartTime)">
+                            <low value="{translate(LabOrders/@resStartTime, 'TZ:- ','')}" />
+                            <high value="{translate(LabOrders/@resEndTime, 'TZ:- ','')}" />
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <low nullFlavor="UNK" />
+                            <high nullFlavor="UNK" />
+                          </xsl:otherwise>
+                        </xsl:choose>
                       </value><!-- TODO section dates-->
                     </observation>
                   </entry>
 
-                  <xsl:for-each select="LabOrders/LabOrder[not(isc:evaluate('dateDiff','mm',FromTime,isc:evaluate('xmltimestamp',isc:evaluate('timestamp'))) &lt; 1)]">
+                  <xsl:for-each select="LabOrders/LabOrder[not(isc:evaluate('dateDiff','dd',translate(FromTime/text(), 'TZ', ' ')) &lt; 1)]">
                     <xsl:sort select="FromTime" order="descending" />
                     <xsl:variable name="lid" select="position()" />
                     <entry typeCode='DRIV'>
@@ -4169,8 +4223,8 @@
                         <effectiveTime>
                           <xsl:choose>
                             <xsl:when test="boolean(SpecimenCollectedTime)">
-                          <low value="{SpecimenCollectedTime}"/>
-                          <high value="{SpecimenCollectedTime}"/>
+                          <low value="{translate(SpecimenCollectedTime/text(),'TZ:- ','')}"/>
+                          <high value="{translate(SpecimenCollectedTime/text(),'TZ:- ','')}"/>
                             </xsl:when>
                             <xsl:otherwise>
                           <low nullFlavor="UNK"/>
@@ -4196,24 +4250,35 @@
                               <xsl:comment> 15.01 RESULT ID, REQUIRED </xsl:comment>
                               <id root="2.16.840.1.113883.4.349" extension="{ExternalId/text()}" />
                               <xsl:comment> 15.03-RESULT TYPE, REQUIRED </xsl:comment>
-                              <code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" code="{ResultCodedValue/Code/text()}" displayName="{ResultCodedValue/Description/text()}">
-                                <originalText>
-                                  <reference value="{concat('#loincLabValues',$lid,'-',position())}"/>
-                                </originalText>
-                              </code>
+                              <xsl:choose>
+                                <xsl:when test="boolean(ResultCodedValue)">
+                                  <code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" code="{ResultCodedValue/Code/text()}" displayName="{ResultCodedValue/Description/text()}">
+                                    <originalText>
+                                      <reference value="{concat('#loincLabValues',$lid,'-',position())}"/>
+                                    </originalText>
+                                  </code>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                  <code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#loincLabValues',$lid,'-',position())}"/>
+                                    </originalText>
+                                  </code>
+                                </xsl:otherwise>
+                              </xsl:choose>
                               <text >
                                 <reference value="{concat('#labTest',$lid)}"/>
                               </text>
                               <statusCode code="completed" />
                               <xsl:comment> 15.02 RESULT DATE/TIME, REQUIRED </xsl:comment>
-                              <effectiveTime value="{ObservationTime/text()}"/>
+                              <effectiveTime value="{translate(ObservationTime/text(), 'TZ:- ','')}"/>
                               <xsl:comment> 15.05 RESULT VALUE, REQUIRED, xsi:type="PQ" </xsl:comment>
                               <xsl:choose>
-                                <xsl:when test="boolean(ResultValueUnits)">
+                                <xsl:when test="boolean(ResultValueUnits) and number(ResultValue/text()) = ResultValue/text()">
                                   <value xsi:type="PQ" value="{ResultValue/text()}" unit="{ResultValueUnits/text()}"/>
                                 </xsl:when>
                                 <xsl:otherwise>
-                                  <value xsi:type="ST" representation="TXT"><xsl:value-of select="ResultValue"/></value>
+                                  <value xsi:type="ST" representation="TXT"><xsl:value-of select="ResultValue"/> <xsl:value-of select="ResultValueUnits"/></value>
                                 </xsl:otherwise>
                               </xsl:choose>
                               <xsl:comment> 15.06 RESULT INTERPRETATION, R2, </xsl:comment>
@@ -4241,7 +4306,7 @@
                               </entryRelationship>
                               <xsl:comment> 15.07 RESULT REFERENCE RANGE, R2, </xsl:comment>
                               <xsl:choose>
-                                <xsl:when test="boolean(ResultValueUnits) and boolean(ResultNormalRange)">
+                                <xsl:when test="boolean(ResultValueUnits) and boolean(ResultNormalRange) and contains(ResultNormalRange, '-')">
                                   <referenceRange>
                                     <observationRange>
                                       <text>
@@ -4432,7 +4497,7 @@
                           <xsl:comment> CCD Smoking Status Effective Time, R2 </xsl:comment>
                           <xsl:choose>
                             <xsl:when test="boolean(EnteredOn)">
-                              <effectiveTime value="{EnteredOn/text()}"/>
+                              <effectiveTime value="{translate(EnteredOn/text(), 'TZ:- ', '')}"/>
                             </xsl:when>
                             <xsl:otherwise>
                               <effectiveTime nullFlavor="UNK"/>
@@ -4492,7 +4557,7 @@
                           <xsl:choose>
                             <xsl:when test="boolean(EnteredOn)">
                               <effectiveTime>
-                                <low value="{EnteredOn/text()}"/>
+                                <low value="{translate(EnteredOn/text(), 'TZ:- ', '')}"/>
                                 <high nullFlavor="NAV" />
                               </effectiveTime>
                             </xsl:when>
@@ -4521,11 +4586,20 @@
                                   INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING
                                   FACILITY NBR)
                                 </xsl:comment>
-                                <id extension="{EnteredAt/Code/text()}" root="2.16.840.1.113883.4.349" />
-                                <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
-                                <name>
-                                  <xsl:value-of select="EnteredAt/Description"/>
-                                </name>
+                                <xsl:choose>
+                                  <xsl:when test="boolean(EnteredAt)">
+                                    <id extension="{EnteredAt/Code/text()}" root="2.16.840.1.113883.4.349" />
+                                    <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
+                                    <name>
+                                      <xsl:value-of select="EnteredAt/Description"/>
+                                    </name>
+                                  </xsl:when>
+                                  <xsl:otherwise>
+                                    <id nullFlavor="UNK" root="2.16.840.1.113883.4.349" />
+                                    <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
+                                    <name nullFlavor="UNK" />
+                                  </xsl:otherwise>
+                                </xsl:choose>
                               </representedOrganization>
                             </assignedAuthor>
                           </author>
@@ -4608,22 +4682,22 @@
 
                               <td>
                                 <!-- Temp -->
-                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500638]/ObservationValue" />&#160; <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500638]/ObservationCode/ObservationValueUnits/OriginalText" />
+                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500638]/ObservationValue" /> <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500638]/ObservationCode/ObservationValueUnits/OriginalText" />
                               </td>
 
                               <td>
                                 <!-- Pulse -->
-                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500636]/ObservationValue" />&#160; <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500636]/ObservationCode/ObservationValueUnits/OriginalText" />
+                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500636]/ObservationValue" /> <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500636]/ObservationCode/ObservationValueUnits/OriginalText" />
                               </td>
 
                               <td>
                                 <!-- Blood Pressure -->
-                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500634]/ObservationValue" />&#160; <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500634]/ObservationCode/ObservationValueUnits/OriginalText" />
+                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500634]/ObservationValue" /> <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500634]/ObservationCode/ObservationValueUnits/OriginalText" />
                               </td>
 
                               <td>
                                 <!-- Respiratory -->
-                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4688725]/ObservationValue" />&#160; <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4688725]/ObservationCode/ObservationValueUnits/OriginalText" />
+                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4688725]/ObservationValue" /> <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4688725]/ObservationCode/ObservationValueUnits/OriginalText" />
                               </td>
 
                               <td>
@@ -4638,12 +4712,12 @@
 
                               <td>
                                 <!-- Height -->
-                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4688724]/ObservationValue" />&#160; <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4688724]/ObservationCode/ObservationValueUnits/OriginalText" />
+                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4688724]/ObservationValue" /> <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4688724]/ObservationCode/ObservationValueUnits/OriginalText" />
                               </td>
 
                               <td>
                                 <!-- Weight -->
-                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500639]/ObservationValue" />&#160; <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500639]/ObservationCode/ObservationValueUnits/OriginalText" />
+                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500639]/ObservationValue" /> <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500639]/ObservationCode/ObservationValueUnits/OriginalText" />
                               </td>
 
                               <td>
@@ -4673,9 +4747,17 @@
                       </text>
                       <statusCode code="completed" />
                       <value xsi:type="IVL_TS">
-                        <low value="$vitalsStart"/>
-                        <high value="$vitalsEnd" />
-                      </value><!-- TODO section dates-->
+                        <xsl:choose>
+                          <xsl:when test="boolean(Obervations/@vitStartTime)">
+                            <low value="{translate(Obervations/@vitStartTime, 'TZ:- ','')}" />
+                            <high value="{translate(Obervations/@vitEndTime, 'TZ:- ','')}" />
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <low nullFlavor="UNK" />
+                            <high nullFlavor="UNK" />
+                          </xsl:otherwise>
+                        </xsl:choose>
+                      </value>
                     </observation>
                   </entry>
                   <xsl:for-each select="Observations/Observation[generate-id() = generate-id(key('vitals', GroupId)[1])]">
@@ -4696,8 +4778,8 @@
                         <xsl:choose>
                           <xsl:when test="boolean(ObservationTime)">
                             <effectiveTime>
-                              <low value="{ObservationTime/text()}"/>
-                              <high value="{ObservationTime/text()}"/>
+                              <low value="{translate(ObservationTime/text(), 'TZ:- ','')}"/>
+                              <high value="{translate(ObservationTime/text(), 'TZ:- ','')}"/>
                             </effectiveTime>
                           </xsl:when>
                           <xsl:otherwise>
@@ -4896,11 +4978,11 @@
                         </text>
                         <statusCode code="completed" />
                         <xsl:comment>Clinically relevant time of the note </xsl:comment>
-                        <effectiveTime value="{DocumentTime/text()}" />
+                        <effectiveTime value="{translate(DocumentTime/text(), 'TZ:- ','')}" />
                         <author>
                           <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                           <xsl:comment>Time note was actually written</xsl:comment>
-                          <time value="{DocumentTime/text()}"/>
+                          <time value="{translate(DocumentTime/text(), 'TZ:- ','')}"/>
                           <assignedAuthor>
                             <id nullFlavor="NI" />
                             <assignedPerson>
@@ -5051,11 +5133,11 @@
                         </text>
                         <statusCode code="completed" />
                         <xsl:comment>Clinically relevant time of the note </xsl:comment>
-                        <effectiveTime value="{DocumentTime/text()}" />
+                        <effectiveTime value="{translate(DocumentTime/text(), 'TZ:- ','')}" />
                         <author>
                           <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                           <xsl:comment>Time note was actually written</xsl:comment>
-                          <time value="{DocumentTime/text()}"/>
+                          <time value="{translate(DocumentTime/text(), 'TZ:- ','')}"/>
                           <assignedAuthor>
                             <id nullFlavor="NI" />
                             <assignedPerson>
@@ -5205,11 +5287,11 @@
                         </text>
                         <statusCode code="completed" />
                         <xsl:comment>Clinically relevant time of the note </xsl:comment>
-                        <effectiveTime value="{DocumentTime/text()}" />
+                        <effectiveTime value="{translate(DocumentTime/text(), 'TZ:- ','')}" />
                         <author>
                           <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                           <xsl:comment>Time note was actually written</xsl:comment>
-                          <time value="{DocumentTime/text()}"/>
+                          <time value="{translate(DocumentTime/text(), 'TZ:- ','')}"/>
                           <assignedAuthor>
                             <id nullFlavor="NI" />
                             <assignedPerson>
@@ -5315,11 +5397,11 @@
                         </text>
                         <statusCode code="completed" />
                         <xsl:comment>Clinically relevant time of the note </xsl:comment>
-                        <effectiveTime value="{DocumentTime/text()}" />
+                        <effectiveTime value="{translate(DocumentTime/text(), 'TZ:- ', '')}" />
                         <author>
                           <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                           <xsl:comment>Time note was actually written</xsl:comment>
-                          <time value="{DocumentTime/text()}"/>
+                          <time value="{translate(DocumentTime/text(), 'TZ:- ', '')}"/>
                           <assignedAuthor>
                             <id nullFlavor="NI" />
                             <assignedPerson>
@@ -5425,11 +5507,11 @@
                         </text>
                         <statusCode code="completed" />
                         <xsl:comment>Clinically relevant time of the note </xsl:comment>
-                        <effectiveTime value="{DocumentTime/text()}" />
+                        <effectiveTime value="{translate(DocumentTime/text(), 'TZ:- ', '')}" />
                         <author>
                           <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                           <xsl:comment>Time note was actually written</xsl:comment>
-                          <time value="{DocumentTime/text()}"/>
+                          <time value="{translate(DocumentTime/text(), 'TZ:- ', '')}"/>
                           <assignedAuthor>
                             <id nullFlavor="NI" />
                             <assignedPerson>
@@ -5578,8 +5660,16 @@
                       </text>
                       <statusCode code="completed"/>
                       <value xsi:type="IVL_TS">
-                        <low value="$proceduresStart" />
-                        <high value="$proceduresEnd" />
+                        <xsl:choose>
+                          <xsl:when test="boolean(Documents/@cpnStartTime)">
+                            <low value="{translate(Documents/@cpnStartTime, 'TZ:- ','')}" />
+                            <high value="{translate(Documents/@cpnEndTime, 'TZ:- ','')}" />
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <low nullFlavor="UNK" />
+                            <high nullFlavor="UNK" />
+                          </xsl:otherwise>
+                        </xsl:choose>
                       </value>
                     </observation>
                   </entry>
@@ -5598,11 +5688,11 @@
                         </text>
                         <statusCode code="completed" />
                         <xsl:comment>Clinically relevant time of the note </xsl:comment>
-                        <effectiveTime value="{DocumentTime/text()}" />
+                        <effectiveTime value="{translate(DocumentTime/text(), 'TZ:- ', '')}" />
                         <author>
                           <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                           <xsl:comment>Time note was actually written</xsl:comment>
-                          <time value="{DocumentTime/text()}"/>
+                          <time value="{translate(DocumentTime/text(), 'TZ:- ', '')}"/>
                           <assignedAuthor>
                             <id nullFlavor="NI" />
                             <assignedPerson>
@@ -5931,7 +6021,7 @@
                               <xsl:comment> 14.04-VITAL SIGN RESULT STATUS, REQUIRED, Static value of completed </xsl:comment>
                               <statusCode code="completed" />
                               <xsl:comment> 14.02-VITAL SIGN RESULT DATE/TIME, REQURIED </xsl:comment>
-                              <xsl:choose><xsl:when test="$ob/ObservationTime"><effectiveTime value="{$ob/ObservationTime/text()}" /></xsl:when><xsl:otherwise><effectiveTime nullFlavor="UNK" /></xsl:otherwise></xsl:choose>
+                              <xsl:choose><xsl:when test="$ob/ObservationTime"><effectiveTime value="{translate($ob/ObservationTime/text(), 'TZ:- ','')}" /></xsl:when><xsl:otherwise><effectiveTime nullFlavor="UNK" /></xsl:otherwise></xsl:choose>
                               <xsl:comment>
                                 14.05-VITAL SIGN RESULT VALUE, CONDITIONALLY REQUIRED when
                                 moodCode=EVN

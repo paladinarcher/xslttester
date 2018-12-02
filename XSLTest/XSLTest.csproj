@@ -74,6 +74,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="XSLT\Extensions\EXSLT\Common.cs" />
+    <Compile Include="XSLT\Extensions\EXSLT\Dates.cs" />
     <Compile Include="XSLT\Extensions\EXSLT\Sets.cs" />
     <Compile Include="XSLT\Extensions\Extension.cs" />
     <Compile Include="XSLT\Extensions\InterSystems.cs" />

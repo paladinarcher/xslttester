@@ -356,6 +356,7 @@ namespace XSLTest
                 transformer.AddExtension(new XSLT.Extensions.InterSystems());
                 transformer.AddExtension(new XSLT.Extensions.EXSLT.Sets());
                 transformer.AddExtension(new XSLT.Extensions.EXSLT.Common());
+                transformer.AddExtension(new XSLT.Extensions.EXSLT.Dates());
                 transformer.SetSourceXSLT(e.Argument as string);
             } catch (Exception er)
             {
