@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-	<xsl:param name="ProblemsMinAge" select="0"/>
+	<xsl:param name="ProblemsMinAge" select="-9999"/>
 	<xsl:param name="ProblemsMaxAge" select="99999"/>
 	<xsl:param name="ProblemsCount"  select="99999"/>
 	<xsl:param name="ProblemsCode"   select="',248536006,373930000,'"/>

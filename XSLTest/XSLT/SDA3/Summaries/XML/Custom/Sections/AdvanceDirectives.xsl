@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-	<xsl:param name="AdvanceDirectivesMinAge" select="0"/>
+	<xsl:param name="AdvanceDirectivesMinAge" select="-99999"/>
 	<xsl:param name="AdvanceDirectivesMaxAge" select="999999"/>
 	<xsl:param name="AdvanceDirectivesCount"  select="999999"/>
 	<xsl:param name="AdvanceDirectivesCode"   select="''"/>

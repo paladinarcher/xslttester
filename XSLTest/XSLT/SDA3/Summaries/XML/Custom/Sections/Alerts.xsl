@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-	<xsl:param name="AlertsMinAge" select="0"/>
+	<xsl:param name="AlertsMinAge" select="-99999"/>
 	<xsl:param name="AlertsMaxAge" select="999999"/>
 	<xsl:param name="AlertsCount"  select="999999"/>
 	<xsl:param name="AlertsCode"   select="''"/>

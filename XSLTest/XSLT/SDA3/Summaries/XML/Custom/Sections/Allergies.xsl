@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-	<xsl:param name="AllergiesMinAge" select="0"/>
+	<xsl:param name="AllergiesMinAge" select="-99999"/>
 	<xsl:param name="AllergiesMaxAge" select="999999"/>
 	<xsl:param name="AllergiesCount"  select="999999"/>
 	<xsl:param name="AllergiesCode"   select="''"/>
@@ -32,8 +32,7 @@
 				<xsl:sort select="FromTime" order="descending"/>
 				<xsl:sort select="ExternalId" order="descending"/>
 				-->
-				<xsl:sort select="EnteredOn" order="descending"/>
-				<xsl:sort select="VerifiedTime" order="descending"/>
+				<xsl:sort select="(EnteredOn | VerifiedTime)" order="descending"/>
 	            	<xsl:if test="position() &lt;= $AllergiesCount">
 					<xsl:copy>
 						<xsl:apply-templates select="node()|@*" mode="pass2"/>
