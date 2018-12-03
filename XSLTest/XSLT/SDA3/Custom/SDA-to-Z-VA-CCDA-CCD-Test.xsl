@@ -712,7 +712,8 @@
                           <th>Event Type</th>
                           <th>Reaction(s)</th>
                           <th>Severity</th>
-                          <th>Allergy Details</th>
+                          <th>Allergy Details</th> 
+                          <!-- TODO Fix Mapping for Allergy Details -->
                           <th>Source</th>
                         </tr>
                       </thead>
