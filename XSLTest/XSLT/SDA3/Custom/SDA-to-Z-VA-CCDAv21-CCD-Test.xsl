@@ -4034,103 +4034,106 @@
                       <xsl:for-each select="LabOrders/LabOrder[not(isc:evaluate('dateDiff','dd',translate(FromTime/text(), 'TZ', ' ')) &lt; 1)]">
                         <xsl:sort select="FromTime" order="descending" />
                         <xsl:variable name="lid" select="position()" />
-                        <tbody>
-                          <tr ID="{concat('labTest',position())}">
-                            <td >
+                        <xsl:if test="position() &lt; 11">
+                          <tbody>
+                            <tr>
+                              <td >
                                 <xsl:call-template name="tmpDateTemplate" >
                                   <xsl:with-param name="date-time" select="FromTime/text()" />
                                   <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
                                 </xsl:call-template>
-                            </td>
+                              </td>
 
-                            <td>
-                              <content ID="{concat('lndSource',position())}">
-                                <xsl:value-of select="EnteredAt/Description/text()" />
-                              </content>
-                            </td>
-                            <td colspan="4">
-                              <content ID="{concat('lndResultType',position())}">
-                                <xsl:value-of select="OrderItem/Description/text()" />
-                              </content>
-                            </td>
+                              <td>
+                                <content ID="{concat('lndSource',position())}">
+                                  <xsl:value-of select="EnteredAt/Description/text()" />
+                                </content>
+                              </td>
+                              <td colspan="4">
+                                <content ID="{concat('lndResultType',position())}">
+                                  <xsl:value-of select="OrderItem/Description/text()" />
+                                </content>
+                              </td>
 
-                            <td>
-                              <content ID="{concat('lndComment',position())}">
-                                <xsl:choose>
-                                  <xsl:when test="boolean(Specimen)">
-                                    Specimen Type: <xsl:value-of select="Specimen" />
-                                  </xsl:when>
-                                  <xsl:otherwise>
-                                    Specimen Type: Not Available.
-                                  </xsl:otherwise>
-                                </xsl:choose>
-                                <br />
-                                <xsl:choose>
-                                  <xsl:when test="boolean(Result/Comments)">
-                                    Comment: <xsl:value-of select="Result/Comments" />
-                                  </xsl:when>
-                                  <xsl:otherwise>
-                                    No comment entered.
-                                  </xsl:otherwise>
-                                </xsl:choose>
-                                <br />
-                                <xsl:choose>
-                                  <xsl:when test="boolean(OrderedBy)">
-                                    Ordering Provider: <xsl:value-of select="OrderedBy/Description" />
-                                  </xsl:when>
-                                  <xsl:otherwise>
-                                    No Provider, they just decided to do this themselves.
-                                  </xsl:otherwise>
-                                </xsl:choose>
-                                <br />
-                                <xsl:choose>
-                                  <xsl:when test="boolean(AuthorizationTime)">
-                                    Report Released Date Time: <xsl:value-of select="AuthorizationTime" />
-                                  </xsl:when>
-                                  <xsl:otherwise>
-                                    Not yet released.
-                                  </xsl:otherwise>
-                                </xsl:choose>
-                                <br />
-                                <xsl:choose>
-                                  <xsl:when test="boolean(EnteredAt)">
-                                    Performing Lab: <xsl:value-of select="EnteredAt/Description" />
-                                  </xsl:when>
-                                  <xsl:otherwise>
-                                    No lab. Guy on the street did it. Free!
-                                  </xsl:otherwise>
-                                </xsl:choose>
-                              </content>
-                            </td>
-                          </tr>
-                          <xsl:for-each select="Result/ResultItems/LabResultItem">
-                            <tr >
-                              <td />
-                              <td />
                               <td>
-                                <content ID="{concat('loincLabValues',$lid,'-',position())}">
-                                  <xsl:value-of select="TestItemCode/Description/text()" />
+                                <content ID="{concat('lndComment',position())}">
+                                  <xsl:choose>
+                                    <xsl:when test="boolean(Specimen)">
+                                      Specimen Type: <xsl:value-of select="Specimen" />
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                      Specimen Type: Not Available.
+                                    </xsl:otherwise>
+                                  </xsl:choose>
+                                  <br />
+                                  <xsl:choose>
+                                    <xsl:when test="boolean(Result/Comments)">
+                                      Comment: <xsl:value-of select="Result/Comments" />
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                      No comment entered.
+                                    </xsl:otherwise>
+                                  </xsl:choose>
+                                  <br />
+                                  <xsl:choose>
+                                    <xsl:when test="boolean(OrderedBy)">
+                                      Ordering Provider: <xsl:value-of select="OrderedBy/Description" />
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                      No Provider, they just decided to do this themselves.
+                                    </xsl:otherwise>
+                                  </xsl:choose>
+                                  <br />
+                                  <xsl:choose>
+                                    <xsl:when test="boolean(AuthorizationTime)">
+                                      Report Released Date Time: <xsl:value-of select="AuthorizationTime" />
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                      Not yet released.
+                                    </xsl:otherwise>
+                                  </xsl:choose>
+                                  <br />
+                                  <xsl:choose>
+                                    <xsl:when test="boolean(EnteredAt)">
+                                      Performing Lab: <xsl:value-of select="EnteredAt/Description" />
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                      No lab. Guy on the street did it. Free!
+                                    </xsl:otherwise>
+                                  </xsl:choose>
                                 </content>
                               </td>
-                              <td>
-                                <content ID="{concat('resultLabValues',$lid,'-',position())}">
-                                  <xsl:value-of select="ResultValue/text()" /> <xsl:value-of select="ResultValueUnits/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('interpLabValues',$lid,'-',position())}">
-                                  <xsl:value-of select="ResultInterpretation/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('rangeLabValues',$lid,'-',position())}">
-                                  <xsl:value-of select="isc:evaluate('strip', ResultNormalRange/text(),'P')" />
-                                </content>
-                              </td>
-                              <td/>
                             </tr>
-                          </xsl:for-each>
-                        </tbody>
+                            <xsl:for-each select="Result/ResultItems/LabResultItem">
+                              <tr >
+                                <td />
+                                <td />
+                                <td>
+                                  <content ID="{concat('loincLabValues',$lid,'-',position())}">
+                                    <xsl:value-of select="TestItemCode/Description/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('resultLabValues',$lid,'-',position())}">
+                                    <xsl:value-of select="ResultValue/text()" />
+                                    <xsl:value-of select="ResultValueUnits/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('interpLabValues',$lid,'-',position())}">
+                                    <xsl:value-of select="ResultInterpretation/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('rangeLabValues',$lid,'-',position())}">
+                                    <xsl:value-of select="isc:evaluate('strip', ResultNormalRange/text(),'P')" />
+                                  </content>
+                                </td>
+                                <td/>
+                              </tr>
+                            </xsl:for-each>
+                          </tbody>
+                        </xsl:if>
                       </xsl:for-each>
                     </table>
                   </text>
@@ -4160,127 +4163,137 @@
                   <xsl:for-each select="LabOrders/LabOrder[not(isc:evaluate('dateDiff','dd',translate(FromTime/text(), 'TZ', ' ')) &lt; 1)]">
                     <xsl:sort select="FromTime" order="descending" />
                     <xsl:variable name="lid" select="position()" />
-                    <entry typeCode='DRIV'>
-                      <xsl:comment> CCD Results Organizer = VA Lab Order Panel , REQUIRED </xsl:comment>
-                      <organizer classCode="BATTERY" moodCode="EVN">
-                        <templateId root="2.16.840.1.113883.10.20.22.4.1" extension="2014-06-09" />
-                        <id nullFlavor="NI" />
-                        <code nullFlavor="UNK">
-                          <originalText><xsl:value-of select="OrderItem/Description" /></originalText>
-                        </code>
-                        <statusCode code="completed" />
-                        <effectiveTime>
-                          <xsl:choose>
-                            <xsl:when test="boolean(SpecimenCollectedTime)">
-                          <low value="{translate(SpecimenCollectedTime/text(),'TZ:- ','')}"/>
-                          <high value="{translate(SpecimenCollectedTime/text(),'TZ:- ','')}"/>
-                            </xsl:when>
-                            <xsl:otherwise>
-                          <low nullFlavor="UNK"/>
-                          <high nullFlavor="UNK"/>
-                            </xsl:otherwise>
-                          </xsl:choose>
-                        </effectiveTime>
-                        <author>
-                          <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                          <time nullFlavor="NA" />
-                          <assignedAuthor>
-                            <id nullFlavor="NI" />
-                            <representedOrganization>
-                              <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
-                              <name><xsl:value-of select="EnteredAt/Description"/></name>
-                            </representedOrganization>
-                          </assignedAuthor>
-                        </author>
-                        <xsl:for-each select="Result/ResultItems/LabResultItem">
-                          <component><!-- TODO, verify ID and date-->
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.2" extension="2015-08-01"/>
-                              <xsl:comment> 15.01 RESULT ID, REQUIRED </xsl:comment>
-                              <id root="2.16.840.1.113883.4.349" extension="{ExternalId/text()}" />
-                              <xsl:comment> 15.03-RESULT TYPE, REQUIRED </xsl:comment>
-                              <xsl:choose>
-                                <xsl:when test="boolean(ResultCodedValue)">
-                                  <code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" code="{ResultCodedValue/Code/text()}" displayName="{ResultCodedValue/Description/text()}">
-                                    <originalText>
-                                      <reference value="{concat('#loincLabValues',$lid,'-',position())}"/>
-                                    </originalText>
-                                  </code>
-                                </xsl:when>
-                                <xsl:otherwise>
-                                  <code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" nullFlavor="UNK">
-                                    <originalText>
-                                      <reference value="{concat('#loincLabValues',$lid,'-',position())}"/>
-                                    </originalText>
-                                  </code>
-                                </xsl:otherwise>
-                              </xsl:choose>
-                              <text >
-                                <reference value="{concat('#labTest',$lid)}"/>
-                              </text>
-                              <statusCode code="completed" />
-                              <xsl:comment> 15.02 RESULT DATE/TIME, REQUIRED </xsl:comment>
-                              <effectiveTime value="{translate(ObservationTime/text(), 'TZ:- ','')}"/>
-                              <xsl:comment> 15.05 RESULT VALUE, REQUIRED, xsi:type="PQ" </xsl:comment>
-                              <xsl:choose>
-                                <xsl:when test="boolean(ResultValueUnits) and number(ResultValue/text()) = ResultValue/text()">
-                                  <value xsi:type="PQ" value="{ResultValue/text()}" unit="{ResultValueUnits/text()}"/>
-                                </xsl:when>
-                                <xsl:otherwise>
-                                  <value xsi:type="ST" representation="TXT"><xsl:value-of select="ResultValue"/> <xsl:value-of select="ResultValueUnits"/></value>
-                                </xsl:otherwise>
-                              </xsl:choose>
-                              <xsl:comment> 15.06 RESULT INTERPRETATION, R2, </xsl:comment>
-                              <interpretationCode nullFlavor="NAV">
-                                <originalText>
-                                  <reference value="{concat('#interpLabValues',$lid,'-',position())}"/>
-                                </originalText>
-                              </interpretationCode>
-                              <xsl:comment> CCD METHOD CODE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
-                              <xsl:comment> CCD TARGET SITE CODE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
-                              <entryRelationship typeCode="SUBJ" inversionInd="true">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64" />
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment" />
-                                  <text>
-                                    <reference value="{concat('#lndComment',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                              <xsl:comment> 15.07 RESULT REFERENCE RANGE, R2, </xsl:comment>
-                              <xsl:choose>
-                                <xsl:when test="boolean(ResultValueUnits) and boolean(ResultNormalRange) and contains(ResultNormalRange, '-')">
-                                  <referenceRange>
-                                    <observationRange>
-                                      <text>
-                                        <reference value="{concat('#rangeLabValues',$lid,'-',position())}"/>
-                                      </text>
-                                      <value xsi:type="IVL_PQ">
-                                        <low value="{isc:evaluate('piece', ResultNormalRange/text(), '-', 1)}"/>
-                                        <high value="{isc:evaluate('piece', ResultNormalRange/text(), '-', 2)}"/>
-                                      </value>
-                                    </observationRange>
-                                  </referenceRange>
-                                </xsl:when>
-                                <xsl:otherwise>
-                                  <referenceRange>
-                                    <observationRange>
-                                      <text>
-                                        <reference nullFlavor="NI"/>
-                                      </text>
-                                      <value xsi:type="IVL_PQ">
-                                        <low nullFlavor="NI"/>
-                                        <high nullFlavor="NI"/>
-                                      </value>
-                                    </observationRange>
-                                  </referenceRange>
-                                </xsl:otherwise>
-                              </xsl:choose>
-                            </observation>
-                          </component>
-                        </xsl:for-each>
-                      </organizer>
-                    </entry>
+                    <xsl:if test="position() &lt; 11">
+                      <entry typeCode='DRIV'>
+                        <xsl:comment> CCD Results Organizer = VA Lab Order Panel , REQUIRED </xsl:comment>
+                        <organizer classCode="BATTERY" moodCode="EVN">
+                          <templateId root="2.16.840.1.113883.10.20.22.4.1" extension="2014-06-09" />
+                          <id nullFlavor="NI" />
+                          <code nullFlavor="UNK">
+                            <originalText>
+                              <xsl:value-of select="OrderItem/Description" />
+                            </originalText>
+                          </code>
+                          <statusCode code="completed" />
+                          <effectiveTime>
+                            <xsl:choose>
+                              <xsl:when test="boolean(SpecimenCollectedTime)">
+                                <low value="{translate(SpecimenCollectedTime/text(),'TZ:- ','')}"/>
+                                <high value="{translate(SpecimenCollectedTime/text(),'TZ:- ','')}"/>
+                              </xsl:when>
+                              <xsl:otherwise>
+                                <low nullFlavor="UNK"/>
+                                <high nullFlavor="UNK"/>
+                              </xsl:otherwise>
+                            </xsl:choose>
+                          </effectiveTime>
+                          <author>
+                            <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                            <time nullFlavor="NA" />
+                            <assignedAuthor>
+                              <id nullFlavor="NI" />
+                              <representedOrganization>
+                                <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
+                                <name>
+                                  <xsl:value-of select="EnteredAt/Description"/>
+                                </name>
+                              </representedOrganization>
+                            </assignedAuthor>
+                          </author>
+                          <xsl:for-each select="Result/ResultItems/LabResultItem">
+                            <component>
+                              <!-- TODO, verify ID and date-->
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.2" extension="2015-08-01"/>
+                                <xsl:comment> 15.01 RESULT ID, REQUIRED </xsl:comment>
+                                <id root="2.16.840.1.113883.4.349" extension="{ExternalId/text()}" />
+                                <xsl:comment> 15.03-RESULT TYPE, REQUIRED </xsl:comment>
+                                <xsl:choose>
+                                  <xsl:when test="boolean(ResultCodedValue)">
+                                    <code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" code="{ResultCodedValue/Code/text()}" displayName="{ResultCodedValue/Description/text()}">
+                                      <originalText>
+                                        <reference value="{concat('#loincLabValues',$lid,'-',position())}"/>
+                                      </originalText>
+                                    </code>
+                                  </xsl:when>
+                                  <xsl:otherwise>
+                                    <code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" nullFlavor="UNK">
+                                      <originalText>
+                                        <reference value="{concat('#loincLabValues',$lid,'-',position())}"/>
+                                      </originalText>
+                                    </code>
+                                  </xsl:otherwise>
+                                </xsl:choose>
+                                <text >
+                                  <reference value="{concat('#labTest',$lid)}"/>
+                                </text>
+                                <statusCode code="completed" />
+                                <xsl:comment> 15.02 RESULT DATE/TIME, REQUIRED </xsl:comment>
+                                <effectiveTime value="{translate(ObservationTime/text(), 'TZ:- ','')}"/>
+                                <xsl:comment> 15.05 RESULT VALUE, REQUIRED, xsi:type="PQ" </xsl:comment>
+                                <xsl:choose>
+                                  <xsl:when test="boolean(ResultValueUnits) and number(ResultValue/text()) = ResultValue/text()">
+                                    <value xsi:type="PQ" value="{ResultValue/text()}" unit="{ResultValueUnits/text()}"/>
+                                  </xsl:when>
+                                  <xsl:otherwise>
+                                    <value xsi:type="ST" representation="TXT">
+                                      <xsl:value-of select="ResultValue"/>
+                                      <xsl:value-of select="ResultValueUnits"/>
+                                    </value>
+                                  </xsl:otherwise>
+                                </xsl:choose>
+                                <xsl:comment> 15.06 RESULT INTERPRETATION, R2, </xsl:comment>
+                                <interpretationCode nullFlavor="NAV">
+                                  <originalText>
+                                    <reference value="{concat('#interpLabValues',$lid,'-',position())}"/>
+                                  </originalText>
+                                </interpretationCode>
+                                <xsl:comment> CCD METHOD CODE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
+                                <xsl:comment> CCD TARGET SITE CODE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
+                                <entryRelationship typeCode="SUBJ" inversionInd="true">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64" />
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment" />
+                                    <text>
+                                      <reference value="{concat('#lndComment',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                                <xsl:comment> 15.07 RESULT REFERENCE RANGE, R2, </xsl:comment>
+                                <xsl:choose>
+                                  <xsl:when test="boolean(ResultValueUnits) and boolean(ResultNormalRange) and contains(ResultNormalRange, '-')">
+                                    <referenceRange>
+                                      <observationRange>
+                                        <text>
+                                          <reference value="{concat('#rangeLabValues',$lid,'-',position())}"/>
+                                        </text>
+                                        <value xsi:type="IVL_PQ">
+                                          <low value="{isc:evaluate('piece', ResultNormalRange/text(), '-', 1)}"/>
+                                          <high value="{isc:evaluate('piece', ResultNormalRange/text(), '-', 2)}"/>
+                                        </value>
+                                      </observationRange>
+                                    </referenceRange>
+                                  </xsl:when>
+                                  <xsl:otherwise>
+                                    <referenceRange>
+                                      <observationRange>
+                                        <text>
+                                          <reference nullFlavor="NI"/>
+                                        </text>
+                                        <value xsi:type="IVL_PQ">
+                                          <low nullFlavor="NI"/>
+                                          <high nullFlavor="NI"/>
+                                        </value>
+                                      </observationRange>
+                                    </referenceRange>
+                                  </xsl:otherwise>
+                                </xsl:choose>
+                              </observation>
+                            </component>
+                          </xsl:for-each>
+                        </organizer>
+                      </entry>
+                    </xsl:if>
                   </xsl:for-each>
                 </section>
               </xsl:otherwise>
