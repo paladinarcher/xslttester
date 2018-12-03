@@ -1017,33 +1017,40 @@
                   <title>Encounters</title>
                   <text>
                     <paragraph>
-                      <content styleCode="Bold">Outpatient Encounters with Notes</content>
-                    </paragraph>
-                    <paragraph>
-                      The list of VA Outpatient Encounters shows all Encounter dates within the requested date range. If no date range was provided, the list of VA Outpatient Encounters shows all Encounter dates within the last 18 months. Follow-up visits related to the VA Encounter are not included. The data comes from all VA treatment facilities.
+                      This section contains a list of completed VA Outpatient Encounters for
+                      the patient and a list of Encounter Notes, Consult Notes, History &amp;
+                      Physical Notes, and Discharge Summaries for the patient. The data comes
+                      from all VA treatment facilities.
+                      <br />
+                      <br />
                     </paragraph>
 
-                    <xsl:for-each select="Encounters/Encounter[EncounterType = 'O' and not(EncounterCodedType/Code = 'E')]">
-                      <xsl:sort select="FromTime" order="descending" />
-                      <xsl:variable name="index" select="position()" />
-                      <xsl:variable name="eid" select="EncounterNumber/text()" />
-                      <xsl:variable name="procs" select="../../Procedures/Procedure[EncounterNumber = $eid]" />
-                      <xsl:variable name="docs" select="../../Documents/Document[EncounterNumber = $eid]" />
-                      <xsl:variable name="diags" select="../../Diagnoses/Diagnosis[EncounterNumber = $eid]" />
-                      <content styleCode="Bold">Encounter</content>
-                      <xsl:comment> VA Encounter Business Rules for Medical Content </xsl:comment>
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Date/Time</th>
-                            <th>Encounter Type</th>
-                            <th>Encounter Description</th>
-                            <th>Reason</th>
-                            <th>Provider</th>
-                            <th>Source</th>
-                          </tr>
-                        </thead>
-                        <tbody>
+                    <paragraph>
+                      The list of VA Outpatient Encounters shows all Encounter dates within
+                      the requested date range. If no date range was provided, the list of VA
+                      Outpatient Encounters shows all Encounter dates within the last 18 months.
+                      Follow-up visits related to the VA Encounter are not included. The data comes
+                      from all VA treatment facilities.
+                    </paragraph>
+
+                    <xsl:comment> VA Encounter Business Rules for Medical Content </xsl:comment>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Date/Time</th>
+                          <th>Encounter Type</th>
+                          <th>Encounter Description</th>
+                          <th>Reason</th>
+                          <th>Provider</th>
+                          <th>Source</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="Encounters/Encounter[EncounterType = 'O' and not(EncounterCodedType/Code = 'E')]">
+                          <xsl:sort select="FromTime" order="descending" />
+                          <xsl:variable name="eid" select="EncounterNumber/text()" />
+                          <xsl:variable name="procs" select="../../Procedures/Procedure[EncounterNumber = $eid]" />
+                          <xsl:variable name="diags" select="../../Diagnoses/Diagnosis[EncounterNumber = $eid]" />
                           <tr>
                             <td>
                               <xsl:call-template name="tmpDateTemplate" >
@@ -1078,73 +1085,344 @@
                               </content>
                             </td>
                           </tr>
-                        </tbody>
-                        <!--TODO - go back to 1.1 separate encounter notes table-->
-                        <!--<tbody>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
+                    <!-- Start Associated Notes Narrative-->
+                    <paragraph>The list of Encounter Notes shows the 5 most recent notes associated to the 10 most recent Outpatient Encounters. The data comes from all VA treatment facilities.</paragraph>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Date/Time</th>
+                          <th>Encounter Note</th>
+                          <th>Provider</th>
+                          <th>Source</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="Encounters/Encounter[EncounterType = 'O' and not(EncounterCodedType/Code = 'E')]">
+                          <xsl:sort select="FromTime" order="descending" />
+                          <xsl:variable name="eid" select="EncounterNumber/text()" />
+                          <xsl:variable name="docs" select="../../Documents/Document[EncounterNumber = $eid]" />
+                          <xsl:if test="position() &lt; 11">
+                            <xsl:for-each select="$docs" >
+                              <xsl:sort select="FromTime" order="descending" />
+                              <xsl:if test="position() &lt; 6">
+                                <tr>
+                                  <td>
+                                    <content ID="{concat('anNoteDateTime', $eid, '-', position())}">
+                                      <xsl:call-template name="tmpDateTemplate" >
+                                        <xsl:with-param name="date-time" select="FromTime/text()" />
+                                        <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                      </xsl:call-template>
+                                    </content>
+                                  </td>
+                                  <td>
+                                    <content ID="{concat('anNoteEncounterDescription', $eid, '-', position())}">
+                                      <xsl:call-template name="standard-insertBreaks">
+                                        <xsl:with-param name="pText" select="NoteText/text()" />
+                                      </xsl:call-template>
+                                    </content>
+                                  </td>
+                                  <td>
+                                    <content ID="{concat('anNoteProvider', $eid, '-', position())}">
+                                      <xsl:value-of select="Clinician/Description/text()" />
+                                    </content>
+                                  </td>
+                                  <td>
+                                    <content ID="{concat('anNoteSource', $eid, '-', position())}">
+                                      <xsl:value-of select="EnteredAt/Description/text()" />
+                                    </content>
+                                  </td>
+                                </tr>
+                              </xsl:if>
+                            </xsl:for-each>
+                          </xsl:if>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
+                    <!-- Stop Associated Notes Narrative -->
+                    <!-- Consult notes begin -->
+                    <paragraph>The list of Consult Notes with complete text includes all notes within the requested date range. If no date range was provided, the list of Consult Notes with complete text includes the 5 most recent notes within the last 18 months. The data comes from all VA treatment facilities.</paragraph>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Date/Time</th>
+                          <th>Encounter Note</th>
+                          <th>Provider</th>
+                          <th>Source</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CR' and not(Extension/NationalTitle/Code/text() = 217)]">
+                          <xsl:sort select="DocumentTime" order="descending" />
+                          <xsl:if test="position() &lt; 6">
+                            <tr>
+                              <td>
+                                <content ID="{concat('noteDateTime',position())}">
+                                  <xsl:call-template name="tmpDateTemplate" >
+                                    <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                    <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                  </xsl:call-template>
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('noteEncounterDescription',position())}">
+                                  <xsl:call-template name="standard-insertBreaks">
+                                    <xsl:with-param name="pText" select="NoteText/text()"/>
+                                  </xsl:call-template>
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('noteProvider',position())}">
+                                  <xsl:value-of select="Clinician/Description/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('noteSource',position())}">
+                                  <xsl:value-of select="EnteredAt/Description/text()" />
+                                </content>
+                              </td>
+                            </tr>
+                          </xsl:if>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
+                    <xsl:if test="count(Documents/Document[DocumentType/Code/text() = 'CR' and not(Extension/NationalTitle/Code/text() = 217)]) &gt; 5">
+                      <!-- Condensed Consult notes begin title only -->
+                      <paragraph>
+                        The list of ADDITIONAL Consult Note TITLES includes all notes signed within the last 18 months. The data comes from all VA treatment facilities.
+                      </paragraph>
+                      <table>
+                        <thead>
                           <tr>
-                            <td />
-                            <td colspan="5">
-                              <content styleCode="Bold">Encounter Notes</content>
-                              <xsl:comment> Start Associated Notes Narrative</xsl:comment>
-                              <xsl:choose>
-                                <xsl:when test="count($docs) = 0">
-                                  <paragraph>
-                                    There are no associated notes for this encounter.
-                                  </paragraph>
-                                </xsl:when>
-                                <xsl:otherwise>
-                                  <paragraph>
-                                    The list of Encounter Notes shows the 5 most recent notes associated to the 10 most recent
-                                    Outpatient Encounters. The data comes from all VA treatment facilities.
-                                  </paragraph>
-                                  <list>
-                                    <item>
-                                      <table>
-                                        <thead>
-                                          <tr>
-                                            <th>Date/Time</th>
-                                            <th>Encounter Note</th>
-                                            <th>Provider</th>
-                                            <th>Source</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          <xsl:for-each select="$docs" >
-                                            <xsl:sort select="FromTime" order="descending" />
-                                            <tr>
-                                              <td>
-                                                <content ID="{concat('anNoteDateTime', $index, '-', position())}">
-                                                  <xsl:value-of select="FromTime/text()" />
-                                                </content>
-                                              </td>
-                                              <td>
-                                                <content ID="{concat('anNoteEncounterDescription', $index, '-', position())}">
-                                                  <xsl:call-template name="standard-insertBreaks">
-                                                    <xsl:with-param name="pText" select="NoteText/text()" />
-                                                  </xsl:call-template>
-                                                </content>
-                                              </td>
-                                              <td>
-                                                <content ID="{concat('anNoteProvider', $index, '-', position())}">
-                                                  <xsl:value-of select="Clinician/Description/text()" />
-                                                </content>
-                                              </td>
-                                            </tr>
-                                          </xsl:for-each>
-                                        </tbody>
-                                      </table>
-                                    </item>
-                                  </list>
-                                </xsl:otherwise>
-                              </xsl:choose>
-                            </td>
+                            <th>Date/Time</th>
+                            <th>Encounter Note Title</th>
+                            <th>Provider</th>
+                            <th>Source</th>
                           </tr>
-                        </tbody>-->
+                        </thead>
+                        <tbody>
+                          <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CR' and not(Extension/NationalTitle/Code/text() = 217)]">
+                            <xsl:sort select="DocumentTime" order="descending" />
+                            <xsl:if test="position() &gt; 5">
+                              <tr>
+                                <td>
+                                  <content ID="{concat('noteDateTime',position())}">
+                                    <xsl:call-template name="tmpDateTemplate" >
+                                      <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                      <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                    </xsl:call-template>
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('noteEncounterDescription',position())}">
+                                    <xsl:value-of select="Extension/NationalTitle/Description/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('noteProvider',position())}">
+                                    <xsl:value-of select="Clinician/Description/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('noteSource',position())}">
+                                    <xsl:value-of select="EnteredAt/Description/text()" />
+                                  </content>
+                                </td>
+                              </tr>
+                            </xsl:if>
+                          </xsl:for-each>
+                        </tbody>
                       </table>
-                    </xsl:for-each>
+                    </xsl:if>
+                    <!-- history and physical notes begin -->
+                    <paragraph>The list of H &amp; P Notes with complete text includes all notes within the requested date range. If no date range was provided, the list of H &amp; P Notes with complete text includes the 2 most recent notes within the last 18 months. The data comes from all VA treatment facilities.</paragraph>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Date/Time</th>
+                          <th>Encounter Note</th>
+                          <th>Provider</th>
+                          <th>Source</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'HP' and not(Extension/NationalTitle/Code/text() = 217)]">
+                          <xsl:sort select="DocumentTime" order="descending" />
+                          <xsl:if test="position() &lt; 3">
+                            <tr>
+                              <td>
+                                <content ID="{concat('hpnoteDateTime',position())}">
+                                  <xsl:call-template name="tmpDateTemplate" >
+                                    <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                    <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                  </xsl:call-template>
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('hpnoteEncounterDescription',position())}">
+                                  <xsl:call-template name="standard-insertBreaks">
+                                    <xsl:with-param name="pText" select="NoteText/text()"/>
+                                  </xsl:call-template>
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('hpnoteProvider',position())}">
+                                  <xsl:value-of select="Clinician/Description/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('hpnoteSource',position())}">
+                                  <xsl:value-of select="EnteredAt/Description/text()" />
+                                </content>
+                              </td>
+                            </tr>
+                          </xsl:if>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
+                    <!-- history and physical notes titles only begin -->
+                    <xsl:if test="count(Documents/Document[DocumentType/Code/text() = 'HP' and not(Extension/NationalTitle/Code/text() = 217)]) &gt; 2">
+                      <paragraph > The list of ADDITIONAL H &amp; P Note TITLES includes all notes signed within the last 18 months. The data comes from all VA treatment facilities.</paragraph>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Date/Time</th>
+                            <th>Encounter Note Title</th>
+                            <th>Provider</th>
+                            <th>Source</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'HP' and not(Extension/NationalTitle/Code/text() = 217)]">
+                            <xsl:sort select="DocumentTime" order="descending" />
+                            <xsl:if test="position() &gt; 2">
+                              <tr>
+                                <td>
+                                  <content ID="{concat('hpnoteDateTime',position())}">
+                                    <xsl:call-template name="tmpDateTemplate" >
+                                      <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                      <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                    </xsl:call-template>
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('hpnoteEncounterDescription',position())}">
+                                    <xsl:value-of select="Extension/NationalTitle/Description/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('hpnoteProvider',position())}">
+                                    <xsl:value-of select="Clinician/Description/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('hpnoteSource',position())}">
+                                    <xsl:value-of select="EnteredAt/Description/text()" />
+                                  </content>
+                                </td>
+                              </tr>
+                            </xsl:if>
+                          </xsl:for-each>
+                        </tbody>
+                      </table>
+                    </xsl:if>
+                    <!-- Discharge summary notes begin -->
+                    <paragraph >The list of Discharge Summaries with complete text includes all summaries within the requested date range. If no date range was provided, the list of Discharge Summaries includes the 2 most recent summaries within the last 18 months. The data comes from all VA treatment facilities.</paragraph>
+                    <table >
+                      <thead>
+                        <tr>
+                          <th>Date/Time</th>
+                          <th>Encounter Note</th>
+                          <th>Provider</th>
+                          <th>Source</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'DS' and not(Extension/NationalTitle/Code/text() = 217)]">
+                          <xsl:sort select="DocumentTime" order="descending" />
+                          <xsl:if test="position() &lt; 3">
+                            <tr>
+                              <td>
+                                <content ID="{concat('dsnoteDateTime',position())}">
+                                  <xsl:call-template name="tmpDateTemplate" >
+                                    <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                    <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                  </xsl:call-template>
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('dsnoteEncounterDescription',position())}">
+                                  <xsl:call-template name="standard-insertBreaks">
+                                    <xsl:with-param name="pText" select="NoteText/text()"/>
+                                  </xsl:call-template>
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('dsnoteProvider',position())}">
+                                  <xsl:value-of select="Clinician/Description/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('dsnoteSource',position())}">
+                                  <xsl:value-of select="EnteredAt/Description/text()" />
+                                </content>
+                              </td>
+                            </tr>
+                          </xsl:if>
+                        </xsl:for-each>
+                      </tbody>
+                    </table>
+                    <!-- Discharge summary titles only notes begin -->
+                    <xsl:if test="count(Documents/Document[DocumentType/Code/text() = 'DS' and not(Extension/NationalTitle/Code/text() = 217)]) &gt; 2">
+                      <paragraph >The list of ADDITIONAL Discharge Summary TITLES includes all summaries signed within the last 18 months. The data comes from all VA treatment facilities.</paragraph>
+                      <table >
+                        <thead>
+                          <tr>
+                            <th>Date/Time</th>
+                            <th>Encounter Note Title</th>
+                            <th>Provider</th>
+                            <th>Source</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'DS' and not(Extension/NationalTitle/Code/text() = 217)]">
+                            <xsl:sort select="DocumentTime" order="descending" />
+                            <xsl:if test="position() &gt; 2">
+                              <tr>
+                                <td>
+                                  <content ID="{concat('dsnoteDateTime',position())}">
+                                    <xsl:call-template name="tmpDateTemplate" >
+                                      <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                      <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                    </xsl:call-template>
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('dsnoteEncounterDescription',position())}">
+                                    <xsl:value-of select="Extension/NationalTitle/Description/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('dsnoteProvider',position())}">
+                                    <xsl:value-of select="Clinician/Description/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('dsnoteSource',position())}">
+                                    <xsl:value-of select="EnteredAt/Description/text()" />
+                                  </content>
+                                </td>
+                              </tr>
+                            </xsl:if>
+                          </xsl:for-each>
+                        </tbody>
+                      </table>
+                    </xsl:if>
                     <xsl:comment> CDA Observation Text as a Reference tag </xsl:comment>
                     <content ID='encNote-1' revised="delete">IHE Encounter Template Text not used by VA</content>
-                  </text>                 
+                  </text>
                   <xsl:for-each select="Encounters/Encounter[EncounterType = 'O' and not(EncounterCodedType/Code = 'E')]">
                     <xsl:sort select="FromTime" order="descending" />
                     <xsl:variable name="index" select="position()" />
@@ -1296,52 +1574,495 @@
                           16.09 DISCHARGE DISPOSITION CODE, Optional, Not provided by VA
                           b/c data not yet available via VA VistA RPCs
                         </xsl:comment>
-                       <!-- TODO - Come back and revert this to old associated encounter notes template for 1.1 
-                        <xsl:comment> Associated Encounter Notes </xsl:comment>
-                        <xsl:for-each select="$docs">
-                          <xsl:sort select="FromTime" order="descending" />
+                      </encounter>
+                    </entry>
+                  </xsl:for-each>
+<!-- Encounter Notes -->
+                  <xsl:for-each select="Encounters/Encounter[EncounterType = 'O' and not(EncounterCodedType/Code = 'E')]">
+                    <xsl:sort select="FromTime" order="descending" />
+                    <xsl:variable name="eid" select="EncounterNumber/text()" />
+                    <xsl:variable name="docs" select="../../Documents/Document[EncounterNumber = $eid]" />
+                    <xsl:if test="position() &lt; 11">
+                      <xsl:for-each select="$docs" >
+                        <xsl:sort select="FromTime" order="descending" />
+                        <xsl:if test="position() &lt; 6">
                           <xsl:variable name="loincType">
                             <xsl:call-template name="standard-documentCategoryToLoinc">
                               <xsl:with-param name="doc" select="." />
                             </xsl:call-template>
                           </xsl:variable>
                           <xsl:variable name="code" select="exsl:node-set($loincType)" />
-                          <entryRelationship typeCode="COMP">
-                            <xsl:comment> CCD Results Organizer = VA Associated Encounter Notes , REQUIRED </xsl:comment>
-                            <act classCode="ACT" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
-                              <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
-                                <translation codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" code="{($code)[1]/node()[1]/text()}" displayName="{($code)[1]/node()[2]/text()}" DEBUG="{DocumentNumber/text()}" />
+                          <entry typeCode="DRIV">
+                            <encounter classCode="ENC" moodCode="EVN">
+                              <templateId root="2.16.840.1.113883.10.20.22.4.49" />
+                              <id nullFlavor="UNK" />
+                              <xsl:comment> 16.02 ENCOUNTER TYPE. R2, CPT-4 </xsl:comment>
+                              <code codeSystem="2.16.840.1.113883.6.12" codeSystemName="CPT-4" code="99499" displayName="Unlisted Evaluation and Management Service">
+                                <xsl:comment> 16.03 ENCOUNTER FREE TEXT TYPE. R2 </xsl:comment>
+                                <originalText>
+                                  <reference value="{concat('#anNoteEncounterDescription', $eid, '-', position())}"/>
+                                </originalText>
+                                <translation codeSystem="2.16.840.1.113883.6.1" codeSystemName="CPT-4" code="{($code)[1]/node()[1]/text()}" displayName="{($code)[1]/node()[2]/text()}" />
                               </code>
-                              <text>
-                                <reference value="{concat('#anNoteEncounterDescription', $index, '-', position())}"/>
-                              </text>
-                              <statusCode code="completed" />
-                              <xsl:comment> Clinically relevant time of the note </xsl:comment>
-                              <effectiveTime value="{DocumentTime/text()}"/>
-                              <author>
-                                <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                                <xsl:comment> Time note was actually written </xsl:comment>
-                                <time value="{DocumentTime/text()}"/>
-                                <assignedAuthor>
-                                  <id nullFlavor="NI" />
+                              <xsl:comment> 16.04 ENCOUNTER DATE/TIME, REQUIRED </xsl:comment>
+                              <effectiveTime>
+                                <low value="{translate(DocumentTime/text(),'TZ:- ','')}"/>
+                              </effectiveTime>
+                              <performer>
+                                <assignedEntity>
+                                  <id nullFlavor="NA" />
                                   <assignedPerson>
+                                    <xsl:comment> 16.05 ENCOUNTER PROVIDER NAME, REQUIRED </xsl:comment>
                                     <name>
-                                      <xsl:value-of select="Extension/CareProviders/CareProvider[1]/Description/text()" />
+                                      <xsl:value-of select="Extension/CareProviders/CareProvider[1]/Description"/>
                                     </name>
                                   </assignedPerson>
+                                </assignedEntity>
+                              </performer>
+                              <author>
+                                <time nullFlavor="NA" />
+                                <assignedAuthor>
+                                  <id nullFlavor="NA" />
                                   <representedOrganization>
-                                    <id root="2.16.840.1.113883.3.349" extesion="{EnteredAt/Code/text()}" />
+                                    <id root="2.16.840.1.113883.3.349" extension="{EnteredAt/Code/text()}" />
                                     <name>
                                       <xsl:value-of select="EnteredAt/Description/text()"/>
                                     </name>
-                                    <addr nullFlavor="UNK" />
                                   </representedOrganization>
                                 </assignedAuthor>
                               </author>
-                            </act>
-                          </entryRelationship>
-                        </xsl:for-each>-->
+                              <xsl:comment>16.06 - ADMISSION SOURCE, Optional, Not Yet Available from VA VistA </xsl:comment>
+                              <xsl:comment> 16.11 - FACILITY LOCATION, Optional </xsl:comment>
+                              <participant typeCode="LOC">
+                                <xsl:comment>16.20 - IN FACILITY LOCATION DURATION, Optional </xsl:comment>
+                                <!--
+                                      <time>
+                                        <xsl:comment>16.12 - ARRIVAL DATE/TIME, Optional </xsl:comment>
+                                        <low   />
+                                        <xsl:comment> 16.12 - DEPARTURE DATE/TIME, Optional </xsl:comment>
+                                        <high  />
+                                      </time>
+                                      -->
+                                <participantRole classCode="SDLOC">
+                                  <templateId root="2.16.840.1.113883.10.20.22.4.32"/>
+                                  <code nullFlavor="UNK"/>
+                                  <addr nullFlavor="UNK"/>
+                                  <telecom nullFlavor="UNK"/>
+                                  <playingEntity classCode="PLC">
+                                    <name>
+                                      <xsl:value-of select="EnteredAt/Description/text()"/>
+                                    </name>
+                                  </playingEntity>
+                                </participantRole>
+                              </participant>
+                              <entryRelationship typeCode="RSON">
+                                <observation classCode="OBS" moodCode="EVN">
+                                  <templateId root="2.16.840.1.113883.10.20.22.4.19" />
+                                  <id nullFlavor="NI" />
+                                  <xsl:comment> CCD Reason for Visit Code, REQUIRED, SNOMED CT </xsl:comment>
+                                  <code nullFlavor="UNK" />
+                                  <xsl:comment> 16.13 REASON FOR VISIT TEXT, Optional </xsl:comment>
+                                  <text>
+                                    <reference nullFlavor="UNK"/>
+                                  </text>
+                                  <statusCode code="completed" />
+                                  <effectiveTime>
+                                    <low nullFlavor="UNK" />
+                                  </effectiveTime>
+                                  <value xsi:type="CD" />
+                                </observation>
+                              </entryRelationship>
+                              <entryRelationship typeCode="SUBJ"	inversionInd="false">
+                                <act classCode="ACT" moodCode="EVN">
+                                  <xsl:comment>Encounter diagnosis act </xsl:comment>
+                                  <templateId root="2.16.840.1.113883.10.20.22.4.80" />
+                                  <id nullFlavor="UNK" />
+                                  <code xsi:type="CE" code="29308-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="ENCOUNTER DIAGNOSIS" />
+                                  <statusCode code="active" />
+                                  <effectiveTime nullFlavor="UNK">
+                                    <low nullFlavor="UNK" />
+                                  </effectiveTime>
+                                  <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                    <observation classCode="OBS" moodCode="EVN" negationInd="false">
+                                      <templateId root="2.16.840.1.113883.10.20.22.4.4" />
+                                      <xsl:comment> Problem Observation </xsl:comment>
+                                      <id nullFlavor="UNK" />
+                                      <code nullFlavor="UNK">
+                                        <originalText>Encounter Diagnosis Type Not Available</originalText>
+                                      </code>
+                                      <statusCode code="completed" />
+                                      <xsl:comment> CCD ENCOUNTER DIAGNOSIS PROBLEM CODE, REQUIRED, SNOMED CT </xsl:comment>
+                                      <value xsi:type="CD" code="UNK" codeSystem='2.16.840.1.113883.6.96' codeSystemName='SNOMED CT'/>
+                                    </observation>
+                                  </entryRelationship>
+                                </act>
+                              </entryRelationship>
+
+                              <xsl:comment> CCD ENCOUNTER DIAGNOSIS PROBLEM CODE, REQURIED, SNOMED CT </xsl:comment>
+                              <xsl:comment> 16.09 DISCHARGE DISPOSITION CODE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
+                            </encounter>
+                          </entry>
+                        </xsl:if>
+                      </xsl:for-each>
+                    </xsl:if>
+                  </xsl:for-each>
+<!-- CONSULT NOTES -->
+                  <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CR' and not(Extension/NationalTitle/Code/text() = 217)]">
+                    <xsl:sort select="DocumentTime" order="descending" />
+                    <xsl:variable name="loincType">
+                      <xsl:call-template name="standard-documentCategoryToLoinc">
+                        <xsl:with-param name="doc" select="." />
+                      </xsl:call-template>
+                    </xsl:variable>
+                    <xsl:variable name="code" select="exsl:node-set($loincType)" />
+                    <entry typeCode="DRIV">
+                      <encounter classCode="ENC" moodCode="EVN">
+                        <templateId root="2.16.840.1.113883.10.20.22.4.49" />
+                        <id nullFlavor="UNK" />
+                        <xsl:comment> 16.02 ENCOUNTER TYPE. R2, CPT-4 </xsl:comment>
+                        <code codeSystem="2.16.840.1.113883.6.12" codeSystemName="CPT-4" code="99499" displayName="Unlisted Evaluation and Management Service">
+                          <xsl:comment> 16.03 ENCOUNTER FREE TEXT TYPE. R2 </xsl:comment>
+                          <originalText>
+                            <reference value="{concat('#noteEncounterDescription',position())}"/>
+                          </originalText>
+                          <translation codeSystem="2.16.840.1.113883.6.1" codeSystemName="CPT-4" code="{($code)[1]/node()[1]/text()}" displayName="{($code)[1]/node()[2]/text()}" />
+                        </code>
+                        <xsl:comment> 16.04 ENCOUNTER DATE/TIME, REQUIRED </xsl:comment>
+                        <effectiveTime>
+                          <low value="{translate(DocumentTime/text(),'TZ:- ','')}"/>
+                        </effectiveTime>
+                        <performer>
+                          <assignedEntity>
+                            <id nullFlavor="NA" />
+                            <assignedPerson>
+                              <xsl:comment> 16.05 ENCOUNTER PROVIDER NAME, REQUIRED </xsl:comment>
+                              <name>
+                                <xsl:value-of select="Extension/CareProviders/CareProvider[1]/Description"/>
+                              </name>
+                            </assignedPerson>
+                          </assignedEntity>
+                        </performer>
+                        <author>
+                          <time nullFlavor="NA" />
+                          <assignedAuthor>
+                            <id nullFlavor="NA" />
+                            <representedOrganization>
+                              <id root="2.16.840.1.113883.3.349" extension="{EnteredAt/Code/text()}" />
+                              <name>
+                                <xsl:value-of select="EnteredAt/Description/text()"/>
+                              </name>
+                            </representedOrganization>
+                          </assignedAuthor>
+                        </author>
+                        <xsl:comment>16.06 - ADMISSION SOURCE, Optional, Not Yet Available from VA VistA </xsl:comment>
+                        <xsl:comment> 16.11 - FACILITY LOCATION, Optional </xsl:comment>
+                        <participant typeCode="LOC">
+                          <xsl:comment>16.20 - IN FACILITY LOCATION DURATION, Optional </xsl:comment>
+                          <!--
+                                      <time>
+                                        <xsl:comment>16.12 - ARRIVAL DATE/TIME, Optional </xsl:comment>
+                                        <low   />
+                                        <xsl:comment> 16.12 - DEPARTURE DATE/TIME, Optional </xsl:comment>
+                                        <high  />
+                                      </time>
+                                      -->
+                          <participantRole classCode="SDLOC">
+                            <templateId root="2.16.840.1.113883.10.20.22.4.32"/>
+                            <code nullFlavor="UNK"/>
+                            <addr nullFlavor="UNK"/>
+                            <telecom nullFlavor="UNK"/>
+                            <playingEntity classCode="PLC">
+                              <name>
+                                <xsl:value-of select="EnteredAt/Description/text()"/>
+                              </name>
+                            </playingEntity>
+                          </participantRole>
+                        </participant>
+                        <entryRelationship typeCode="RSON">
+                          <observation classCode="OBS" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.22.4.19" />
+                            <id nullFlavor="NI" />
+                            <xsl:comment> CCD Reason for Visit Code, REQUIRED, SNOMED CT </xsl:comment>
+                            <code nullFlavor="UNK" />
+                            <xsl:comment> 16.13 REASON FOR VISIT TEXT, Optional </xsl:comment>
+                            <text>
+                              <reference nullFlavor="UNK"/>
+                            </text>
+                            <statusCode code="completed" />
+                            <effectiveTime>
+                              <low nullFlavor="UNK" />
+                            </effectiveTime>
+                            <value xsi:type="CD" />
+                          </observation>
+                        </entryRelationship>
+                        <entryRelationship typeCode="SUBJ"	inversionInd="false">
+                          <act classCode="ACT" moodCode="EVN">
+                            <xsl:comment>Encounter diagnosis act </xsl:comment>
+                            <templateId root="2.16.840.1.113883.10.20.22.4.80" />
+                            <id nullFlavor="UNK" />
+                            <code xsi:type="CE" code="29308-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="ENCOUNTER DIAGNOSIS" />
+                            <statusCode code="active" />
+                            <effectiveTime nullFlavor="UNK">
+                              <low nullFlavor="UNK" />
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                              <observation classCode="OBS" moodCode="EVN" negationInd="false">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.4" />
+                                <xsl:comment> Problem Observation </xsl:comment>
+                                <id nullFlavor="UNK" />
+                                <code nullFlavor="UNK">
+                                  <originalText>Encounter Diagnosis Type Not Available</originalText>
+                                </code>
+                                <statusCode code="completed" />
+                                <xsl:comment> CCD ENCOUNTER DIAGNOSIS PROBLEM CODE, REQUIRED, SNOMED CT </xsl:comment>
+                                <value xsi:type="CD" code="UNK" codeSystem='2.16.840.1.113883.6.96' codeSystemName='SNOMED CT'/>
+                              </observation>
+                            </entryRelationship>
+                          </act>
+                        </entryRelationship>
+
+                        <xsl:comment> CCD ENCOUNTER DIAGNOSIS PROBLEM CODE, REQURIED, SNOMED CT </xsl:comment>
+                        <xsl:comment> 16.09 DISCHARGE DISPOSITION CODE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
+                      </encounter>
+                    </entry>
+                  </xsl:for-each>
+<!-- H and P Notes -->
+                  <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'HP' and not(Extension/NationalTitle/Code/text() = 217)]">
+                    <xsl:sort select="DocumentTime" order="descending" />
+                    <xsl:variable name="loincType">
+                      <xsl:call-template name="standard-documentCategoryToLoinc">
+                        <xsl:with-param name="doc" select="." />
+                      </xsl:call-template>
+                    </xsl:variable>
+                    <xsl:variable name="code" select="exsl:node-set($loincType)" />
+                    <entry typeCode="DRIV">
+                      <encounter classCode="ENC" moodCode="EVN">
+                        <templateId root="2.16.840.1.113883.10.20.22.4.49" />
+                        <id nullFlavor="UNK" />
+                        <xsl:comment> 16.02 ENCOUNTER TYPE. R2, CPT-4 </xsl:comment>
+                        <code codeSystem="2.16.840.1.113883.6.12" codeSystemName="CPT-4" code="99499" displayName="Unlisted Evaluation and Management Service">
+                          <xsl:comment> 16.03 ENCOUNTER FREE TEXT TYPE. R2 </xsl:comment>
+                          <originalText>
+                            <reference value="{concat('#hpnoteEncounterDescription',position())}"/>
+                          </originalText>
+                          <translation codeSystem="2.16.840.1.113883.6.1" codeSystemName="CPT-4" code="{($code)[1]/node()[1]/text()}" displayName="{($code)[1]/node()[2]/text()}" />
+                        </code>
+                        <xsl:comment> 16.04 ENCOUNTER DATE/TIME, REQUIRED </xsl:comment>
+                        <effectiveTime>
+                          <low value="{translate(DocumentTime/text(),'TZ:- ','')}"/>
+                        </effectiveTime>
+                        <performer>
+                          <assignedEntity>
+                            <id nullFlavor="NA" />
+                            <assignedPerson>
+                              <xsl:comment> 16.05 ENCOUNTER PROVIDER NAME, REQUIRED </xsl:comment>
+                              <name>
+                                <xsl:value-of select="Extension/CareProviders/CareProvider[1]/Description"/>
+                              </name>
+                            </assignedPerson>
+                          </assignedEntity>
+                        </performer>
+                        <author>
+                          <time nullFlavor="NA" />
+                          <assignedAuthor>
+                            <id nullFlavor="NA" />
+                            <representedOrganization>
+                              <id root="2.16.840.1.113883.3.349" extension="{EnteredAt/Code/text()}" />
+                              <name>
+                                <xsl:value-of select="EnteredAt/Description/text()"/>
+                              </name>
+                            </representedOrganization>
+                          </assignedAuthor>
+                        </author>
+                        <xsl:comment>16.06 - ADMISSION SOURCE, Optional, Not Yet Available from VA VistA </xsl:comment>
+                        <xsl:comment> 16.11 - FACILITY LOCATION, Optional </xsl:comment>
+                        <participant typeCode="LOC">
+                          <xsl:comment>16.20 - IN FACILITY LOCATION DURATION, Optional </xsl:comment>
+                          <!--
+                                      <time>
+                                        <xsl:comment>16.12 - ARRIVAL DATE/TIME, Optional </xsl:comment>
+                                        <low   />
+                                        <xsl:comment> 16.12 - DEPARTURE DATE/TIME, Optional </xsl:comment>
+                                        <high  />
+                                      </time>
+                                      -->
+                          <participantRole classCode="SDLOC">
+                            <templateId root="2.16.840.1.113883.10.20.22.4.32"/>
+                            <code nullFlavor="UNK"/>
+                            <addr nullFlavor="UNK"/>
+                            <telecom nullFlavor="UNK"/>
+                            <playingEntity classCode="PLC">
+                              <name>
+                                <xsl:value-of select="EnteredAt/Description/text()"/>
+                              </name>
+                            </playingEntity>
+                          </participantRole>
+                        </participant>
+                        <entryRelationship typeCode="RSON">
+                          <observation classCode="OBS" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.22.4.19" />
+                            <id nullFlavor="NI" />
+                            <xsl:comment> CCD Reason for Visit Code, REQUIRED, SNOMED CT </xsl:comment>
+                            <code nullFlavor="UNK" />
+                            <xsl:comment> 16.13 REASON FOR VISIT TEXT, Optional </xsl:comment>
+                            <text>
+                              <reference nullFlavor="UNK"/>
+                            </text>
+                            <statusCode code="completed" />
+                            <effectiveTime>
+                              <low nullFlavor="UNK" />
+                            </effectiveTime>
+                            <value xsi:type="CD" />
+                          </observation>
+                        </entryRelationship>
+                        <entryRelationship typeCode="SUBJ"	inversionInd="false">
+                          <act classCode="ACT" moodCode="EVN">
+                            <xsl:comment>Encounter diagnosis act </xsl:comment>
+                            <templateId root="2.16.840.1.113883.10.20.22.4.80" />
+                            <id nullFlavor="UNK" />
+                            <code xsi:type="CE" code="29308-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="ENCOUNTER DIAGNOSIS" />
+                            <statusCode code="active" />
+                            <effectiveTime nullFlavor="UNK">
+                              <low nullFlavor="UNK" />
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                              <observation classCode="OBS" moodCode="EVN" negationInd="false">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.4" />
+                                <xsl:comment> Problem Observation </xsl:comment>
+                                <id nullFlavor="UNK" />
+                                <code nullFlavor="UNK">
+                                  <originalText>Encounter Diagnosis Type Not Available</originalText>
+                                </code>
+                                <statusCode code="completed" />
+                                <xsl:comment> CCD ENCOUNTER DIAGNOSIS PROBLEM CODE, REQUIRED, SNOMED CT </xsl:comment>
+                                <value xsi:type="CD" code="UNK" codeSystem='2.16.840.1.113883.6.96' codeSystemName='SNOMED CT'/>
+                              </observation>
+                            </entryRelationship>
+                          </act>
+                        </entryRelationship>
+
+                        <xsl:comment> CCD ENCOUNTER DIAGNOSIS PROBLEM CODE, REQURIED, SNOMED CT </xsl:comment>
+                        <xsl:comment> 16.09 DISCHARGE DISPOSITION CODE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
+                      </encounter>
+                    </entry>
+                  </xsl:for-each>
+<!-- Discharge Sums Notes -->
+                  <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'DS' and not(Extension/NationalTitle/Code/text() = 217)]">
+                    <xsl:sort select="DocumentTime" order="descending" />
+                    <xsl:variable name="loincType">
+                      <xsl:call-template name="standard-documentCategoryToLoinc">
+                        <xsl:with-param name="doc" select="." />
+                      </xsl:call-template>
+                    </xsl:variable>
+                    <xsl:variable name="code" select="exsl:node-set($loincType)" />
+                    <entry typeCode="DRIV">
+                      <encounter classCode="ENC" moodCode="EVN">
+                        <templateId root="2.16.840.1.113883.10.20.22.4.49" />
+                        <id nullFlavor="UNK" />
+                        <xsl:comment> 16.02 ENCOUNTER TYPE. R2, CPT-4 </xsl:comment>
+                        <code codeSystem="2.16.840.1.113883.6.12" codeSystemName="CPT-4" code="99499" displayName="Unlisted Evaluation and Management Service">
+                          <xsl:comment> 16.03 ENCOUNTER FREE TEXT TYPE. R2 </xsl:comment>
+                          <originalText>
+                            <reference value="{concat('#dsnoteEncounterDescription',position())}"/>
+                          </originalText>
+                          <translation codeSystem="2.16.840.1.113883.6.1" codeSystemName="CPT-4" code="{($code)[1]/node()[1]/text()}" displayName="{($code)[1]/node()[2]/text()}" />
+                        </code>
+                        <xsl:comment> 16.04 ENCOUNTER DATE/TIME, REQUIRED </xsl:comment>
+                        <effectiveTime>
+                          <low value="{translate(DocumentTime/text(),'TZ:- ','')}"/>
+                        </effectiveTime>
+                        <performer>
+                          <assignedEntity>
+                            <id nullFlavor="NA" />
+                            <assignedPerson>
+                              <xsl:comment> 16.05 ENCOUNTER PROVIDER NAME, REQUIRED </xsl:comment>
+                              <name>
+                                <xsl:value-of select="Extension/CareProviders/CareProvider[1]/Description"/>
+                              </name>
+                            </assignedPerson>
+                          </assignedEntity>
+                        </performer>
+                        <author>
+                          <time nullFlavor="NA" />
+                          <assignedAuthor>
+                            <id nullFlavor="NA" />
+                            <representedOrganization>
+                              <id root="2.16.840.1.113883.3.349" extension="{EnteredAt/Code/text()}" />
+                              <name>
+                                <xsl:value-of select="EnteredAt/Description/text()"/>
+                              </name>
+                            </representedOrganization>
+                          </assignedAuthor>
+                        </author>
+                        <xsl:comment>16.06 - ADMISSION SOURCE, Optional, Not Yet Available from VA VistA </xsl:comment>
+                        <xsl:comment> 16.11 - FACILITY LOCATION, Optional </xsl:comment>
+                        <participant typeCode="LOC">
+                          <xsl:comment>16.20 - IN FACILITY LOCATION DURATION, Optional </xsl:comment>
+                          <!--
+                                      <time>
+                                        <xsl:comment>16.12 - ARRIVAL DATE/TIME, Optional </xsl:comment>
+                                        <low   />
+                                        <xsl:comment> 16.12 - DEPARTURE DATE/TIME, Optional </xsl:comment>
+                                        <high  />
+                                      </time>
+                                      -->
+                          <participantRole classCode="SDLOC">
+                            <templateId root="2.16.840.1.113883.10.20.22.4.32"/>
+                            <code nullFlavor="UNK"/>
+                            <addr nullFlavor="UNK"/>
+                            <telecom nullFlavor="UNK"/>
+                            <playingEntity classCode="PLC">
+                              <name>
+                                <xsl:value-of select="EnteredAt/Description/text()"/>
+                              </name>
+                            </playingEntity>
+                          </participantRole>
+                        </participant>
+                        <entryRelationship typeCode="RSON">
+                          <observation classCode="OBS" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.22.4.19" />
+                            <id nullFlavor="NI" />
+                            <xsl:comment> CCD Reason for Visit Code, REQUIRED, SNOMED CT </xsl:comment>
+                            <code nullFlavor="UNK" />
+                            <xsl:comment> 16.13 REASON FOR VISIT TEXT, Optional </xsl:comment>
+                            <text>
+                              <reference nullFlavor="UNK"/>
+                            </text>
+                            <statusCode code="completed" />
+                            <effectiveTime>
+                              <low nullFlavor="UNK" />
+                            </effectiveTime>
+                            <value xsi:type="CD" />
+                          </observation>
+                        </entryRelationship>
+                        <entryRelationship typeCode="SUBJ"	inversionInd="false">
+                          <act classCode="ACT" moodCode="EVN">
+                            <xsl:comment>Encounter diagnosis act </xsl:comment>
+                            <templateId root="2.16.840.1.113883.10.20.22.4.80" />
+                            <id nullFlavor="UNK" />
+                            <code xsi:type="CE" code="29308-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="ENCOUNTER DIAGNOSIS" />
+                            <statusCode code="active" />
+                            <effectiveTime nullFlavor="UNK">
+                              <low nullFlavor="UNK" />
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                              <observation classCode="OBS" moodCode="EVN" negationInd="false">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.4" />
+                                <xsl:comment> Problem Observation </xsl:comment>
+                                <id nullFlavor="UNK" />
+                                <code nullFlavor="UNK">
+                                  <originalText>Encounter Diagnosis Type Not Available</originalText>
+                                </code>
+                                <statusCode code="completed" />
+                                <xsl:comment> CCD ENCOUNTER DIAGNOSIS PROBLEM CODE, REQUIRED, SNOMED CT </xsl:comment>
+                                <value xsi:type="CD" code="UNK" codeSystem='2.16.840.1.113883.6.96' codeSystemName='SNOMED CT'/>
+                              </observation>
+                            </entryRelationship>
+                          </act>
+                        </entryRelationship>
+
+                        <xsl:comment> CCD ENCOUNTER DIAGNOSIS PROBLEM CODE, REQURIED, SNOMED CT </xsl:comment>
+                        <xsl:comment> 16.09 DISCHARGE DISPOSITION CODE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
                       </encounter>
                     </entry>
                   </xsl:for-each>
