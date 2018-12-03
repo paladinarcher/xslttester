@@ -822,7 +822,6 @@
                               <xsl:comment> INFORMATION SOURCE FOR ALLERGIES/DRUG, Optional </xsl:comment>
                               <author>
                                 <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                                <id nullFlavor="NI"/>
                                 <time nullFlavor="NA" />
                                 <assignedAuthor>
                                   <id nullFlavor="NA" />
@@ -870,7 +869,7 @@
                                           <xsl:comment> 6.03 PRODUCT FREE TEXT, R2 </xsl:comment>
                                           <originalText>
                                             <reference value="{concat('#andAllergy',position())}" />
-                                          </originalText><!-- TODO: Vets Translation here (RXNORM) Internal or VETS? DS: Is translation still required here if VPR is providing native data?-->-->
+                                          </originalText><!-- TODO: Vets Translation here (RXNORM) Internal or VETS? DS: Is translation still required here if VPR is providing native data?-->
                                           <translation codeSystem="2.16.840.1.113883.6.233" codeSystemName="VHA Enterprise Reference Terminology" />
                                         </code>
                                       </playingEntity>

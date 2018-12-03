@@ -90,6 +90,16 @@ things like grouping (e.g. vitals) and associated documents.
 		<xsl:attribute name="date"><xsl:value-of select="$date"/></xsl:attribute>
 		<xsl:attribute name="code"><xsl:value-of select="$code"/></xsl:attribute>
 	</xsl:template>
+  <xsl:template name="attribute-set">
+    <xsl:param name="element" />
+    <xsl:param name="attrName" />
+    <xsl:param name="attrValue" />
+    <xsl:for-each select="$element">
+      <xsl:attribute name="{$attrName}">
+        <xsl:value-of select="$attrValue"/>
+      </xsl:attribute>
+    </xsl:for-each>
+  </xsl:template>
 	
 	<!-- default for both passes is to copy node and children -->
 	<xsl:template match="node()|@*" mode="pass1">
