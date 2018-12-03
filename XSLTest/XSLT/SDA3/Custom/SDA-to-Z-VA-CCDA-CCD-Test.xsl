@@ -4877,58 +4877,66 @@
                       </xsl:for-each>
                     </table>
                     <br/>
-                    <!-- TODO FIX THIS PART-->
-                    <content styleCode="Bold">Radiology Reports</content>
-                    <paragraph >
-                      This section includes all Radiology Reports within the requested date range.
-                      If no date range was provided, the included Radiology Reports are the 5 most
-                      recent reports within the last 24 months. The data comes from all VA treatment
-                      facilities.
-                    </paragraph>
-
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Result Date/Time</th>
-                          <th>Results Type (LOINC)</th>
-                          <th>Source</th>
-                          <th>Result</th>
-                          <th>Provider</th>
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td />
-
-                          <td>
-                            <content />
-                          </td>
-                          <td>
-                            <content />
-                          </td>
-                          <td>
-                            <content />
-                          </td>
-                          <td>
-                            <content />
-                          </td>
-                          <td>
-                            <content>completed</content>
-                          </td>
-
-                        </tr>
-                      </tbody>
-                    </table>
+                    <xsl:if test="not(boolean(Documents/Document[DocumentType/Code/text() = 'RA' and not(Extension/NationalTitle/Code/text() = 217)]))">
+                      <content styleCode="Bold">Radiology Reports</content>
+                      <paragraph >This section includes all Radiology Reports within the requested date range. If no date range was provided, the included Radiology Reports are the 5 most recent reports within the last 24 months. The data comes from all VA treatment</paragraph>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Result Date/Time</th>
+                            <th>Results Type (LOINC)</th>
+                            <th>Source</th>
+                            <th>Result</th>
+                            <th>Provider</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'RA' and not(Extension/NationalTitle/Code/text() = 217)]">
+                          <xsl:sort select="DocumentTime" order="descending" />
+                          <tr>
+                            <td>
+                              <content ID="{concat('ranoteDateTime',position())}">
+                                <xsl:call-template name="tmpDateTemplate" >
+                                  <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('ranoteLoinc',position())}">
+                                <xsl:value-of select="Extension/NationalTitle/Description/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('ranoteSource',position())}">
+                                <xsl:value-of select="EnteredAt/Description/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('ranoteEncounterDescription',position())}">
+                                <xsl:call-template name="standard-insertBreaks">
+                                  <xsl:with-param name="pText" select="NoteText/text()"/>
+                                </xsl:call-template>
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('ranoteProvider',position())}">
+                                <xsl:value-of select="Clinician/Description/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content>completed</content>
+                            </td>
+                          </tr>
+                        </xsl:for-each>
+                        </tbody>
+                      </table>
+                    </xsl:if>
                     <br/>
                     <content styleCode="Bold">Pathology Reports</content>
 
-                    <paragraph >
-                      This section includes all Pathology Reports within the requested date range.
-                      If no date range was provided, the included Pathology Reports are the 5 most
-                      recent reports within the last 24 months. The data comes from all VA treatment
-                      facilities.
-                    </paragraph>
+                    <paragraph >This section includes all Pathology Reports within the requested date range. If no date range was provided, the included Pathology Reports are the 5 most recent reports within the last 24 months. The data comes from all VA treatment facilities. </paragraph>
                     <table >
                       <thead>
                         <tr>
@@ -4938,29 +4946,47 @@
                           <th>Result</th>
                           <th>Provider</th>
                           <th>Status</th>
-
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td />
-
-                          <td>
-                            <content />
-                          </td>
-                          <td>
-                            <content />
-                          </td>
-                          <td>
-                            <content />
-                          </td>
-                          <td>
-                            <content />
-                          </td>
-                          <td>
-                            <content>completed</content>
-                          </td>
-                        </tr>
+                        <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'LR' and not(Extension/NationalTitle/Code/text() = 217)]">
+                          <xsl:sort select="DocumentTime" order="descending" />
+                          <tr>
+                            <td>
+                              <content ID="{concat('panoteDateTime',position())}">
+                                <xsl:call-template name="tmpDateTemplate" >
+                                  <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                </xsl:call-template>
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('panoteLoinc',position())}">
+                                <xsl:value-of select="Extension/NationalTitle/Description/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('panoteSource',position())}">
+                                <xsl:value-of select="EnteredAt/Description/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('panoteEncounterDescription',position())}">
+                                <xsl:call-template name="standard-insertBreaks">
+                                  <xsl:with-param name="pText" select="NoteText/text()"/>
+                                </xsl:call-template>
+                              </content>
+                            </td>
+                            <td>
+                              <content ID="{concat('panoteProvider',position())}">
+                                <xsl:value-of select="Clinician/Description/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content>completed</content>
+                            </td>
+                          </tr>
+                        </xsl:for-each>
                       </tbody>
                     </table>
                   </text>
@@ -5052,7 +5078,6 @@
                               <xsl:comment> CCD METHOD CODE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
                               <xsl:comment> CCD TARGET SITE CODE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
                               <entryRelationship typeCode="SUBJ" inversionInd="true">
-                                inversionInd="true">
                                 <act classCode="ACT" moodCode="EVN">
                                   <templateId root="2.16.840.1.113883.10.20.22.4.64" />
                                   <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment" />
@@ -5081,6 +5106,185 @@
                               </xsl:choose>
                             </observation>
                           </component>
+                        </xsl:for-each>
+
+                        <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'RA' and not(Extension/NationalTitle/Code/text() = 217)]">
+                          <xsl:sort select="DocumentTime" order="descending" />
+                          <entry typeCode='DRIV'>
+                            <xsl:comment> CCD Results Organizer = VA Lab Order Panel , REQUIRED </xsl:comment>
+                            <organizer classCode="CLUSTER" moodCode="EVN">
+                              <templateId root="2.16.840.1.113883.10.20.22.4.1" />
+                              <id nullFlavor="NI" />
+                              <code nullFlavor="UNK">
+                                <originalText>
+                                  <xsl:value-of select="DocumentName" />
+                                </originalText>
+                                <translation code="18726-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Radiology Studies"/>
+                              </code>
+                              <statusCode code="completed" />
+                              <effectiveTime>
+                                <xsl:choose>
+                                  <xsl:when test="boolean(DocumentTime)">
+                                    <xsl:attribute name="value">
+                                      <xsl:value-of select="translate(DocumentTime/text(),'TZ:- ','')"/>
+                                    </xsl:attribute>
+                                  </xsl:when>
+                                  <xsl:otherwise>
+                                    <xsl:attribute name="nullFlavor">UNK</xsl:attribute>
+                                  </xsl:otherwise>
+                                </xsl:choose>
+                              </effectiveTime>
+                              <author>
+                                <time nullFlavor="NA" />
+                                <assignedAuthor>
+                                  <id nullFlavor="NA" />
+                                  <representedOrganization>
+                                    <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
+                                    <name>
+                                      <xsl:value-of select="EnteredAt/Description"/>
+                                    </name>
+                                  </representedOrganization>
+                                </assignedAuthor>
+                              </author>
+                              <component>
+                                <observation classCode="OBS" moodCode="EVN">
+                                  <templateId root="2.16.840.1.113883.10.20.22.4.2" />
+                                  <xsl:comment> 15.01 RESULT ID, REQUIRED </xsl:comment>
+                                  <id nullFlavor="UNK" />
+                                  <xsl:comment> 15.03-RESULT TYPE, REQUIRED </xsl:comment>
+                                  <code nullFlavor="UNK">
+                                    <originalText>
+                                      <xsl:value-of select="DocumentName" />
+                                    </originalText>
+                                    <translation code="18726-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Radiology Studies"/>
+                                  </code>
+                                  <text >
+                                    <reference nullFlavor="UNK"/>
+                                  </text>
+                                  <statusCode code="completed" />
+                                  <xsl:comment> 15.02 RESULT DATE/TIME, REQUIRED </xsl:comment>
+                                  <effectiveTime>
+                                    <xsl:choose>
+                                      <xsl:when test="boolean(DocumentTime)">
+                                        <xsl:attribute name="value">
+                                          <xsl:value-of select="translate(DocumentTime/text(),'TZ:- ','')"/>
+                                        </xsl:attribute>
+                                      </xsl:when>
+                                      <xsl:otherwise>
+                                        <xsl:attribute name="nullFlavor">UNK</xsl:attribute>
+                                      </xsl:otherwise>
+                                    </xsl:choose>
+                                  </effectiveTime>
+                                  <xsl:comment> 15.05 RESULT VALUE, REQUIRED, xsi:type="PQ" </xsl:comment>
+                                  <value xsi:type="ED">
+                                    <reference value="{concat('#ranoteEncounterDescription',position())}"/>
+                                  </value>
+                                  <xsl:comment> CCD METHOD CODE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
+                                  <xsl:comment> CCD TARGET SITE CODE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
+                                  <author>
+                                    <time nullFlavor="NA" />
+                                    <assignedAuthor>
+                                      <id nullFlavor="NA" />
+                                      <assignedPerson>
+                                        <name>
+                                          <xsl:value-of select="Clinician/Description"/>
+                                        </name>
+                                      </assignedPerson>
+                                    </assignedAuthor>
+                                  </author>
+                                </observation>
+                              </component>
+                            </organizer>
+                          </entry>
+                        </xsl:for-each>
+                        <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'LR' and not(Extension/NationalTitle/Code/text() = 217)]">
+                          <xsl:sort select="DocumentTime" order="descending" />
+                          <entry typeCode='DRIV'>
+                            <xsl:comment> CCD Results Organizer = VA Lab Order Panel , REQUIRED </xsl:comment>
+                            <organizer classCode="CLUSTER" moodCode="EVN">
+                              <templateId root="2.16.840.1.113883.10.20.22.4.1" />
+                              <id nullFlavor="NI" />
+                              <code nullFlavor="UNK">
+                                <originalText>
+                                  <xsl:value-of select="DocumentName" />
+                                </originalText>
+                                <translation code="18726-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Radiology Studies"/>
+                              </code>
+                              <statusCode code="completed" />
+                              <effectiveTime>
+                                <xsl:choose>
+                                  <xsl:when test="boolean(DocumentTime)">
+                                    <xsl:attribute name="value">
+                                      <xsl:value-of select="translate(DocumentTime/text(),'TZ:- ','')"/>
+                                    </xsl:attribute>
+                                  </xsl:when>
+                                  <xsl:otherwise>
+                                    <xsl:attribute name="nullFlavor">UNK</xsl:attribute>
+                                  </xsl:otherwise>
+                                </xsl:choose>
+                              </effectiveTime>
+                              <author>
+                                <time nullFlavor="NA" />
+                                <assignedAuthor>
+                                  <id nullFlavor="NA" />
+                                  <representedOrganization>
+                                    <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
+                                    <name>
+                                      <xsl:value-of select="EnteredAt/Description"/>
+                                    </name>
+                                  </representedOrganization>
+                                </assignedAuthor>
+                              </author>
+                              <component>
+                                <observation classCode="OBS" moodCode="EVN">
+                                  <templateId root="2.16.840.1.113883.10.20.22.4.2" />
+                                  <xsl:comment> 15.01 RESULT ID, REQUIRED </xsl:comment>
+                                  <id nullFlavor="UNK" />
+                                  <xsl:comment> 15.03-RESULT TYPE, REQUIRED </xsl:comment>
+                                  <code nullFlavor="UNK">
+                                    <originalText>
+                                      <xsl:value-of select="DocumentName" />
+                                    </originalText>
+                                    <translation code="18726-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Radiology Studies"/>
+                                  </code>
+                                  <text >
+                                    <reference nullFlavor="UNK"/>
+                                  </text>
+                                  <statusCode code="completed" />
+                                  <xsl:comment> 15.02 RESULT DATE/TIME, REQUIRED </xsl:comment>
+                                  <effectiveTime>
+                                    <xsl:choose>
+                                      <xsl:when test="boolean(DocumentTime)">
+                                        <xsl:attribute name="value">
+                                          <xsl:value-of select="translate(DocumentTime/text(),'TZ:- ','')"/>
+                                        </xsl:attribute>
+                                      </xsl:when>
+                                      <xsl:otherwise>
+                                        <xsl:attribute name="nullFlavor">UNK</xsl:attribute>
+                                      </xsl:otherwise>
+                                    </xsl:choose>
+                                  </effectiveTime>
+                                  <xsl:comment> 15.05 RESULT VALUE, REQUIRED, xsi:type="PQ" </xsl:comment>
+                                  <value xsi:type="ED">
+                                    <reference value="{concat('#panoteEncounterDescription',position())}"/>
+                                  </value>
+                                  <xsl:comment> CCD METHOD CODE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
+                                  <xsl:comment> CCD TARGET SITE CODE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
+                                  <author>
+                                    <time nullFlavor="NA" />
+                                    <assignedAuthor>
+                                      <id nullFlavor="NA" />
+                                      <assignedPerson>
+                                        <name>
+                                          <xsl:value-of select="Clinician/Description"/>
+                                        </name>
+                                      </assignedPerson>
+                                    </assignedAuthor>
+                                  </author>
+                                </observation>
+                              </component>
+                            </organizer>
+                          </entry>
                         </xsl:for-each>
                       </organizer>
                     </entry>

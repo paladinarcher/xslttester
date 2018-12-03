@@ -5283,7 +5283,7 @@
             <xsl:comment>Radiology Studies</xsl:comment>
             <xsl:choose>
               <xsl:when test="not(boolean(Documents/Document[DocumentType/Code/text() = 'RA' and not(Extension/NationalTitle/Code/text() = 217)]))">
-                <section nullFlavor="Ni">
+                <section nullFlavor="NI">
                   <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01"/>
                   <code code="18726-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Radiology Reports"/>
                   <title>Radiology Reports</title>
