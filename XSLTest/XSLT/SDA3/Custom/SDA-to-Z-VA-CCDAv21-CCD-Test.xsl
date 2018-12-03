@@ -3688,10 +3688,7 @@
                     </observation>
                   </entry>
                   <xsl:comment> PLAN OF CARE (POC) STRUCTURED DATA </xsl:comment>
-                  <xsl:comment>
-                    CCD Plan of Care (POC) Activity Encounter (Future VA Appointments,
-                    Future Scheduled Tests, Wellness Reminders), Optional
-                  </xsl:comment>
+                  <xsl:comment> CCD Plan of Care (POC) Activity Encounter (Future VA Appointments,  Future Scheduled Tests, Wellness Reminders), Optional </xsl:comment>
                   <xsl:for-each select="$planOfCare">
                     <entry>
                       <encounter classCode="ENC" moodCode="INT">
@@ -3905,10 +3902,7 @@
                             <id nullFlavor="NI" />
                             <code nullFlavor="NA" />
                             <representedOrganization>
-                              <xsl:comment>
-                                INFORMATION SOURCE ID, root=VA OID, extension= VAMC TREATING
-                                FACILITY NBR
-                              </xsl:comment>
+                              <xsl:comment> INFORMATION SOURCE ID, root=VA OID, extension= VAMC TREATING FACILITY NBR </xsl:comment>
                               <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
                               <xsl:comment> INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME </xsl:comment>
                               <name><xsl:value-of select="EnteredAt/Description/text()"/></name>
@@ -3922,10 +3916,7 @@
                           <observation classCode="OBS" moodCode="EVN">
                             <templateId root="2.16.840.1.113883.10.20.22.4.4" extension="2015-08-01"/>
                             <id nullFlavor="NI" />
-                            <xsl:comment>
-                              7.02 PROBLEM TYPE, REQUIRED, SNOMED CT, provided as nullFlavor
-                              b/c data not yet available via VA VistA RPCs
-                            </xsl:comment>
+                            <xsl:comment> 7.02 PROBLEM TYPE, REQUIRED, SNOMED CT, provided as nullFlavor  b/c data not yet available via VA VistA RPCs </xsl:comment>
                             <code nullFlavor="NA" />
                             <xsl:comment> 7.03 PROBLEM NAME, R2 </xsl:comment>
                             <text>
@@ -3953,10 +3944,7 @@
                                 </xsl:otherwise>
                               </xsl:choose>
                             </effectiveTime>
-                            <xsl:comment>
-                              7.04 PROBLEM CODE, Optional, When uncoded only xsi:type="CD"
-                              allowed, Available as ICD-9, not SNOMED CT,
-                            </xsl:comment><!-- TODO see how it comes back from VETS -->
+                            <xsl:comment> 7.04 PROBLEM CODE, Optional, When uncoded only xsi:type="CD" allowed, Available as ICD-9, not SNOMED CT, </xsl:comment><!-- TODO see how it comes back from VETS -->
                             <value xsi:type="CD" code="{Problem/Code/text()}" displayName="{Problem/Description/text()}" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
                               <originalText>
                                 <reference value="{concat('#pndProblem',position())}"/>
@@ -3991,14 +3979,8 @@
                             </xsl:for-each>
                           </observation>
                         </entryRelationship>
-                        <xsl:comment>
-                          CCD Problem Age Observation, not provided b/c data not yet available
-                          via VA VistA RPCs
-                        </xsl:comment>
-                        <xsl:comment>
-                          CCD Health Status Observation, not provided b/c data not yet
-                          available via VA VistA RPCs
-                        </xsl:comment>
+                        <xsl:comment>CCD Problem Age Observation, not provided b/c data not yet available via VA VistA RPCs</xsl:comment>
+                        <xsl:comment> CCD Health Status Observation, not provided b/c data not yet available via VA VistA RPCs  </xsl:comment>
                       </act>
                     </entry>
                   </xsl:for-each>
@@ -4255,14 +4237,8 @@
                                   <reference value="{concat('#interpLabValues',$lid,'-',position())}"/>
                                 </originalText>
                               </interpretationCode>
-                              <xsl:comment>
-                                CCD METHOD CODE, Optional, Not provided by VA b/c data not
-                                yet available via VA VistA RPCs
-                              </xsl:comment>
-                              <xsl:comment>
-                                CCD TARGET SITE CODE, Optional, Not provided by VA b/c data
-                                not yet available via VA VistA RPCs
-                              </xsl:comment>
+                              <xsl:comment> CCD METHOD CODE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
+                              <xsl:comment> CCD TARGET SITE CODE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
                               <entryRelationship typeCode="SUBJ" inversionInd="true">
                                 <act classCode="ACT" moodCode="EVN">
                                   <templateId root="2.16.840.1.113883.10.20.22.4.64" />
@@ -4491,10 +4467,7 @@
                             <assignedAuthor>
                               <id nullFlavor="UNK" />
                               <representedOrganization>
-                                <xsl:comment>
-                                  INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING
-                                  FACILITY NBR)
-                                </xsl:comment>
+                                <xsl:comment> INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING FACILITY NBR)  </xsl:comment>
                                 <id extension="{EnteredAt/Code/text()}" root="2.16.840.1.113883.4.349" />
                                 <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
                                 <name>
@@ -4556,10 +4529,7 @@
                             <assignedAuthor>
                               <id nullFlavor="UNK" />
                               <representedOrganization>
-                                <xsl:comment>
-                                  INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING
-                                  FACILITY NBR)
-                                </xsl:comment>
+                                <xsl:comment>  INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING  FACILITY NBR) </xsl:comment>
                                 <xsl:choose>
                                   <xsl:when test="boolean(EnteredAt)">
                                     <id extension="{EnteredAt/Code/text()}" root="2.16.840.1.113883.4.349" />
@@ -4766,19 +4736,14 @@
                             </effectiveTime>
                           </xsl:otherwise>
                         </xsl:choose>
-                        <xsl:comment>
-                          INFORMATION SOURCE FOR VITAL SIGN ORGANIZER/PANEL, Optional
-                        </xsl:comment>
+                        <xsl:comment> INFORMATION SOURCE FOR VITAL SIGN ORGANIZER/PANEL, Optional </xsl:comment>
                         <author>
                           <templateId root="2.16.840.1.113883.10.20.22.4.119" />
                           <time nullFlavor="NA" />
                           <assignedAuthor>
                             <id nullFlavor="NI" />
                             <representedOrganization>
-                              <xsl:comment>
-                                INFORMATION SOURCE ID, root=VA OID, extension= VAMC TREATING
-                                FACILITY NBR
-                              </xsl:comment>
+                              <xsl:comment> INFORMATION SOURCE ID, root=VA OID, extension= VAMC TREATING FACILITY NBR </xsl:comment>
                               <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
                               <xsl:comment>INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME </xsl:comment>
                               <name><xsl:value-of select="EnteredAt/Description"/></name>
