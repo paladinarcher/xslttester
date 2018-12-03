@@ -5540,7 +5540,7 @@
                       <tbody>
                         <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CP' and not(Extension/NationalTitle/Code/text() = 217)]">
                           <xsl:sort select="DocumentTime" order="descending" />
-                          <xsl:if test="position() &lt; 3">
+                          <xsl:if test="position() &lt; 11">
                             <tr>
                               <td>
                                 <content ID="{concat('cpnoteDateTime',position())}">
@@ -5573,7 +5573,7 @@
                       </tbody>
                     </table>
                     <xsl:comment> Additional Clinical Procedure Notes </xsl:comment>
-                    <xsl:if test="count(Documents/Document[DocumentType/Code/text() = 'CP' and not(Extension/NationalTitle/Code/text() = 217)]) &gt; 2">
+                    <xsl:if test="count(Documents/Document[DocumentType/Code/text() = 'CP' and not(Extension/NationalTitle/Code/text() = 217)]) &gt; 10">
                       <paragraph styleCode="Bold">Additional Clinical Procedure Notes</paragraph>
                       <paragraph>
                         The list of ADDITIONAL Clinical Procedure Note TITLES includes all notes signed within the last 18 months. The data comes from all VA treatment facilities.
@@ -5590,7 +5590,7 @@
                         <tbody>
                           <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CP' and not(Extension/NationalTitle/Code/text() = 217)]">
                             <xsl:sort select="DocumentTime" order="descending" />
-                            <xsl:if test="position() &gt; 2">
+                            <xsl:if test="position() &gt; 10">
                               <tr>
                                 <td>
                                   <content ID="{concat('cpnoteDateTime',position())}">
