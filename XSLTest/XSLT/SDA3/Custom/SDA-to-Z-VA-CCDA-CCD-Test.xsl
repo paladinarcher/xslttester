@@ -708,10 +708,11 @@
                       <thead>
                         <tr>
                           <th>Allergen</th>
-                          <th>Event Date</th>
+                          <th>Date Recorded</th>
                           <th>Event Type</th>
                           <th>Reaction(s)</th>
                           <th>Severity</th>
+                          <th>Allergy Details</th>
                           <th>Source</th>
                         </tr>
                       </thead>
@@ -2086,6 +2087,9 @@
                   <code code="47420-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Functional Status"/>
                   <title>Functional Status</title>
                   <text>
+                    <paragraph >
+                      This section includes the 3 most recent Functional Independence Measurement (FIM) assessment scores from the last 3 years. The data comes from all VA treatment facilities.
+                    </paragraph>
                     <paragraph>
                       <content styleCode='Underline'>FIM Scale</content>:
                       <content styleCode='Underline'>1</content> = Total Assistance (Subject = 0% +),
@@ -3183,7 +3187,7 @@
                         This section includes:  1) prescriptions processed by a VA pharmacy in the last 15 months, and 2) all
                         medications recorded in the VA medical record as "non-VA medications". Pharmacy terms refer to VA pharmacy's
                         work on prescriptions.  VA patients are advised to take their medications as instructed by their health care
-                        team.  Data comes from all VA treatment facilities.
+                        team. The data comes from all VA treatment facilities.
                     </paragraph>
                     <paragraph>
                       <content styleCode='Underline'>Glossary of Pharmacy Terms:</content>
@@ -3683,7 +3687,7 @@
                           <th>Series</th>
                           <th>Date Issued</th>
                           <th>Reaction</th>
-                          <th>Comments</th>
+                          <th>Comment(s)</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -4348,7 +4352,7 @@
                   <xsl:comment> CCD Plan of Care Section Entries </xsl:comment>
                   <templateId root="2.16.840.1.113883.10.20.22.2.10" />
                   <code code="18776-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Plan of care note" />
-                  <title>Plan of Treatment: Future Appointments and Active/Pending Orders</title>
+                  <title>Plan of Care</title>
                   <text>No Data Provided for This Section</text>
                 </section>
               </xsl:when>
@@ -4357,7 +4361,7 @@
                   <xsl:comment> CCD Plan of Care Section Entries </xsl:comment>
                   <templateId root="2.16.840.1.113883.10.20.22.2.10" />
                   <code code="18776-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Plan of care note" />
-                  <title>Plan of Treatment: Future Appointments and Active/Pending Orders</title>
+                  <title>Plan of Care</title>
                   <text>
                     <xsl:if test="not(count($planOfCare[self::Appointment]) = 0)">
                       <paragraph>
@@ -4504,7 +4508,7 @@
                   <templateId root="2.16.840.1.113883.10.20.22.2.5.1"/>
                   <templateId root="2.16.840.1.113883.10.20.22.2.5" />
                   <code code="11450-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Problem List" />
-                  <title>Problems (Conditions): All on record at VA</title>
+                  <title>Problems/Conditions</title>
                   <xsl:comment> PROBLEMS NARRATIVE BLOCK </xsl:comment>
                   <text>No Data Provided for This Section</text>
                 </section>
@@ -4515,13 +4519,13 @@
                   <templateId root="2.16.840.1.113883.10.20.22.2.5.1"/>
                   <templateId root="2.16.840.1.113883.10.20.22.2.5" />
                   <code code="11450-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Problem List" />
-                  <title>Problems (Conditions): All on record at VA</title>
+                  <title>Problems/Conditions</title>
                   <xsl:comment> PROBLEMS NARRATIVE BLOCK </xsl:comment>
                   <text>
                     <xsl:comment> VA Problem/Condition Business Rules for Medical Content </xsl:comment>
                     <paragraph>
-                      This section includes a list of Problems (Conditions) known to VA for the patient.
-                      It includes both active and inactive problems (conditions). The data comes from all VA treatment facilities.
+                      This section contains a list of Problems/Conditions known to VA for the patient.
+                      It includes both active and inactive problems/conditions. The data comes from all VA treatment facilities.
                     </paragraph>
                     <table>
                       <thead>
@@ -4749,7 +4753,7 @@
                   <templateId root="2.16.840.1.113883.10.20.22.2.3.1" />
                   <templateId root="2.16.840.1.113883.10.20.22.2.3" />
                   <code code="30954-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Relevant diagnostic tests and/or laboratory data" />
-                  <title>Results Section</title>
+                  <title>Lab Results - Chemistry and Hematology</title>
                   <text>No Data Provided for This Section</text>
                 </section>
               </xsl:when>
@@ -4759,7 +4763,7 @@
                   <templateId root="2.16.840.1.113883.10.20.22.2.3.1" />
                   <templateId root="2.16.840.1.113883.10.20.22.2.3" />
                   <code code="30954-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Relevant diagnostic tests and/or laboratory data" />
-                  <title>Results Section</title>
+                  <title>Lab Results - Chemistry and Hematology</title>
                   <text>
                     <xsl:comment> VA Results Business Rules for Medical Content </xsl:comment>
                     <paragraph>
@@ -4898,11 +4902,11 @@
                     </xsl:if>
                     <xsl:if test="boolean(Documents/Document[DocumentType/Code/text() = 'RA' and not(Extension/NationalTitle/Code/text() = 217)])">
                       <content styleCode="Bold">Radiology Reports</content>
-                      <paragraph >This section includes all Radiology Reports within the requested date range. If no date range was provided, the included Radiology Reports are the 5 most recent reports within the last 24 months. The data comes from all VA treatment</paragraph>
+                      <paragraph >This section includes all Radiology Reports within the requested date range. If no date range was provided, the included Radiology Reports are the 5 most recent reports within the last 24 months. The data comes from all VA treatment facilities</paragraph>
                       <table>
                         <thead>
                           <tr>
-                            <th>Result Date/Time</th>
+                            <th>Date/Time</th>
                             <th>Results Type (LOINC)</th>
                             <th>Source</th>
                             <th>Result</th>
@@ -4961,7 +4965,7 @@
                       <table >
                         <thead>
                           <tr>
-                            <th>Result Date/Time</th>
+                            <th>Date/Time</th>
                             <th>Results Type (LOINC)</th>
                             <th>Source</th>
                             <th>Result</th>
@@ -5344,15 +5348,11 @@
                   <text>
                     <xsl:comment> VA Procedure Business Rules for Medical Content </xsl:comment>
                     <paragraph>This section includes the smoking or tobacco-related health factors on record with VA for the patient.</paragraph>
-
-                    <paragraph styleCode="Bold">Current Smoking Status</paragraph>
-
-                    <paragraph >This section includes the most current smoking, or tobacco-related health factor.</paragraph>
                     <table border="1" width="100%">
                       <thead>
                         <tr>
                           <th>Date/Time</th>
-                          <th>Current Smoking Status</th>
+                          <th>Smoking Status</th>
                           <th>Comment</th>
                           <th>Facility</th>
                         </tr>
@@ -5587,7 +5587,7 @@
                   <templateId root="2.16.840.1.113883.10.20.22.2.4.1" />
                   <templateId root="2.16.840.1.113883.10.20.22.2.4" />
                   <code code="8716-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Vital Signs" />
-                  <title>Vital Signs Section</title>
+                  <title>Vital Signs</title>
                   <xsl:comment> VITAL SIGNS NARRATIVE BLOCK, REQUIRED </xsl:comment>
                   <text>No Data Provided for This Section</text>
                 </section>
@@ -5602,7 +5602,7 @@
                   <xsl:comment> VITAL SIGNS NARRATIVE BLOCK, REQUIRED </xsl:comment>
                   <text>
                     <xsl:comment> VA Vital Signs Business Rules for Medical Content </xsl:comment>
-                    <paragraph ID="vitalsParagraph">
+                    <paragraph >
                       This section contains inpatient and outpatient Vital Signs on record at VA for the patient.
                       The data comes from all VA treatment facilities. It includes vital signs collected within
                       the requested date range. If more than one set of vitals was taken on the same date,
@@ -5611,7 +5611,7 @@
                       If more than one set of vitals was taken on the same date, only the most recent set
                       is populated for that date.
                     </paragraph>
-                    <table ID="vitalNarrative">
+                    <table>
                       <thead>
                         <tr>
                           <th>Date/Time</th>
