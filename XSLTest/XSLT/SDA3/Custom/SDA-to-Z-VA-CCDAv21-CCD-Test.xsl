@@ -431,10 +431,7 @@
                                 <xsl:comment>5.05 HEALTH PLAN INSURANCE INFO SOURCE PHONE/EMAIL/URL, Optional </xsl:comment> 
                                 <xsl:apply-templates select="HealthFund/HealthFund" mode="standard-contact-info" />
                                 <representedOrganization>
-                                  <xsl:comment>
-                                    5.06 HEALTH PLAN INSURANCE INFO SOURCE NAME ( Insurance
-                                    Company Name), R2 
-                                    </xsl:comment> 
+                                  <xsl:comment>5.06 HEALTH PLAN INSURANCE INFO SOURCE NAME ( Insurance Company Name), R2 </xsl:comment> 
                                   <name><xsl:value-of select="HealthFund/HealthFund/Description/text()"/></name>
                                 </representedOrganization>
                               </assignedEntity>
@@ -457,14 +454,24 @@
                               <templateId root="2.16.840.1.113883.10.20.22.4.89" />
                               <participantRole classCode="PAT">
                                 <id root="2.16.840.1.113883.4.349" extension="{HealthFund/MembershipNumber/text()}" />
-                                <xsl:comment>5.09 PATIENT RELATIONSHIP TO SUBSCRIBER, REQUIRED, HL7 Coverage Role Type 
-                                </xsl:comment>
-                                <code nullFlavor="UNK" codeSystem="2.16.840.1.113883.5.111" codeSystemName="RoleCode">
-                                  <!-- TODO: need VETS translated HL7 code for relationship type -->
-                                  <originalText>
-                                    <reference value="{concat('#insRelationship',position())}"/>
-                                  </originalText>
-                                </code>
+                                <xsl:comment>5.09 PATIENT RELATIONSHIP TO SUBSCRIBER, REQUIRED, HL7 Coverage Role Type </xsl:comment>
+                               <xsl:choose>
+                                  <xsl:when test="boolean(HealthFund/InsuredRelationship/Code)">
+                                    <code code="" displayName="" codeSystem="2.16.840.1.113883.5.111" codeSystemName="RoleCode">
+                                      <!-- TODO: need VETS translated HL7 code for relationship type -->
+                                      <originalText>
+                                        <reference value="{concat('#insRelationship',position())}"/>
+                                      </originalText>
+                                    </code>
+                                  </xsl:when>
+                                  <xsl:otherwise>
+                                    <code nullFlavor="UNK" codeSystem="2.16.840.1.113883.5.111" codeSystemName="RoleCode">
+                                      <originalText>
+                                        <reference value="{concat('#insRelationship',position())}"/>
+                                      </originalText>
+                                    </code>
+                                  </xsl:otherwise>
+                                </xsl:choose>
                               </participantRole>
                             </participant>
                             <xsl:if test="not(HealthFund/InsuredRelationship/Code/text() = 'P')" >
@@ -472,7 +479,7 @@
                                 <templateId root="2.16.840.1.113883.10.20.22.4.90" />
                                 <participantRole>
                                   <id root="2.16.840.1.113883.4.349" extension="{HealthFund/MembershipNumber/text()}" />
-                                  <xsl:comment>5.11 SUBSCRIBER ADDRESS </xsl:comment> 
+                                  <xsl:comment>5.16 SUBSCRIBER ADDRESS </xsl:comment> 
                                   <addr use="HP" nullFlavor="NA" />
                                   <xsl:comment>5.17 SUBSCRIBER PHONE </xsl:comment>  
                                   <telecom nullFlavor="NA" />
@@ -815,6 +822,7 @@
                               <xsl:comment> INFORMATION SOURCE FOR ALLERGIES/DRUG, Optional </xsl:comment>
                               <author>
                                 <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                                <id nullFlavor="NI"/>
                                 <time nullFlavor="NA" />
                                 <assignedAuthor>
                                   <id nullFlavor="NA" />
@@ -857,11 +865,12 @@
                                     <participantRole classCode="MANU">
                                       <playingEntity classCode="MMAT">
                                         <xsl:comment> 6.04 PRODUCT CODED,REQUIRED </xsl:comment>
+                                        <!--DS TODO: Insert translated data from VPR, once NDS patch utility is installed Allergy/Extension/DrugProducts/DrugProduct/Code&Description -->
                                         <code codeSystem="2.16.840.1.113883.6.88"  codeSystemName="RxNorm">
                                           <xsl:comment> 6.03 PRODUCT FREE TEXT, R2 </xsl:comment>
                                           <originalText>
                                             <reference value="{concat('#andAllergy',position())}" />
-                                          </originalText><!-- TODO: Vets Translation here (RXNORM) Internal or VETS? -->
+                                          </originalText><!-- TODO: Vets Translation here (RXNORM) Internal or VETS? DS: Is translation still required here if VPR is providing native data?-->-->
                                           <translation codeSystem="2.16.840.1.113883.6.233" codeSystemName="VHA Enterprise Reference Terminology" />
                                         </code>
                                       </playingEntity>
@@ -879,13 +888,26 @@
 
                                         <xsl:comment> 6.06 REACTION CODED, REQUIRED </xsl:comment>
                                           <!-- TODO: Internal Translation -->
-                                        <value   xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
-                                          <xsl:comment> 6.05 REACTION-FREE TEXT, optional, </xsl:comment>
-                                          <originalText>
-                                            <reference value="{concat('#andReaction', $allergyIndex, '-', position())}" />
-                                          </originalText>
-                                          <translation codeSystem="2.16.840.1.113883.6.233" codeSystemName="VHA Enterprise Reference Terminology" />
-                                        </value>
+                                            <xsl:choose>
+                                            <xsl:when test="boolean(Extension/Reactions/Reaction)">
+                                            <value code="{Code/text()}" displayName="{Description/text()}" xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                                              <xsl:comment> 6.05 REACTION-FREE TEXT, optional, </xsl:comment>
+                                              <originalText>
+                                                <reference value="{concat('#andReaction', $allergyIndex, '-', position())}" />
+                                              </originalText>
+                                              <!--DS TODO - do we still need translation if VPR Is providing native data?-->
+                                              <translation codeSystem="2.16.840.1.113883.6.233" codeSystemName="VHA Enterprise Reference Terminology" />
+                                            </value>
+                                          </xsl:when>
+                                          <xsl:otherwise>
+                                            <value nullFlavor="UNK" xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                                              <xsl:comment> 6.05 REACTION-FREE TEXT, optional, </xsl:comment>
+                                              <originalText>
+                                                <reference value="{concat('#andReaction', $allergyIndex, '-', position())}" />
+                                              </originalText>
+                                            </value>
+                                          </xsl:otherwise>
+                                        </xsl:choose>
                                       </observation>
                                     </entryRelationship>
                                   </xsl:for-each>
@@ -900,8 +922,16 @@
                                       </text>
                                       <statusCode code="completed" />
                                       <xsl:comment> 6.08 SEVERITY CODED, REQUIRED, SNOMED CT </xsl:comment>
-                                      <!-- TODO: Internal Translation -->
-                                      <value xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+                                      <!-- TODO: Internal Translation  DS - this is being provided in the VPR-->
+                                      <xsl:choose>
+                                        <xsl:when test="Allergy/Severity">
+                                          <!-- DS check context-->
+                                          <value code="{Severity/Code/text()}" displayName="{Severity/Description/text()}" xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                          <value xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+                                        </xsl:otherwise>
+                                      </xsl:choose>
                                     </observation>
                                   </entryRelationship>
                                 </observation>
@@ -928,8 +958,7 @@
                                   <id nullFlavor="NA"/>
                                   <code nullFlavor="NA"/>
                                   <representedOrganization>
-                                    <xsl:comment>INFORMATION SOURCE ID, root=VA OID, extension= VAMC TREATING 
-                                              FACILITY NBR</xsl:comment>
+                                    <xsl:comment>INFORMATION SOURCE ID, root=VA OID, extension= VAMC TREATING FACILITY NBR</xsl:comment>
                                     <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
                                     <xsl:comment> INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME </xsl:comment>
                                     <name><xsl:value-of select="EnteredAt/Description/text()"/></name>
@@ -2602,7 +2631,7 @@
                   </entry>
                   <xsl:comment> CCD Medication Activity Entry </xsl:comment>
                   <xsl:for-each select="Medications/Medication">
-                    <xsl:sort select="(DrugProduct/Description | OrderItem/Description)" />
+                    <xsl:sort select="(DrugProduct/Description | OrderItem[not(preceding-sibling::DrugProduct/Description) and not(following-sibling::DrugProduct/Description)]/Description)" />
                     <xsl:sort select="PharmacyStatus" />
                     <xsl:choose>
                       <xsl:when test="OrderCategory/Code/text() = 'O RX' or OrderCategory/Code/text() = 'O'">
@@ -2619,47 +2648,21 @@
                             <effectiveTime xsi:type="IVL_TS">
                               <low nullFlavor="UNK" />
                             </effectiveTime>
-                            <xsl:comment>
-                              8.02 INDICATE MEDICATION STOPPPED, Optional, Removed b/c data
-                              not yet available via VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              8.03 ADMINISTRATION TIMING (xsi:type='EIVL' operator='A'), Optional,
-                              Not provided by VA b/c data not yet available via VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              8.04 FREQUENCY (xsi:type='PIVL_TS institutionSpecified='false'
-                              operator='A''), Optional, Not provided by VA b/c data not yet available via
-                              VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              8.05 INTERVAL ( xsi:type='PIVL_TS' institutionSpecified='false'
-                              operator='A'), Optional,Not provided by VA b/c data not yet available via
-                              VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              8.06 DURATION ( xsi:type='PIVL_TS' operator='A'), Optional, Not
-                              provided by VA b/c data not yet available via VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              8.08 DOSE, Optional, Not provided by VA b/c data not yet available
-                              via VA VistA RPCs
-                            </xsl:comment>
+                            <xsl:comment>8.02 INDICATE MEDICATION STOPPPED, Optional, Removed b/c data not yet available via VA VistA RPCs</xsl:comment>
+                            <xsl:comment>8.03 ADMINISTRATION TIMING (xsi:type='EIVL' operator='A'), Optional,Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
+                            <xsl:comment>8.04 FREQUENCY (xsi:type='PIVL_TS institutionSpecified='false'operator='A''), Optional, Not provided by VA b/c data not yet available viaVA VistA RPCs</xsl:comment>
+                            <xsl:comment> 8.05 INTERVAL ( xsi:type='PIVL_TS' institutionSpecified='false' operator='A'), Optional,Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
+                            <xsl:comment> 8.06 DURATION ( xsi:type='PIVL_TS' operator='A'), Optional, Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
+                            <xsl:comment>8.08 DOSE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
                             <consumable>
                               <manufacturedProduct classCode="MANU">
                                 <templateId root="2.16.840.1.113883.10.20.22.4.23" extension="2014-06-09" />
                                 <manufacturedMaterial>
-                                  <xsl:comment>
-                                    8.13 CODED PRODUCT NAME, REQUIRED, UNII, RxNorm, NDF-RT, NDC,
-                                    Not provided by VA b/c data not yet available via VA VistA RPCs
-                                  </xsl:comment>
+                                  <xsl:comment> 8.13 CODED PRODUCT NAME, REQUIRED, UNII, RxNorm, NDF-RT, NDC, Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
                                   <xsl:choose>
                                     <xsl:when test="boolean(DrugProduct/Code)">
                                       <code codeSystem="2.16.840.1.113883.3.88.12.80.16" codeSystemName="RxNorm" code="{DrugProduct/Code/text()}" displayName="{DrugProduct/Description/text()}" >
-                                        <xsl:comment>
-                                          8.14 CODED BRAND NAME, R2, Not provided by VA b/c data not
-                                          yet available via VA VistA RPCs
-                                        </xsl:comment>
+                                        <xsl:comment> 8.14 CODED BRAND NAME, R2, Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
                                         <xsl:comment> 8.15 FREE TEXT PRODUCT NAME, REQUIRED </xsl:comment>
                                         <originalText>
                                           <reference value="{concat('#mndMedication', position())}" />
@@ -2669,10 +2672,7 @@
                                     </xsl:when>
                                     <xsl:otherwise>
                                       <code codeSystem="2.16.840.1.113883.3.88.12.80.16" codeSystemName="RxNorm" nullFlavor="UNK" >
-                                        <xsl:comment>
-                                          8.14 CODED BRAND NAME, R2, Not provided by VA b/c data not
-                                          yet available via VA VistA RPCs
-                                        </xsl:comment>
+                                        <xsl:comment>8.14 CODED BRAND NAME, R2, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
                                         <xsl:comment> 8.15 FREE TEXT PRODUCT NAME, REQUIRED </xsl:comment>
                                         <originalText>
                                           <reference value="{concat('#mndMedication', position())}" />
@@ -2680,10 +2680,7 @@
                                       </code>
                                     </xsl:otherwise>
                                   </xsl:choose>
-                                  <xsl:comment>
-                                    8.16 FREE TEXT BRAND NAME, R2, Not provided by VA b/c data
-                                    not yet available via VA VistA RPCs
-                                  </xsl:comment>
+                                  <xsl:comment> 8.16 FREE TEXT BRAND NAME, R2, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
                                 </manufacturedMaterial>
                               </manufacturedProduct>
                             </consumable>
@@ -2731,22 +2728,10 @@
                               </observation>
                             </entryRelationship>
 
-                            <xsl:comment>
-                              CCD Drug Vehicle Entry, Optional, Not provided by VA b/c data
-                              not yet available via VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              8.24 VEHICLE, Optional, Not provided by VA b/c data not yet available
-                              via VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              CCD Indication Entry, Optional, Not provided by VA b/c data not
-                              yet available via VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              8.21 INDICATION VALUE, Optional, SNOMED CT, Not provided by VA
-                              b/c data not yet available via VA VistA RPCs
-                            </xsl:comment>
+                            <xsl:comment>CCD Drug Vehicle Entry, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
+                            <xsl:comment> 8.24 VEHICLE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
+                            <xsl:comment>CCD Indication Entry, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
+                            <xsl:comment> 8.21 INDICATION VALUE, Optional, SNOMED CT, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
                             <xsl:comment> CCD Medication Supply Order Entry, REQUIRED </xsl:comment>
                             <entryRelationship typeCode='REFR'>
                               <supply classCode="SPLY" moodCode="INT">
@@ -2768,10 +2753,7 @@
                                     <repeatNumber nullFlavor="UNK" />
                                   </xsl:otherwise>
                                 </xsl:choose>
-                                <xsl:comment>
-                                  8.28 QUANTITY ORDERED, R2, Not provided by VA b/c data not
-                                  yet available via VA VistA RPCs
-                                </xsl:comment>
+                                <xsl:comment> 8.28 QUANTITY ORDERED, R2, Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
                                 <!--<product>
 										<manufacturedProduct classCode="MANU">
 											<templateId root="2.16.840.1.113883.10.20.22.4.23" />
@@ -2824,18 +2806,9 @@
                                 </xsl:if>
                               </supply>
                             </entryRelationship>
-                            <xsl:comment>
-                              8.23 REACTION OBSERVATION Entry, Optional, Not provided by VA
-                              b/c data not yet available via VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              CCD PRECONDITION FOR SUBSTANCE ADMINISTRATION ENTRY, Optional,
-                              Not provided by VA b/c data not yet available via VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              8.25 DOSE INDICATOR, Optional, Not provided by VA b/c data not
-                              yet available via VA VistA RPCs
-                            </xsl:comment>
+                            <xsl:comment>8.23 REACTION OBSERVATION Entry, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
+                            <xsl:comment>CCD PRECONDITION FOR SUBSTANCE ADMINISTRATION ENTRY, Optional,Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
+                            <xsl:comment>8.25 DOSE INDICATOR, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
                           </substanceAdministration>
                         </entry>
                       </xsl:when>
@@ -2853,47 +2826,21 @@
                             <effectiveTime xsi:type="IVL_TS">
                               <low nullFlavor="UNK" />
                             </effectiveTime>
-                            <xsl:comment>
-                              8.02 INDICATE MEDICATION STOPPPED, Optional, Removed b/c data
-                              not yet available via VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              8.03 ADMINISTRATION TIMING (xsi:type='EIVL' operator='A'), Optional,
-                              Not provided by VA b/c data not yet available via VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              8.04 FREQUENCY (xsi:type='PIVL_TS institutionSpecified='false'
-                              operator='A''), Optional, Not provided by VA b/c data not yet available via
-                              VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              8.05 INTERVAL ( xsi:type='PIVL_TS' institutionSpecified='false'
-                              operator='A'), Optional,Not provided by VA b/c data not yet available via
-                              VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              8.06 DURATION ( xsi:type='PIVL_TS' operator='A'), Optional, Not
-                              provided by VA b/c data not yet available via VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              8.08 DOSE, Optional, Not provided by VA b/c data not yet available
-                              via VA VistA RPCs
-                            </xsl:comment>
+                            <xsl:comment>8.02 INDICATE MEDICATION STOPPPED, Optional, Removed b/c data not yet available via VA VistA RPCs</xsl:comment>
+                            <xsl:comment>8.03 ADMINISTRATION TIMING (xsi:type='EIVL' operator='A'), Optional,Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
+                            <xsl:comment>8.04 FREQUENCY (xsi:type='PIVL_TS institutionSpecified='false'operator='A''), Optional, Not provided by VA b/c data not yet available viaVA VistA RPCs</xsl:comment>
+                            <xsl:comment> 8.05 INTERVAL ( xsi:type='PIVL_TS' institutionSpecified='false' operator='A'), Optional,Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
+                            <xsl:comment> 8.06 DURATION ( xsi:type='PIVL_TS' operator='A'), Optional, Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
+                            <xsl:comment>8.08 DOSE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
                             <consumable>
                               <manufacturedProduct classCode="MANU">
                                 <templateId root="2.16.840.1.113883.10.20.22.4.23" extension="2014-06-09" />
                                 <manufacturedMaterial>
-                                  <xsl:comment>
-                                    8.13 CODED PRODUCT NAME, REQUIRED, UNII, RxNorm, NDF-RT, NDC,
-                                    Not provided by VA b/c data not yet available via VA VistA RPCs
-                                  </xsl:comment>
+                                  <xsl:comment>8.13 CODED PRODUCT NAME, REQUIRED, UNII, RxNorm, NDF-RT, NDC, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
                                   <xsl:choose>
                                     <xsl:when test="boolean(DrugProduct/Code)">
                                       <code codeSystem="2.16.840.1.113883.3.88.12.80.16" codeSystemName="RxNorm" code="{DrugProduct/Code/text()}" displayName="{DrugProduct/Description/text()}" >
-                                        <xsl:comment>
-                                          8.14 CODED BRAND NAME, R2, Not provided by VA b/c data not
-                                          yet available via VA VistA RPCs
-                                        </xsl:comment>
+                                        <xsl:comment>8.14 CODED BRAND NAME, R2, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
                                         <xsl:comment> 8.15 FREE TEXT PRODUCT NAME, REQUIRED </xsl:comment>
                                         <originalText>
                                           <reference value="{concat('#mndMedication', position())}" />
@@ -2903,10 +2850,7 @@
                                     </xsl:when>
                                     <xsl:otherwise>
                                       <code codeSystem="2.16.840.1.113883.3.88.12.80.16" codeSystemName="RxNorm" nullFlavor="UNK" >
-                                        <xsl:comment>
-                                          8.14 CODED BRAND NAME, R2, Not provided by VA b/c data not
-                                          yet available via VA VistA RPCs
-                                        </xsl:comment>
+                                        <xsl:comment>8.14 CODED BRAND NAME, R2, Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
                                         <xsl:comment> 8.15 FREE TEXT PRODUCT NAME, REQUIRED </xsl:comment>
                                         <originalText>
                                           <reference value="{concat('#mndMedication', position())}" />
@@ -2914,10 +2858,7 @@
                                       </code>
                                     </xsl:otherwise>
                                   </xsl:choose>
-                                  <xsl:comment>
-                                    8.16 FREE TEXT BRAND NAME, R2, Not provided by VA b/c data
-                                    not yet available via VA VistA RPCs
-                                  </xsl:comment>
+                                  <xsl:comment>8.16 FREE TEXT BRAND NAME, R2, Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
                                 </manufacturedMaterial>
                               </manufacturedProduct>
                             </consumable>
@@ -2965,22 +2906,10 @@
                               </observation>
                             </entryRelationship>
 
-                            <xsl:comment>
-                              CCD Drug Vehicle Entry, Optional, Not provided by VA b/c data
-                              not yet available via VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              8.24 VEHICLE, Optional, Not provided by VA b/c data not yet available
-                              via VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              CCD Indication Entry, Optional, Not provided by VA b/c data not
-                              yet available via VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              8.21 INDICATION VALUE, Optional, SNOMED CT, Not provided by VA
-                              b/c data not yet available via VA VistA RPCs
-                            </xsl:comment>
+                            <xsl:comment>CCD Drug Vehicle Entry, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
+                            <xsl:comment> 8.24 VEHICLE, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
+                            <xsl:comment>CCD Indication Entry, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
+                            <xsl:comment> 8.21 INDICATION VALUE, Optional, SNOMED CT, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
                             <xsl:comment> CCD Medication Supply Order Entry, REQUIRED </xsl:comment>
                             <entryRelationship typeCode='REFR'>
                               <supply classCode="SPLY" moodCode="INT">
@@ -3002,10 +2931,7 @@
                                     <repeatNumber nullFlavor="UNK" />
                                   </xsl:otherwise>
                                 </xsl:choose>
-                                <xsl:comment>
-                                  8.28 QUANTITY ORDERED, R2, Not provided by VA b/c data not
-                                  yet available via VA VistA RPCs
-                                </xsl:comment>
+                                <xsl:comment>8.28 QUANTITY ORDERED, R2, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
                                 <!--<product>
 										<manufacturedProduct classCode="MANU">
 											<templateId root="2.16.840.1.113883.10.20.22.4.23" />
@@ -3048,18 +2974,9 @@
                                 </xsl:if>
                               </supply>
                             </entryRelationship>
-                            <xsl:comment>
-                              8.23 REACTION OBSERVATION Entry, Optional, Not provided by VA
-                              b/c data not yet available via VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              CCD PRECONDITION FOR SUBSTANCE ADMINISTRATION ENTRY, Optional,
-                              Not provided by VA b/c data not yet available via VA VistA RPCs
-                            </xsl:comment>
-                            <xsl:comment>
-                              8.25 DOSE INDICATOR, Optional, Not provided by VA b/c data not
-                              yet available via VA VistA RPCs
-                            </xsl:comment>
+                            <xsl:comment>8.23 REACTION OBSERVATION Entry, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
+                            <xsl:comment> CCD PRECONDITION FOR SUBSTANCE ADMINISTRATION ENTRY, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs</xsl:comment>
+                            <xsl:comment> 8.25 DOSE INDICATOR, Optional, Not provided by VA b/c data not yet available via VA VistA RPCs </xsl:comment>
                           </substanceAdministration>
                         </entry>
                       </xsl:otherwise>
