@@ -5657,7 +5657,7 @@
                             <tr>
                               <td>
                                 <xsl:call-template name="tmpDateTemplate" >
-                                  <xsl:with-param name="date-time" select="ObservationTome/text()" />
+                                  <xsl:with-param name="date-time" select="ObservationTime/text()" />
                                   <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
                                 </xsl:call-template>
                               </td>
