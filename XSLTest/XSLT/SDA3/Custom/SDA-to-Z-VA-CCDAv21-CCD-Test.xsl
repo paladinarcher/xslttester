@@ -4149,7 +4149,7 @@
                                 </td>
                                 <td>
                                   <content ID="{concat('rangeLabValues',$lid,'-',position())}">
-                                    <xsl:value-of select="isc:evaluate('strip', ResultNormalRange/text(),'P')" />
+                                    <xsl:value-of select="translate(ResultNormalRange/text(),'\&quot;','')" />
                                   </content>
                                 </td>
                                 <td/>
