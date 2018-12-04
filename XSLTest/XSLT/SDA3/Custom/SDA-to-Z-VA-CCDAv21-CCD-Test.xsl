@@ -710,10 +710,11 @@
                       <thead>
                         <tr>
                           <th>Allergen</th>
-                          <th>Event Date</th>
+                          <th>Date Recorded</th>
                           <th>Event Type</th>
                           <th>Reaction(s)</th>
                           <th>Severity</th>
+                          <th>Allergy Details</th> 
                           <th>Source</th>
                         </tr>
                       </thead>
@@ -756,6 +757,20 @@
                                     <content ID="{concat('andSeverity',position())}">
                                       <xsl:value-of select="Severity/Description/text()" />
                                     </content>
+                                  </td>
+                                  <td>
+                                    <content ID="{concat('andDetails',position())}">
+                                      <xsl:value-of select="Extension/Source/text()" />
+                                    </content>
+                                    <xsl:if test="boolean(Extension/Comments)">
+                                      <list>
+                                        <xsl:for-each select="Extension/Comments/Comment">
+                                          <item>
+                                            <xsl:value-of select="CommentText" />
+                                          </item>
+                                        </xsl:for-each>
+                                      </list>
+                                    </xsl:if>
                                   </td>
                                   <td>
                                     <content ID="{concat('andSource',position())}">
