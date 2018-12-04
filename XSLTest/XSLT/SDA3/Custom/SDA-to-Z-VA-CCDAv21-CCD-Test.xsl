@@ -1435,322 +1435,324 @@
                         </thead>
                         <xsl:for-each select="Problems/Problem[Problem/Code/text() = '408907016' and count(CustomPairs/NVPair) &gt; 19]" >
                           <xsl:sort select="EnteredOn | FromTime" order="descending" />
-                          <tbody>
-                            <tr>
-                              <td>
-                                <content ID="{concat('fimAssessmentDate',position())}">
-                                  <xsl:call-template name="tmpDateTemplate" >
-                                    <xsl:with-param name="date-time" select="(EnteredOn | FromTime)/text()" />
-                                    <xsl:with-param name="pattern" select="'MMM dd, yyyy'" />
-                                  </xsl:call-template>
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimFacility',position())}">
-                                  <xsl:value-of select="EnteredAt/Description/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimAssessment',position())}">
-                                  <xsl:value-of select="Category/Description/text()" />
-                                </content>
-                              </td>
-                              <td/>
-                              <td/>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td>
-                                <content ID="{concat('fimEatName',position())}">Eating</content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimEat',position())}">
-                                  <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Eating']/Value/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimEatDetail',position())}">Self Care</content>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td>
-                                <content ID="{concat('fimGroomName',position())}">Grooming</content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimGroom',position())}">
-                                  <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Grooming']/Value/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimGroomDetail',position())}">Self Care</content>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td>
-                                <content ID="{concat('fimBathName',position())}">Bathing</content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimBath',position())}">
-                                  <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Bathing']/Value/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimBathDetail',position())}">Self Care</content>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td>
-                                <content ID="{concat('fimDressUpName',position())}">Dressing - Upper Body</content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimDressUp',position())}">
-                                  <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Dressing - Upper Body']/Value/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimDressUpDetail',position())}">Self Care</content>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td>
-                                <content ID="{concat('fimDressLoName',position())}">Dressing - Lower Body</content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimDressLo',position())}">
-                                  <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Dressing - Lower Body']/Value/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimDressLoDetail',position())}">Self Care</content>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td>
-                                <content ID="{concat('fimToiletName',position())}">Toileting</content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimToilet',position())}">
-                                  <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Toileting']/Value/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimToiletDetail',position())}">Self Care</content>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td>
-                                <content ID="{concat('fimBladderName',position())}">Bladder Management</content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimBladder',position())}">
-                                  <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Bladder Management']/Value/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimBladderDetail',position())}">Sphincter Control</content>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td>
-                                <content ID="{concat('fimBowelName',position())}">Bowel Management</content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimBowel',position())}">
-                                  <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Bowel Management']/Value/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimBowelDetail',position())}">Sphincter Control</content>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td>
-                                <content ID="{concat('fimTransChairName',position())}">Bed, Chair, Wheelchair</content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimTransChair',position())}">
-                                  <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Bed, Chair, Wheelchair']/Value/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimTransChairDetail',position())}">Transfers</content>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td>
-                                <content ID="{concat('fimTransToiletName',position())}">Toilet</content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimTransToilet',position())}">
-                                  <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Toilet']/Value/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimTransToiletDetail',position())}">Transfers</content>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td>
-                                <content ID="{concat('fimTransTubName',position())}">Tub, Shower</content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimTransTub',position())}">
-                                  <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Tub, Shower']/Value/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimTransTubDetail',position())}">Transfers</content>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td>
-                                <content ID="{concat('fimLocomWalkName',position())}">Walk/Wheelchair</content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimLocomWalk',position())}">
-                                  <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Walk/Wheelchair']/Value/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimLocomWalkDetail',position())}">Locomotion</content>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td>
-                                <content ID="{concat('fimLocomStairName',position())}">Stairs</content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimLocomStair',position())}">
-                                  <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Stairs']/Value/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimLocomStairDetail',position())}">Locomotion</content>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td>
-                                <content ID="{concat('fimComprehendName',position())}">Comprehension</content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimComprehend',position())}">
-                                  <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Comprehension']/Value/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimComprehendDetail',position())}">Communication</content>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td>
-                                <content ID="{concat('fimExpressName',position())}">Expression</content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimExpress',position())}">
-                                  <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Expression']/Value/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimExpressDetail',position())}">Communication</content>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td>
-                                <content ID="{concat('fimInteractName',position())}">Social Interaction</content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimInteract',position())}">
-                                  <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Social Interaction']/Value/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimInteractDetail',position())}">Social Cognition</content>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td>
-                                <content ID="{concat('fimProblemName',position())}">Problem Solving</content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimProblem',position())}">
-                                  <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Problem Solving']/Value/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimProblemDetail',position())}">Social Cognition</content>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td>
-                                <content ID="{concat('fimMemoryName',position())}">Memory</content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimMemory',position())}">
-                                  <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Memory']/Value/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimMemoryDetail',position())}">Social Cognition</content>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td>
-                                <content ID="{concat('fimTotalName',position())}">FIM Total</content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimTotal',position())}">
-                                  <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'FIM Total']/Value/text()" />
-                                </content>
-                              </td>
-                              <td>
-                                <content ID="{concat('fimTotalDetail',position())}" />
-                              </td>
-                            </tr>
-                            <tr>
-                              <td/>
-                              <td/>
-                              <td/>
-                              <td/>
-                              <td/>
-                            </tr>
-                          </tbody>
+                          <xsl:if test="position() &lt; 4">
+                            <tbody>
+                              <tr>
+                                <td>
+                                  <content ID="{concat('fimAssessmentDate',position())}">
+                                    <xsl:call-template name="tmpDateTemplate" >
+                                      <xsl:with-param name="date-time" select="(EnteredOn | FromTime)/text()" />
+                                      <xsl:with-param name="pattern" select="'MMM dd, yyyy'" />
+                                    </xsl:call-template>
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimFacility',position())}">
+                                    <xsl:value-of select="EnteredAt/Description/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimAssessment',position())}">
+                                    <xsl:value-of select="Category/Description/text()" />
+                                  </content>
+                                </td>
+                                <td/>
+                                <td/>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td>
+                                  <content ID="{concat('fimEatName',position())}">Eating</content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimEat',position())}">
+                                    <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Eating']/Value/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimEatDetail',position())}">Self Care</content>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td>
+                                  <content ID="{concat('fimGroomName',position())}">Grooming</content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimGroom',position())}">
+                                    <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Grooming']/Value/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimGroomDetail',position())}">Self Care</content>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td>
+                                  <content ID="{concat('fimBathName',position())}">Bathing</content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimBath',position())}">
+                                    <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Bathing']/Value/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimBathDetail',position())}">Self Care</content>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td>
+                                  <content ID="{concat('fimDressUpName',position())}">Dressing - Upper Body</content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimDressUp',position())}">
+                                    <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Dressing - Upper Body']/Value/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimDressUpDetail',position())}">Self Care</content>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td>
+                                  <content ID="{concat('fimDressLoName',position())}">Dressing - Lower Body</content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimDressLo',position())}">
+                                    <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Dressing - Lower Body']/Value/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimDressLoDetail',position())}">Self Care</content>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td>
+                                  <content ID="{concat('fimToiletName',position())}">Toileting</content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimToilet',position())}">
+                                    <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Toileting']/Value/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimToiletDetail',position())}">Self Care</content>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td>
+                                  <content ID="{concat('fimBladderName',position())}">Bladder Management</content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimBladder',position())}">
+                                    <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Bladder Management']/Value/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimBladderDetail',position())}">Sphincter Control</content>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td>
+                                  <content ID="{concat('fimBowelName',position())}">Bowel Management</content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimBowel',position())}">
+                                    <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Bowel Management']/Value/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimBowelDetail',position())}">Sphincter Control</content>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td>
+                                  <content ID="{concat('fimTransChairName',position())}">Bed, Chair, Wheelchair</content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimTransChair',position())}">
+                                    <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Bed, Chair, Wheelchair']/Value/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimTransChairDetail',position())}">Transfers</content>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td>
+                                  <content ID="{concat('fimTransToiletName',position())}">Toilet</content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimTransToilet',position())}">
+                                    <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Toilet']/Value/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimTransToiletDetail',position())}">Transfers</content>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td>
+                                  <content ID="{concat('fimTransTubName',position())}">Tub, Shower</content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimTransTub',position())}">
+                                    <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Tub, Shower']/Value/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimTransTubDetail',position())}">Transfers</content>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td>
+                                  <content ID="{concat('fimLocomWalkName',position())}">Walk/Wheelchair</content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimLocomWalk',position())}">
+                                    <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Walk/Wheelchair']/Value/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimLocomWalkDetail',position())}">Locomotion</content>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td>
+                                  <content ID="{concat('fimLocomStairName',position())}">Stairs</content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimLocomStair',position())}">
+                                    <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Stairs']/Value/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimLocomStairDetail',position())}">Locomotion</content>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td>
+                                  <content ID="{concat('fimComprehendName',position())}">Comprehension</content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimComprehend',position())}">
+                                    <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Comprehension']/Value/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimComprehendDetail',position())}">Communication</content>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td>
+                                  <content ID="{concat('fimExpressName',position())}">Expression</content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimExpress',position())}">
+                                    <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Expression']/Value/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimExpressDetail',position())}">Communication</content>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td>
+                                  <content ID="{concat('fimInteractName',position())}">Social Interaction</content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimInteract',position())}">
+                                    <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Social Interaction']/Value/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimInteractDetail',position())}">Social Cognition</content>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td>
+                                  <content ID="{concat('fimProblemName',position())}">Problem Solving</content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimProblem',position())}">
+                                    <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Problem Solving']/Value/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimProblemDetail',position())}">Social Cognition</content>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td>
+                                  <content ID="{concat('fimMemoryName',position())}">Memory</content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimMemory',position())}">
+                                    <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'Memory']/Value/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimMemoryDetail',position())}">Social Cognition</content>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td>
+                                  <content ID="{concat('fimTotalName',position())}">FIM Total</content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimTotal',position())}">
+                                    <xsl:value-of select="CustomPairs/NVPair[Name/text() = 'FIM Total']/Value/text()" />
+                                  </content>
+                                </td>
+                                <td>
+                                  <content ID="{concat('fimTotalDetail',position())}" />
+                                </td>
+                              </tr>
+                              <tr>
+                                <td/>
+                                <td/>
+                                <td/>
+                                <td/>
+                                <td/>
+                              </tr>
+                            </tbody>
+                          </xsl:if>
                         </xsl:for-each>
                       </table>
                     </text>
@@ -1780,718 +1782,722 @@
                     <xsl:comment>  FUNCTIONAL STATUS STRUCTURED ENTRIES </xsl:comment>
                     <xsl:for-each select="Problems/Problem[Problem/Code/text() = '408907016' and count(CustomPairs/NVPair) &gt; 19]" >
                       <xsl:sort select="EnteredOn | FromTime" order="descending" />
-                      <entry typeCode="DRIV">
-                        <organizer classCode="CLUSTER" moodCode="EVN">
-                          <xsl:comment> **** Functional Status Result Organizer template **** </xsl:comment>
-                          <templateId root="2.16.840.1.113883.10.20.22.4.66" extension="2014-06-09" />
-                          <id nullFlavor="NI"/>
-                          <xsl:comment> Functional Status Result Organizer Code, ICF or SNOMED CT,  FIM Assessment Type </xsl:comment>
-                          <code nullFlavor="UNK">
-                            <originalText>
-                              <reference value="{concat('#fimAssessment',position())}"/>
-                            </originalText>
-                          </code>
-                          <statusCode code="completed"/>
-                          <xsl:comment> * Information Source for Functional Status, VA Facility  </xsl:comment>
-                          <author>
-                            <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                            <time nullFlavor="NA"/>
-                            <assignedAuthor>
-                              <id nullFlavor="NI"/>
-                              <addr nullFlavor="NA" />
-                              <telecom nullFlavor="NA" />
-                              <representedOrganization>
-                                <id extension="{EnteredAt/Code/text()}" root="2.16.840.1.113883.3.1275"/>
-                                <name><xsl:value-of select="EnteredAt/Description/text()"/></name>
-                              </representedOrganization>
-                            </assignedAuthor>
-                          </author>
-                          <component>
-                            <xsl:comment> Functional Status Result Observation  </xsl:comment>
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
-                              <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
-                              <id nullFlavor="NI" />
-                              <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
-                              <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
-                              <text>
-                                <reference value="{concat('#fimEatName',position())}"/>
-                              </text>
-                              <statusCode code="completed"/>
-                              <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                              <effectiveTime>
-                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ','')}"/>
-                              </effectiveTime>
-                              <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
-                              <value nullFlavor="NA" xsi:type="CD">
-                                <translation nullFlavor="UNK">
-                                  <originalText>
-                                    <reference value="{concat('#fimEat',position())}"/>
-                                  </originalText>
-                                </translation>
-                              </value>
-                              <xsl:comment>   Functional Status Result Observation Comment, FIM Details </xsl:comment>
-                              <entryRelationship inversionInd="true" typeCode="SUBJ">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
-                                  <text>
-                                    <reference value="{concat('#fimEatDetail',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                            </observation>
-                          </component>
-                          <component>
-                            <xsl:comment>  Functional Status Result Observation  </xsl:comment>
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
-                              <xsl:comment>  Functional Status Result Observation ID  </xsl:comment>
-                              <id nullFlavor="NI" />
-                              <xsl:comment>   Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
-                              <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
-                              <text>
-                                <reference value="{concat('#fimGroomName',position())}"/>
-                              </text>
-                              <statusCode code="completed"/>
-                              <xsl:comment>  Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                              <effectiveTime>
-                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                              </effectiveTime>
-                              <xsl:comment>   Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
-                              <value nullFlavor="NA" xsi:type="CD">
-                                <translation nullFlavor="UNK">
-                                  <originalText>
-                                    <reference value="{concat('#fimGroom',position())}"/>
-                                  </originalText>
-                                </translation>
-                              </value>
-                              <xsl:comment>Functional Status Result Observation Comment, FIM Details </xsl:comment>
-                              <entryRelationship inversionInd="true" typeCode="SUBJ">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
-                                  <text>
-                                    <reference value="{concat('#fimGroomDetail',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                            </observation>
-                          </component>
-                          <component>
-                            <xsl:comment> Functional Status Result Observation  </xsl:comment>
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
-                              <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
-                              <id nullFlavor="NI" />
-                              <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
-                              <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
-                              <text>
-                                <reference value="{concat('#fimBathName',position())}"/>
-                              </text>
-                              <statusCode code="completed"/>
-                              <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                              <effectiveTime>
-                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                              </effectiveTime>
-                              <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
-                              <value nullFlavor="NA" xsi:type="CD">
-                                <translation nullFlavor="UNK">
-                                  <originalText>
-                                    <reference value="{concat('#fimBath',position())}"/>
-                                  </originalText>
-                                </translation>
-                              </value>
-                              <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
-                              <entryRelationship inversionInd="true" typeCode="SUBJ">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
-                                  <text>
-                                    <reference value="{concat('#fimBathDetail',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                            </observation>
-                          </component>
-                          <component>
-                            <xsl:comment> Functional Status Result Observation  </xsl:comment>
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
-                              <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
-                              <id nullFlavor="NI" />
-                              <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
-                              <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
-                              <text>
-                                <reference value="{concat('#fimDressUpName',position())}"/>
-                              </text>
-                              <statusCode code="completed"/>
-                              <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                              <effectiveTime>
-                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                              </effectiveTime>
-                              <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
-                              <value nullFlavor="NA" xsi:type="CD">
-                                <translation nullFlavor="UNK">
-                                  <originalText>
-                                    <reference value="{concat('#fimDressUp',position())}"/>
-                                  </originalText>
-                                </translation>
-                              </value>
-                              <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
-                              <entryRelationship inversionInd="true" typeCode="SUBJ">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
-                                  <text>
-                                    <reference value="{concat('#fimDressUpDetail',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                            </observation>
-                          </component>
-                          <component>
-                            <xsl:comment> Functional Status Result Observation  </xsl:comment>
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
-                              <xsl:comment> Functional Status Result Observation ID </xsl:comment>
-                              <id nullFlavor="NI" />
-                              <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
-                              <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
-                              <text>
-                                <reference value="{concat('#fimDressLoName',position())}"/>
-                              </text>
-                              <statusCode code="completed"/>
-                              <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                              <effectiveTime>
-                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                              </effectiveTime>
-                              <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
-                              <value nullFlavor="NA" xsi:type="CD">
-                                <translation nullFlavor="UNK">
-                                  <originalText>
-                                    <reference value="{concat('#fimDressLo',position())}"/>
-                                  </originalText>
-                                </translation>
-                              </value>
-                              <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
-                              <entryRelationship inversionInd="true" typeCode="SUBJ">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
-                                  <text>
-                                    <reference value="{concat('#fimDressLoDetail',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                            </observation>
-                          </component>
-                          <component>
-                            <xsl:comment> Functional Status Result Observation  </xsl:comment>
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
-                              <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
-                              <id nullFlavor="NI" />
-                              <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
-                              <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
-                              <text>
-                                <reference value="{concat('#fimToiletName',position())}"/>
-                              </text>
-                              <statusCode code="completed"/>
-                              <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                              <effectiveTime>
-                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                              </effectiveTime>
-                              <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
-                              <value nullFlavor="NA" xsi:type="CD">
-                                <translation nullFlavor="UNK">
-                                  <originalText>
-                                    <reference value="{concat('#fimToilet',position())}"/>
-                                  </originalText>
-                                </translation>
-                              </value>
-                              <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
-                              <entryRelationship inversionInd="true" typeCode="SUBJ">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
-                                  <text>
-                                    <reference value="{concat('#fimToiletDetail',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                            </observation>
-                          </component>
-                          <component>
-                            <xsl:comment> Functional Status Result Observation  </xsl:comment>
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
-                              <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
-                              <id nullFlavor="NI" />
-                              <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
-                              <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
-                              <text>
-                                <reference value="{concat('#fimBladderName',position())}"/>
-                              </text>
-                              <statusCode code="completed"/>
-                              <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                              <effectiveTime>
-                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                              </effectiveTime>
-                              <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
-                              <value nullFlavor="NA" xsi:type="CD">
-                                <translation nullFlavor="UNK">
-                                  <originalText>
-                                    <reference value="{concat('#fimBladder',position())}"/>
-                                  </originalText>
-                                </translation>
-                              </value>
-                              <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
-                              <entryRelationship inversionInd="true" typeCode="SUBJ">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
-                                  <text>
-                                    <reference value="{concat('#fimBladderDetail',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                            </observation>
-                          </component>
-                          <component>
-                            <xsl:comment> Functional Status Result Observation  </xsl:comment>
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
-                              <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
-                              <id nullFlavor="NI" />
-                              <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
-                              <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
-                              <text>
-                                <reference value="{concat('#fimBowelName',position())}"/>
-                              </text>
-                              <statusCode code="completed"/>
-                              <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                              <effectiveTime>
-                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                              </effectiveTime>
-                              <xsl:comment>Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
-                              <value nullFlavor="NA" xsi:type="CD">
-                                <translation nullFlavor="UNK">
-                                  <originalText>
-                                    <reference value="{concat('#fimBowel',position())}"/>
-                                  </originalText>
-                                </translation>
-                              </value>
-                              <xsl:comment>Functional Status Result Observation Comment, FIM Details </xsl:comment>
-                              <entryRelationship inversionInd="true" typeCode="SUBJ">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
-                                  <text>
-                                    <reference value="{concat('#fimBowelDetail',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                            </observation>
-                          </component>
-                          <component>
-                            <xsl:comment> Functional Status Result Observation  </xsl:comment>
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                              <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
-                              <id nullFlavor="NI" />
-                              <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
-                              <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
-                              <text>
-                                <reference value="{concat('#fimTransChairName',position())}"/>
-                              </text>
-                              <statusCode code="completed"/>
-                              <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                              <effectiveTime>
-                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                              </effectiveTime>
-                              <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
-                              <value nullFlavor="NA" xsi:type="CD">
-                                <translation nullFlavor="UNK">
-                                  <originalText>
-                                    <reference value="{concat('#fimTransChair',position())}"/>
-                                  </originalText>
-                                </translation>
-                              </value>
-                              <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
-                              <entryRelationship inversionInd="true" typeCode="SUBJ">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
-                                  <text>
-                                    <reference value="{concat('#fimTransChairDetail',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                            </observation>
-                          </component>
-                          <component>
-                            <xsl:comment> Functional Status Result Observation  </xsl:comment>
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                              <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
-                              <id nullFlavor="NI" />
-                              <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
-                              <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
-                              <text>
-                                <reference value="{concat('#fimTransToiletName',position())}"/>
-                              </text>
-                              <statusCode code="completed"/>
-                              <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                              <effectiveTime>
-                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                              </effectiveTime>
-                              <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
-                              <value nullFlavor="NA" xsi:type="CD">
-                                <translation nullFlavor="UNK">
-                                  <originalText>
-                                    <reference value="{concat('#fimTransToilet',position())}"/>
-                                  </originalText>
-                                </translation>
-                              </value>
-                              <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
-                              <entryRelationship inversionInd="true" typeCode="SUBJ">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
-                                  <text>
-                                    <reference value="{concat('#fimTransToiletDetail',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                            </observation>
-                          </component>
-                          <component>
-                            <xsl:comment> Functional Status Result Observation  </xsl:comment>
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                              <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
-                              <id nullFlavor="NI" />
-                              <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
-                              <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
-                              <text>
-                                <reference value="{concat('#fimTransTubName',position())}"/>
-                              </text>
-                              <statusCode code="completed"/>
-                              <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                              <effectiveTime>
-                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                              </effectiveTime>
-                              <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
-                              <value nullFlavor="NA" xsi:type="CD">
-                                <translation nullFlavor="UNK">
-                                  <originalText>
-                                    <reference value="{concat('#fimTransTub',position())}"/>
-                                  </originalText>
-                                </translation>
-                              </value>
-                              <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
-                              <entryRelationship inversionInd="true" typeCode="SUBJ">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
-                                  <text>
-                                    <reference value="{concat('#fimTransTubDetail',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                            </observation>
-                          </component>
-                          <component>
-                            <xsl:comment> Functional Status Result Observation  </xsl:comment>
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                              <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
-                              <id nullFlavor="NI" />
-                              <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
-                              <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
-                              <text>
-                                <reference value="{concat('#fimLocomWalkName',position())}"/>
-                              </text>
-                              <statusCode code="completed"/>
-                              <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                              <effectiveTime>
-                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                              </effectiveTime>
-                              <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
-                              <value nullFlavor="NA" xsi:type="CD">
-                                <translation nullFlavor="UNK">
-                                  <originalText>
-                                    <reference value="{concat('#fimLocomWalk',position())}"/>
-                                  </originalText>
-                                </translation>
-                              </value>
-                              <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
-                              <entryRelationship inversionInd="true" typeCode="SUBJ">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
-                                  <text>
-                                    <reference value="{concat('#fimLocomWalkDetail',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                            </observation>
-                          </component>
-                          <component>
-                            <xsl:comment> Functional Status Result Observation  </xsl:comment>
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                              <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
-                              <id nullFlavor="NI" />
-                              <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
-                              <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
-                              <text>
-                                <reference value="{concat('#fimLocomStairName',position())}"/>
-                              </text>
-                              <statusCode code="completed"/>
-                              <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                              <effectiveTime>
-                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                              </effectiveTime>
-                              <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
-                              <value nullFlavor="NA" xsi:type="CD">
-                                <translation nullFlavor="UNK">
-                                  <originalText>
-                                    <reference value="{concat('#fimLocomStair',position())}"/>
-                                  </originalText>
-                                </translation>
-                              </value>
-                              <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
-                              <entryRelationship inversionInd="true" typeCode="SUBJ">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
-                                  <text>
-                                    <reference value="{concat('#fimLocomStairDetail',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                            </observation>
-                          </component>
-                          <component>
-                            <xsl:comment> Functional Status Result Observation  </xsl:comment>
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                              <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
-                              <id nullFlavor="NI" />
-                              <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
-                              <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
-                              <text>
-                                <reference value="{concat('#fimComprehendName',position())}"/>
-                              </text>
-                              <statusCode code="completed"/>
-                              <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                              <effectiveTime>
-                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                              </effectiveTime>
-                              <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
-                              <value nullFlavor="NA" xsi:type="CD">
-                                <translation nullFlavor="UNK">
-                                  <originalText>
-                                    <reference value="{concat('#fimComprehend',position())}"/>
-                                  </originalText>
-                                </translation>
-                              </value>
-                              <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
-                              <entryRelationship inversionInd="true" typeCode="SUBJ">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
-                                  <text>
-                                    <reference value="{concat('#fimComprehendDetail',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                            </observation>
-                          </component>
-                          <component>
-                            <xsl:comment> Functional Status Result Observation  </xsl:comment>
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                              <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
-                              <id nullFlavor="NI" />
-                              <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
-                              <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
-                              <text>
-                                <reference value="{concat('#fimExpressName',position())}"/>
-                              </text>
-                              <statusCode code="completed"/>
-                              <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                              <effectiveTime>
-                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                              </effectiveTime>
-                              <xsl:comment>-  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
-                              <value nullFlavor="NA" xsi:type="CD">
-                                <translation nullFlavor="UNK">
-                                  <originalText>
-                                    <reference value="{concat('#fimExpress',position())}"/>
-                                  </originalText>
-                                </translation>
-                              </value>
-                              <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
-                              <entryRelationship inversionInd="true" typeCode="SUBJ">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
-                                  <text>
-                                    <reference value="{concat('#fimExpressDetail',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                            </observation>
-                          </component>
-                          <component>
-                            <xsl:comment> Functional Status Result Observation  </xsl:comment>
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                              <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
-                              <id nullFlavor="NI" />
-                              <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
-                              <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
-                              <text>
-                                <reference value="{concat('#fimInteractName',position())}"/>
-                              </text>
-                              <statusCode code="completed"/>
-                              <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                              <effectiveTime>
-                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                              </effectiveTime>
-                              <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
-                              <value nullFlavor="NA" xsi:type="CD">
-                                <translation nullFlavor="UNK">
-                                  <originalText>
-                                    <reference value="{concat('#fimInteract',position())}"/>
-                                  </originalText>
-                                </translation>
-                              </value>
-                              <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
-                              <entryRelationship inversionInd="true" typeCode="SUBJ">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
-                                  <text>
-                                    <reference value="{concat('#fimInteractDetail',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                            </observation>
-                          </component>
-                          <component>
-                            <xsl:comment> Functional Status Result Observation  </xsl:comment>
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                              <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
-                              <id nullFlavor="NI" />
-                              <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
-                              <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
-                              <text>
-                                <reference value="{concat('#fimProblemName',position())}"/>
-                              </text>
-                              <statusCode code="completed"/>
-                              <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                              <effectiveTime>
-                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                              </effectiveTime>
-                              <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
-                              <value nullFlavor="NA" xsi:type="CD">
-                                <translation nullFlavor="UNK">
-                                  <originalText>
-                                    <reference value="{concat('#fimProblem',position())}"/>
-                                  </originalText>
-                                </translation>
-                              </value>
-                              <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
-                              <entryRelationship inversionInd="true" typeCode="SUBJ">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
-                                  <text>
-                                    <reference value="{concat('#fimProblemDetail',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                            </observation>
-                          </component>
-                          <component>
-                            <xsl:comment> Functional Status Result Observation  </xsl:comment>
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                              <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
-                              <id nullFlavor="NI" />
-                              <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
-                              <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
-                              <text>
-                                <reference value="{concat('#fimMemoryName',position())}"/>
-                              </text>
-                              <statusCode code="completed"/>
-                              <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                              <effectiveTime>
-                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                              </effectiveTime>
-                              <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
-                              <value nullFlavor="NA" xsi:type="CD">
-                                <translation nullFlavor="UNK">
-                                  <originalText>
-                                    <reference value="{concat('#fimMemory',position())}"/>
-                                  </originalText>
-                                </translation>
-                              </value>
-                              <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
-                              <entryRelationship inversionInd="true" typeCode="SUBJ">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
-                                  <text>
-                                    <reference value="{concat('#fimMemoryDetail',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                            </observation>
-                          </component>
-                          <component>
-                            <xsl:comment>Functional Status Result Observation  </xsl:comment>
-                            <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
-                              <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
-                              <id nullFlavor="NI" />
-                              <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
-                              <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
-                              <text>
-                                <reference value="{concat('#fimTotalName',position())}"/>
-                              </text>
-                              <statusCode code="completed"/>
-                              <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                              <effectiveTime>
-                                <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                              </effectiveTime>
-                              <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
-                              <value nullFlavor="NA" xsi:type="CD">
-                                <translation nullFlavor="UNK">
-                                  <originalText>
-                                    <reference value="{concat('#fimTotal',position())}"/>
-                                  </originalText>
-                                </translation>
-                              </value>
-                              <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
-                              <entryRelationship inversionInd="true" typeCode="SUBJ">
-                                <act classCode="ACT" moodCode="EVN">
-                                  <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
-                                  <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
-                                  <text>
-                                    <reference value="{concat('#fimTotalDetail',position())}"/>
-                                  </text>
-                                </act>
-                              </entryRelationship>
-                            </observation>
-                          </component>
-                        </organizer>
-                      </entry>
+                      <xsl:if test="position() &lt; 4">
+                        <entry typeCode="DRIV">
+                          <organizer classCode="CLUSTER" moodCode="EVN">
+                            <xsl:comment> **** Functional Status Result Organizer template **** </xsl:comment>
+                            <templateId root="2.16.840.1.113883.10.20.22.4.66" extension="2014-06-09" />
+                            <id nullFlavor="NI"/>
+                            <xsl:comment> Functional Status Result Organizer Code, ICF or SNOMED CT,  FIM Assessment Type </xsl:comment>
+                            <code nullFlavor="UNK">
+                              <originalText>
+                                <reference value="{concat('#fimAssessment',position())}"/>
+                              </originalText>
+                            </code>
+                            <statusCode code="completed"/>
+                            <xsl:comment> * Information Source for Functional Status, VA Facility  </xsl:comment>
+                            <author>
+                              <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                              <time nullFlavor="NA"/>
+                              <assignedAuthor>
+                                <id nullFlavor="NI"/>
+                                <addr nullFlavor="NA" />
+                                <telecom nullFlavor="NA" />
+                                <representedOrganization>
+                                  <id extension="{EnteredAt/Code/text()}" root="2.16.840.1.113883.3.1275"/>
+                                  <name>
+                                    <xsl:value-of select="EnteredAt/Description/text()"/>
+                                  </name>
+                                </representedOrganization>
+                              </assignedAuthor>
+                            </author>
+                            <component>
+                              <xsl:comment> Functional Status Result Observation  </xsl:comment>
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
+                                <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
+                                <id nullFlavor="NI" />
+                                <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
+                                <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
+                                <text>
+                                  <reference value="{concat('#fimEatName',position())}"/>
+                                </text>
+                                <statusCode code="completed"/>
+                                <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
+                                <effectiveTime>
+                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ','')}"/>
+                                </effectiveTime>
+                                <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
+                                <value nullFlavor="NA" xsi:type="CD">
+                                  <translation nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#fimEat',position())}"/>
+                                    </originalText>
+                                  </translation>
+                                </value>
+                                <xsl:comment>   Functional Status Result Observation Comment, FIM Details </xsl:comment>
+                                <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
+                                    <text>
+                                      <reference value="{concat('#fimEatDetail',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                              </observation>
+                            </component>
+                            <component>
+                              <xsl:comment>  Functional Status Result Observation  </xsl:comment>
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
+                                <xsl:comment>  Functional Status Result Observation ID  </xsl:comment>
+                                <id nullFlavor="NI" />
+                                <xsl:comment>   Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
+                                <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
+                                <text>
+                                  <reference value="{concat('#fimGroomName',position())}"/>
+                                </text>
+                                <statusCode code="completed"/>
+                                <xsl:comment>  Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
+                                <effectiveTime>
+                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
+                                </effectiveTime>
+                                <xsl:comment>   Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
+                                <value nullFlavor="NA" xsi:type="CD">
+                                  <translation nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#fimGroom',position())}"/>
+                                    </originalText>
+                                  </translation>
+                                </value>
+                                <xsl:comment>Functional Status Result Observation Comment, FIM Details </xsl:comment>
+                                <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
+                                    <text>
+                                      <reference value="{concat('#fimGroomDetail',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                              </observation>
+                            </component>
+                            <component>
+                              <xsl:comment> Functional Status Result Observation  </xsl:comment>
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
+                                <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
+                                <id nullFlavor="NI" />
+                                <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
+                                <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
+                                <text>
+                                  <reference value="{concat('#fimBathName',position())}"/>
+                                </text>
+                                <statusCode code="completed"/>
+                                <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
+                                <effectiveTime>
+                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
+                                </effectiveTime>
+                                <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
+                                <value nullFlavor="NA" xsi:type="CD">
+                                  <translation nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#fimBath',position())}"/>
+                                    </originalText>
+                                  </translation>
+                                </value>
+                                <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
+                                <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
+                                    <text>
+                                      <reference value="{concat('#fimBathDetail',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                              </observation>
+                            </component>
+                            <component>
+                              <xsl:comment> Functional Status Result Observation  </xsl:comment>
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
+                                <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
+                                <id nullFlavor="NI" />
+                                <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
+                                <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
+                                <text>
+                                  <reference value="{concat('#fimDressUpName',position())}"/>
+                                </text>
+                                <statusCode code="completed"/>
+                                <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
+                                <effectiveTime>
+                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
+                                </effectiveTime>
+                                <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
+                                <value nullFlavor="NA" xsi:type="CD">
+                                  <translation nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#fimDressUp',position())}"/>
+                                    </originalText>
+                                  </translation>
+                                </value>
+                                <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
+                                <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
+                                    <text>
+                                      <reference value="{concat('#fimDressUpDetail',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                              </observation>
+                            </component>
+                            <component>
+                              <xsl:comment> Functional Status Result Observation  </xsl:comment>
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
+                                <xsl:comment> Functional Status Result Observation ID </xsl:comment>
+                                <id nullFlavor="NI" />
+                                <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
+                                <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
+                                <text>
+                                  <reference value="{concat('#fimDressLoName',position())}"/>
+                                </text>
+                                <statusCode code="completed"/>
+                                <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
+                                <effectiveTime>
+                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
+                                </effectiveTime>
+                                <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
+                                <value nullFlavor="NA" xsi:type="CD">
+                                  <translation nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#fimDressLo',position())}"/>
+                                    </originalText>
+                                  </translation>
+                                </value>
+                                <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
+                                <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
+                                    <text>
+                                      <reference value="{concat('#fimDressLoDetail',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                              </observation>
+                            </component>
+                            <component>
+                              <xsl:comment> Functional Status Result Observation  </xsl:comment>
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
+                                <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
+                                <id nullFlavor="NI" />
+                                <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
+                                <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
+                                <text>
+                                  <reference value="{concat('#fimToiletName',position())}"/>
+                                </text>
+                                <statusCode code="completed"/>
+                                <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
+                                <effectiveTime>
+                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
+                                </effectiveTime>
+                                <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
+                                <value nullFlavor="NA" xsi:type="CD">
+                                  <translation nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#fimToilet',position())}"/>
+                                    </originalText>
+                                  </translation>
+                                </value>
+                                <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
+                                <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
+                                    <text>
+                                      <reference value="{concat('#fimToiletDetail',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                              </observation>
+                            </component>
+                            <component>
+                              <xsl:comment> Functional Status Result Observation  </xsl:comment>
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
+                                <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
+                                <id nullFlavor="NI" />
+                                <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
+                                <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
+                                <text>
+                                  <reference value="{concat('#fimBladderName',position())}"/>
+                                </text>
+                                <statusCode code="completed"/>
+                                <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
+                                <effectiveTime>
+                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
+                                </effectiveTime>
+                                <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
+                                <value nullFlavor="NA" xsi:type="CD">
+                                  <translation nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#fimBladder',position())}"/>
+                                    </originalText>
+                                  </translation>
+                                </value>
+                                <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
+                                <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
+                                    <text>
+                                      <reference value="{concat('#fimBladderDetail',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                              </observation>
+                            </component>
+                            <component>
+                              <xsl:comment> Functional Status Result Observation  </xsl:comment>
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
+                                <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
+                                <id nullFlavor="NI" />
+                                <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
+                                <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
+                                <text>
+                                  <reference value="{concat('#fimBowelName',position())}"/>
+                                </text>
+                                <statusCode code="completed"/>
+                                <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
+                                <effectiveTime>
+                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
+                                </effectiveTime>
+                                <xsl:comment>Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
+                                <value nullFlavor="NA" xsi:type="CD">
+                                  <translation nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#fimBowel',position())}"/>
+                                    </originalText>
+                                  </translation>
+                                </value>
+                                <xsl:comment>Functional Status Result Observation Comment, FIM Details </xsl:comment>
+                                <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
+                                    <text>
+                                      <reference value="{concat('#fimBowelDetail',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                              </observation>
+                            </component>
+                            <component>
+                              <xsl:comment> Functional Status Result Observation  </xsl:comment>
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
+                                <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
+                                <id nullFlavor="NI" />
+                                <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
+                                <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
+                                <text>
+                                  <reference value="{concat('#fimTransChairName',position())}"/>
+                                </text>
+                                <statusCode code="completed"/>
+                                <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
+                                <effectiveTime>
+                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
+                                </effectiveTime>
+                                <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
+                                <value nullFlavor="NA" xsi:type="CD">
+                                  <translation nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#fimTransChair',position())}"/>
+                                    </originalText>
+                                  </translation>
+                                </value>
+                                <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
+                                <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
+                                    <text>
+                                      <reference value="{concat('#fimTransChairDetail',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                              </observation>
+                            </component>
+                            <component>
+                              <xsl:comment> Functional Status Result Observation  </xsl:comment>
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
+                                <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
+                                <id nullFlavor="NI" />
+                                <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
+                                <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
+                                <text>
+                                  <reference value="{concat('#fimTransToiletName',position())}"/>
+                                </text>
+                                <statusCode code="completed"/>
+                                <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
+                                <effectiveTime>
+                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
+                                </effectiveTime>
+                                <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
+                                <value nullFlavor="NA" xsi:type="CD">
+                                  <translation nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#fimTransToilet',position())}"/>
+                                    </originalText>
+                                  </translation>
+                                </value>
+                                <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
+                                <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
+                                    <text>
+                                      <reference value="{concat('#fimTransToiletDetail',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                              </observation>
+                            </component>
+                            <component>
+                              <xsl:comment> Functional Status Result Observation  </xsl:comment>
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
+                                <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
+                                <id nullFlavor="NI" />
+                                <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
+                                <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
+                                <text>
+                                  <reference value="{concat('#fimTransTubName',position())}"/>
+                                </text>
+                                <statusCode code="completed"/>
+                                <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
+                                <effectiveTime>
+                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
+                                </effectiveTime>
+                                <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
+                                <value nullFlavor="NA" xsi:type="CD">
+                                  <translation nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#fimTransTub',position())}"/>
+                                    </originalText>
+                                  </translation>
+                                </value>
+                                <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
+                                <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
+                                    <text>
+                                      <reference value="{concat('#fimTransTubDetail',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                              </observation>
+                            </component>
+                            <component>
+                              <xsl:comment> Functional Status Result Observation  </xsl:comment>
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
+                                <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
+                                <id nullFlavor="NI" />
+                                <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
+                                <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
+                                <text>
+                                  <reference value="{concat('#fimLocomWalkName',position())}"/>
+                                </text>
+                                <statusCode code="completed"/>
+                                <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
+                                <effectiveTime>
+                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
+                                </effectiveTime>
+                                <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
+                                <value nullFlavor="NA" xsi:type="CD">
+                                  <translation nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#fimLocomWalk',position())}"/>
+                                    </originalText>
+                                  </translation>
+                                </value>
+                                <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
+                                <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
+                                    <text>
+                                      <reference value="{concat('#fimLocomWalkDetail',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                              </observation>
+                            </component>
+                            <component>
+                              <xsl:comment> Functional Status Result Observation  </xsl:comment>
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
+                                <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
+                                <id nullFlavor="NI" />
+                                <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
+                                <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
+                                <text>
+                                  <reference value="{concat('#fimLocomStairName',position())}"/>
+                                </text>
+                                <statusCode code="completed"/>
+                                <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
+                                <effectiveTime>
+                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
+                                </effectiveTime>
+                                <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
+                                <value nullFlavor="NA" xsi:type="CD">
+                                  <translation nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#fimLocomStair',position())}"/>
+                                    </originalText>
+                                  </translation>
+                                </value>
+                                <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
+                                <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
+                                    <text>
+                                      <reference value="{concat('#fimLocomStairDetail',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                              </observation>
+                            </component>
+                            <component>
+                              <xsl:comment> Functional Status Result Observation  </xsl:comment>
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
+                                <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
+                                <id nullFlavor="NI" />
+                                <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
+                                <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
+                                <text>
+                                  <reference value="{concat('#fimComprehendName',position())}"/>
+                                </text>
+                                <statusCode code="completed"/>
+                                <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
+                                <effectiveTime>
+                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
+                                </effectiveTime>
+                                <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
+                                <value nullFlavor="NA" xsi:type="CD">
+                                  <translation nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#fimComprehend',position())}"/>
+                                    </originalText>
+                                  </translation>
+                                </value>
+                                <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
+                                <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
+                                    <text>
+                                      <reference value="{concat('#fimComprehendDetail',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                              </observation>
+                            </component>
+                            <component>
+                              <xsl:comment> Functional Status Result Observation  </xsl:comment>
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
+                                <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
+                                <id nullFlavor="NI" />
+                                <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
+                                <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
+                                <text>
+                                  <reference value="{concat('#fimExpressName',position())}"/>
+                                </text>
+                                <statusCode code="completed"/>
+                                <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
+                                <effectiveTime>
+                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
+                                </effectiveTime>
+                                <xsl:comment>-  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
+                                <value nullFlavor="NA" xsi:type="CD">
+                                  <translation nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#fimExpress',position())}"/>
+                                    </originalText>
+                                  </translation>
+                                </value>
+                                <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
+                                <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
+                                    <text>
+                                      <reference value="{concat('#fimExpressDetail',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                              </observation>
+                            </component>
+                            <component>
+                              <xsl:comment> Functional Status Result Observation  </xsl:comment>
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
+                                <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
+                                <id nullFlavor="NI" />
+                                <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
+                                <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
+                                <text>
+                                  <reference value="{concat('#fimInteractName',position())}"/>
+                                </text>
+                                <statusCode code="completed"/>
+                                <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
+                                <effectiveTime>
+                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
+                                </effectiveTime>
+                                <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
+                                <value nullFlavor="NA" xsi:type="CD">
+                                  <translation nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#fimInteract',position())}"/>
+                                    </originalText>
+                                  </translation>
+                                </value>
+                                <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
+                                <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
+                                    <text>
+                                      <reference value="{concat('#fimInteractDetail',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                              </observation>
+                            </component>
+                            <component>
+                              <xsl:comment> Functional Status Result Observation  </xsl:comment>
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
+                                <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
+                                <id nullFlavor="NI" />
+                                <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
+                                <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
+                                <text>
+                                  <reference value="{concat('#fimProblemName',position())}"/>
+                                </text>
+                                <statusCode code="completed"/>
+                                <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
+                                <effectiveTime>
+                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
+                                </effectiveTime>
+                                <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
+                                <value nullFlavor="NA" xsi:type="CD">
+                                  <translation nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#fimProblem',position())}"/>
+                                    </originalText>
+                                  </translation>
+                                </value>
+                                <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
+                                <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
+                                    <text>
+                                      <reference value="{concat('#fimProblemDetail',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                              </observation>
+                            </component>
+                            <component>
+                              <xsl:comment> Functional Status Result Observation  </xsl:comment>
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
+                                <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
+                                <id nullFlavor="NI" />
+                                <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
+                                <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
+                                <text>
+                                  <reference value="{concat('#fimMemoryName',position())}"/>
+                                </text>
+                                <statusCode code="completed"/>
+                                <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
+                                <effectiveTime>
+                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
+                                </effectiveTime>
+                                <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
+                                <value nullFlavor="NA" xsi:type="CD">
+                                  <translation nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#fimMemory',position())}"/>
+                                    </originalText>
+                                  </translation>
+                                </value>
+                                <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
+                                <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
+                                    <text>
+                                      <reference value="{concat('#fimMemoryDetail',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                              </observation>
+                            </component>
+                            <component>
+                              <xsl:comment>Functional Status Result Observation  </xsl:comment>
+                              <observation classCode="OBS" moodCode="EVN">
+                                <templateId root="2.16.840.1.113883.10.20.22.4.67"/>
+                                <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
+                                <id nullFlavor="NI" />
+                                <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
+                                <code code="54522-8" displayName="Functional status" codeSystem="2.16.840.1.113883.6.1" codeSystemName="SNOMED CT" />
+                                <text>
+                                  <reference value="{concat('#fimTotalName',position())}"/>
+                                </text>
+                                <statusCode code="completed"/>
+                                <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
+                                <effectiveTime>
+                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
+                                </effectiveTime>
+                                <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
+                                <value nullFlavor="NA" xsi:type="CD">
+                                  <translation nullFlavor="UNK">
+                                    <originalText>
+                                      <reference value="{concat('#fimTotal',position())}"/>
+                                    </originalText>
+                                  </translation>
+                                </value>
+                                <xsl:comment>  Functional Status Result Observation Comment, FIM Details </xsl:comment>
+                                <entryRelationship inversionInd="true" typeCode="SUBJ">
+                                  <act classCode="ACT" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.22.4.64"/>
+                                    <code code="48767-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Annotation comment"/>
+                                    <text>
+                                      <reference value="{concat('#fimTotalDetail',position())}"/>
+                                    </text>
+                                  </act>
+                                </entryRelationship>
+                              </observation>
+                            </component>
+                          </organizer>
+                        </entry>
+                      </xsl:if>
                     </xsl:for-each>
                   </section>
               </xsl:otherwise>
@@ -5344,79 +5350,83 @@
                       <tbody>
                         <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'RA' and not(Extension/NationalTitle/Code/text() = 217)]">
                           <xsl:sort select="DocumentTime" order="descending" />
-                          <tr>
-                            <td>
-                              <content ID="{concat('ranoteDateTime',position())}">
-                                <xsl:call-template name="tmpDateTemplate" >
-                                  <xsl:with-param name="date-time" select="DocumentTime/text()" />
-                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
-                                </xsl:call-template>
-                              </content>
-                            </td>
-                            <td>
-                              <content ID="{concat('ranoteEncounterDescription',position())}">
-                                <xsl:call-template name="standard-insertBreaks">
-                                  <xsl:with-param name="pText" select="NoteText/text()"/>
-                                </xsl:call-template>
-                              </content>
-                            </td>
-                            <td>
-                              <content ID="{concat('ranoteProvider',position())}">
-                                <xsl:value-of select="Clinician/Description/text()" />
-                              </content>
-                            </td>
-                            <td>
-                              <content ID="{concat('ranoteSource',position())}">
-                                <xsl:value-of select="EnteredAt/Description/text()" />
-                              </content>
-                            </td>
-                          </tr>
+                          <xsl:if test="position() &lt; 6" >
+                            <tr>
+                              <td>
+                                <content ID="{concat('ranoteDateTime',position())}">
+                                  <xsl:call-template name="tmpDateTemplate" >
+                                    <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                    <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                  </xsl:call-template>
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('ranoteEncounterDescription',position())}">
+                                  <xsl:call-template name="standard-insertBreaks">
+                                    <xsl:with-param name="pText" select="NoteText/text()"/>
+                                  </xsl:call-template>
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('ranoteProvider',position())}">
+                                  <xsl:value-of select="Clinician/Description/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('ranoteSource',position())}">
+                                  <xsl:value-of select="EnteredAt/Description/text()" />
+                                </content>
+                              </td>
+                            </tr>
+                          </xsl:if>
                         </xsl:for-each>
                       </tbody>
                     </table>
                   </text>
                   <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'RA' and not(Extension/NationalTitle/Code/text() = 217)]">
                     <xsl:sort select="DocumentTime" order="descending" />
-                    <entry>
-                      <xsl:comment>Note Activity Entry </xsl:comment>
-                      <act classCode="ACT" moodCode="EVN">
-                        <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
-                        <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
-                          <translation code="11488-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Consultation Note"/>
-                        </code>
-                        <text>
-                          <reference value="{concat('#ranoteEncounterDescription',position())}"/>
-                        </text>
-                        <statusCode code="completed" />
-                        <xsl:comment>Clinically relevant time of the note </xsl:comment>
-                        <effectiveTime value="{translate(DocumentTime/text(), 'TZ:- ', '')}" />
-                        <author>
-                          <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                          <xsl:comment>Time note was actually written</xsl:comment>
-                          <time value="{translate(DocumentTime/text(), 'TZ:- ', '')}"/>
-                          <assignedAuthor>
-                            <id nullFlavor="NI" />
-                            <assignedPerson>
-                              <name>
-                                <xsl:value-of select="Clinician/Description/text()"/>
-                              </name>
-                            </assignedPerson>
-                            <representedOrganization>
-                              <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
-                              <name>
-                                <xsl:value-of select="EnteredAt/Description/text()"/>
-                              </name>
-                            </representedOrganization>
-                          </assignedAuthor>
-                        </author>
-                        <!--Reference to Encounter
+                    <xsl:if test="position() &lt; 6" >
+                      <entry>
+                        <xsl:comment>Note Activity Entry </xsl:comment>
+                        <act classCode="ACT" moodCode="EVN">
+                          <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
+                          <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
+                            <translation code="11488-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Consultation Note"/>
+                          </code>
+                          <text>
+                            <reference value="{concat('#ranoteEncounterDescription',position())}"/>
+                          </text>
+                          <statusCode code="completed" />
+                          <xsl:comment>Clinically relevant time of the note </xsl:comment>
+                          <effectiveTime value="{translate(DocumentTime/text(), 'TZ:- ', '')}" />
+                          <author>
+                            <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                            <xsl:comment>Time note was actually written</xsl:comment>
+                            <time value="{translate(DocumentTime/text(), 'TZ:- ', '')}"/>
+                            <assignedAuthor>
+                              <id nullFlavor="NI" />
+                              <assignedPerson>
+                                <name>
+                                  <xsl:value-of select="Clinician/Description/text()"/>
+                                </name>
+                              </assignedPerson>
+                              <representedOrganization>
+                                <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
+                                <name>
+                                  <xsl:value-of select="EnteredAt/Description/text()"/>
+                                </name>
+                              </representedOrganization>
+                            </assignedAuthor>
+                          </author>
+                          <!--Reference to Encounter
 							<entryRelationship typeCode="COMP" inversionInd="true">
 								<encounter>
 									<id root="2.16.840.1.113883.4.349" />
 								</encounter>
 							</entryRelationship>-->
-                      </act>
-                    </entry>
+                        </act>
+                      </entry>
+                    </xsl:if>
                   </xsl:for-each>
                 </section>
               </xsl:otherwise>
@@ -5457,79 +5467,83 @@
                       <tbody>
                         <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'LR' and not(Extension/NationalTitle/Code/text() = 217)]">
                           <xsl:sort select="DocumentTime" order="descending" />
-                          <tr>
-                            <td>
-                              <content ID="{concat('panoteDateTime',position())}">
-                                <xsl:call-template name="tmpDateTemplate" >
-                                  <xsl:with-param name="date-time" select="DocumentTime/text()" />
-                                  <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
-                                </xsl:call-template>
-                              </content>
-                            </td>
-                            <td>
-                              <content ID="{concat('panoteEncounterDescription',position())}">
-                                <xsl:call-template name="standard-insertBreaks">
-                                  <xsl:with-param name="pText" select="NoteText/text()"/>
-                                </xsl:call-template>
-                              </content>
-                            </td>
-                            <td>
-                              <content ID="{concat('panoteProvider',position())}">
-                                <xsl:value-of select="Clinician/Description/text()" />
-                              </content>
-                            </td>
-                            <td>
-                              <content ID="{concat('panoteSource',position())}">
-                                <xsl:value-of select="EnteredAt/Description/text()" />
-                              </content>
-                            </td>
-                          </tr>
+                          <xsl:if test="position() &lt; 6" >
+                            <tr>
+                              <td>
+                                <content ID="{concat('panoteDateTime',position())}">
+                                  <xsl:call-template name="tmpDateTemplate" >
+                                    <xsl:with-param name="date-time" select="DocumentTime/text()" />
+                                    <xsl:with-param name="pattern" select="'MMM dd, yyyy hh:mm aa'" />
+                                  </xsl:call-template>
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('panoteEncounterDescription',position())}">
+                                  <xsl:call-template name="standard-insertBreaks">
+                                    <xsl:with-param name="pText" select="NoteText/text()"/>
+                                  </xsl:call-template>
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('panoteProvider',position())}">
+                                  <xsl:value-of select="Clinician/Description/text()" />
+                                </content>
+                              </td>
+                              <td>
+                                <content ID="{concat('panoteSource',position())}">
+                                  <xsl:value-of select="EnteredAt/Description/text()" />
+                                </content>
+                              </td>
+                            </tr>
+                          </xsl:if>
                         </xsl:for-each>
                       </tbody>
                     </table>
                   </text>
                   <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'LR' and not(Extension/NationalTitle/Code/text() = 217)]">
                     <xsl:sort select="DocumentTime" order="descending" />
-                    <entry>
-                      <xsl:comment>Note Activity Entry </xsl:comment>
-                      <act classCode="ACT" moodCode="EVN">
-                        <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
-                        <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
-                          <translation code="11488-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Consultation Note"/>
-                        </code>
-                        <text>
-                          <reference value="{concat('#panoteEncounterDescription',position())}"/>
-                        </text>
-                        <statusCode code="completed" />
-                        <xsl:comment>Clinically relevant time of the note </xsl:comment>
-                        <effectiveTime value="{translate(DocumentTime/text(), 'TZ:- ', '')}" />
-                        <author>
-                          <templateId root="2.16.840.1.113883.10.20.22.4.119" />
-                          <xsl:comment>Time note was actually written</xsl:comment>
-                          <time value="{translate(DocumentTime/text(), 'TZ:- ', '')}"/>
-                          <assignedAuthor>
-                            <id nullFlavor="NI" />
-                            <assignedPerson>
-                              <name>
-                                <xsl:value-of select="Clinician/Description/text()"/>
-                              </name>
-                            </assignedPerson>
-                            <representedOrganization>
-                              <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
-                              <name>
-                                <xsl:value-of select="EnteredAt/Description/text()"/>
-                              </name>
-                            </representedOrganization>
-                          </assignedAuthor>
-                        </author>
-                        <!--Reference to Encounter
+                    <xsl:if test="position() &lt; 6" >
+                      <entry>
+                        <xsl:comment>Note Activity Entry </xsl:comment>
+                        <act classCode="ACT" moodCode="EVN">
+                          <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
+                          <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
+                            <translation code="11488-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Consultation Note"/>
+                          </code>
+                          <text>
+                            <reference value="{concat('#panoteEncounterDescription',position())}"/>
+                          </text>
+                          <statusCode code="completed" />
+                          <xsl:comment>Clinically relevant time of the note </xsl:comment>
+                          <effectiveTime value="{translate(DocumentTime/text(), 'TZ:- ', '')}" />
+                          <author>
+                            <templateId root="2.16.840.1.113883.10.20.22.4.119" />
+                            <xsl:comment>Time note was actually written</xsl:comment>
+                            <time value="{translate(DocumentTime/text(), 'TZ:- ', '')}"/>
+                            <assignedAuthor>
+                              <id nullFlavor="NI" />
+                              <assignedPerson>
+                                <name>
+                                  <xsl:value-of select="Clinician/Description/text()"/>
+                                </name>
+                              </assignedPerson>
+                              <representedOrganization>
+                                <id root="2.16.840.1.113883.4.349" extension="{EnteredAt/Code/text()}" />
+                                <name>
+                                  <xsl:value-of select="EnteredAt/Description/text()"/>
+                                </name>
+                              </representedOrganization>
+                            </assignedAuthor>
+                          </author>
+                          <!--Reference to Encounter
 							<entryRelationship typeCode="COMP" inversionInd="true">
 								<encounter>
 									<id root="2.16.840.1.113883.4.349" />
 								</encounter>
 							</entryRelationship>-->
-                      </act>
-                    </entry>
+                        </act>
+                      </entry>
+                    </xsl:if>
                   </xsl:for-each>
                 </section>
               </xsl:otherwise>
