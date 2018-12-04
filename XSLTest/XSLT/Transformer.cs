@@ -150,12 +150,7 @@ namespace XSLTest.XSLT
             }
             buffer.Add("  <xsl:include href=\"" + filename + "\"/>");
             buffer.Add(@"
-    <!-- Adding Date functions that the exslt lib adds as templates that the c# lib add as functions -->
-    <xsl:template name='date:format-date'>
-        <xsl:param name='date-time' />
-        <xsl:param name='pattern' />
-        <xsl:value-of select='date:formatDate($date-time, $pattern)' />
-    </xsl:template>
+    <!-- This area is for anything predefined in other environments that you can't include or define other ways -->
 
             ");
             buffer.Add("</xsl:stylesheet>");

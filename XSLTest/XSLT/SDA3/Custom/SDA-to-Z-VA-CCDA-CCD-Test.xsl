@@ -3,6 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sdtc="urn:hl7-org:sdtc" xmlns:isc="http://extension-functions.intersystems.com"
   xmlns:exsl="http://exslt.org/common" xmlns:set="http://exslt.org/sets" exclude-result-prefixes="isc xsi sdtc exsl set">
 
+  <xsl:include href="DateFormatter.xsl" />
+  
   <xsl:variable name="documentCreatedOn" select="isc:evaluate('timestamp')" />
   <xsl:key name="vitals" match="Observations/Observation" use="GroupId/text()" />
 
@@ -6237,6 +6239,9 @@
 <xsl:template name="tmpDateTemplate">
   <xsl:param name="date-time" />
   <xsl:param name="pattern" />
-  <xsl:value-of select="$date-time" /> formatted like <xsl:value-of select="$pattern" />
+  <xsl:call-template name="date:format-date">
+    <xsl:with-param name="date-time" select="$date-time" />
+    <xsl:with-param name="pattern" select="$pattern" />
+  </xsl:call-template>
 </xsl:template>
 </xsl:stylesheet>

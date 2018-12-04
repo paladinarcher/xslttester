@@ -8,6 +8,8 @@
   xmlns:date="http://exslt.org/dates-and-times" 
   xmlns:str="http://exslt.org/strings"
   exclude-result-prefixes="isc xsi sdtc exsl set date str">
+  
+  <xsl:include href="DateFormatter.xsl" />
 
   <xsl:variable name="documentCreatedOn" select="isc:evaluate('timestamp')" />
   <xsl:key name="vitals" match="Observations/Observation" use="GroupId/text()" />
@@ -6152,6 +6154,9 @@
 <xsl:template name="tmpDateTemplate">
   <xsl:param name="date-time" />
   <xsl:param name="pattern" />
-  <xsl:value-of select="$date-time" /> formatted like <xsl:value-of select="$pattern" />
+  <xsl:call-template name="date:format-date">
+    <xsl:with-param name="date-time" select="$date-time" />
+    <xsl:with-param name="pattern" select="$pattern" />
+  </xsl:call-template>
 </xsl:template>
 </xsl:stylesheet>
