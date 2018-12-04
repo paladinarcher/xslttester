@@ -250,10 +250,10 @@
             <low value="{$patientBirthDate}" />
             <high value="{$documentCreatedOn}" />
           </effectiveTime>
-          <xsl:apply-templates select="Patient/Extension/CareTeamMembers/CareProvider[1]" mode="header-careteammembers">
+          <xsl:apply-templates select="Patient/Extension/CareTeamMembers/CareProvider[Description = 'PRIMARY CARE PROVIDER']" mode="header-careteammembers">
             <xsl:with-param name="number" select="'1'" />
           </xsl:apply-templates>
-          <xsl:apply-templates select="Patient/Extension/CareTeamMembers/CareProvider[preceding::CareProvider]" mode="header-careteammembers">
+          <xsl:apply-templates select="Patient/Extension/CareTeamMembers/CareProvider[not(Description = 'PRIMARY CARE PROVIDER')]" mode="header-careteammembers">
             <xsl:with-param name="number" select="'2'" />
           </xsl:apply-templates>
         </serviceEvent>
