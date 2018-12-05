@@ -4210,7 +4210,7 @@
                       <entry typeCode='DRIV'>
                         <xsl:comment> CCD Results Organizer = VA Lab Order Panel , REQUIRED </xsl:comment>
                         <organizer classCode="BATTERY" moodCode="EVN">
-                          <templateId root="2.16.840.1.113883.10.20.22.4.1" extension="2014-06-09" />
+                          <templateId root="2.16.840.1.113883.10.20.22.4.1" extension="2015-08-01" />
                           <id nullFlavor="NI" />
                           <code nullFlavor="UNK">
                             <originalText>
