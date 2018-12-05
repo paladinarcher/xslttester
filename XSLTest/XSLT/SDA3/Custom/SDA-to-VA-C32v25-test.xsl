@@ -305,7 +305,7 @@
                             <xsl:otherwise>
                                 <section>
                                     <xsl:comment> CCD Alert Section Template</xsl:comment>
-                                    <templateId root="2.16.840.1.113883.10.20.1.2"/>
+                                  <templateId root="2.16.840.1.113883.10.20.1.2"/>
                                     <xsl:comment> HITSP C32 V2.5:  Allergy and Adverse Reaction Section Template </xsl:comment>
                                     <templateId root="2.16.840.1.113883.3.88.11.83.102"/>
                                     <xsl:comment> HITSP C32 V2.5:  IHE Allergies and Other Adverse Reactions  Section Template </xsl:comment>
