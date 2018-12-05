@@ -4495,7 +4495,44 @@
                   </text>
                   <xsl:comment> PLAN OF CARE (POC) STRUCTURED DATA </xsl:comment>
                   <xsl:comment> CCD Plan of Care (POC) Activity Encounter (Future VA Appointments,  Future Scheduled Tests, Wellness Reminders), Optional </xsl:comment>
-                  <xsl:for-each select="$planOfCare">
+                  <xsl:for-each select="$planOfCare[self::Appointment]">
+                    <entry>
+                      <encounter classCode="ENC" moodCode="INT">
+                        <templateId root="2.16.840.1.113883.10.20.22.4.40" extension="2014-06-09"/>
+                        <!-- <id root="2.16.840.1.113883.4.349" /> -->
+                        <id nullFlavor="UNK"/>
+                        <code nullFlavor="UNK">
+                          <originalText>
+                            <reference value="{concat('#apptType',position())}"/>
+                          </originalText>
+                        </code>
+                        <statusCode code="active"/>
+                        <effectiveTime value="{translate(FromTime/text(), 'TZ:- ', '')}"/>
+                        <participant typeCode="LOC">
+                          <participantRole classCode="SDLOC">
+                            <templateId root="2.16.840.1.113883.10.20.22.4.32"/>
+                            <code nullFlavor="UNK"/>
+                            <addr nullFlavor="UNK" />
+                            <telecom nullFlavor="UNK"/>
+                            <playingEntity classCode="PLC">
+                              <name><xsl:value-of select="EnteredBy/Description/text()"/></name>
+                            </playingEntity>
+                          </participantRole>
+                        </participant>
+                        <entryRelationship inversionInd="true" typeCode='SUBJ'>
+                          <act classCode="ACT" moodCode="INT">
+                            <templateId root="2.16.840.1.113883.10.20.22.4.20" extension="2014-06-09" />
+                            <code xsi:type="CE" code="409073007" codeSystem="2.16.840.1.113883.6.96" displayName="Instruction" codeSystemName="SNOMED CT" />
+                            <text>
+                              <reference value="{concat('#apptType',position())}"/>
+                            </text>
+                            <statusCode code="completed" />
+                          </act>
+                        </entryRelationship>
+                      </encounter>
+                    </entry>
+                  </xsl:for-each>
+                  <xsl:for-each select="$planOfCare[not(self::Appointment)]">
                     <entry>
                       <encounter classCode="ENC" moodCode="INT">
                         <templateId root="2.16.840.1.113883.10.20.22.4.40" />
