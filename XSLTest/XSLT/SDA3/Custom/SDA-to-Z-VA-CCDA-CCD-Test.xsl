@@ -2133,7 +2133,7 @@
                         </tr>
                       </thead>
                       <xsl:for-each select="Problems/Problem[Problem/Code/text() = '408907016' and count(CustomPairs/NVPair) &gt; 19]" >
-                        <xsl:sort select="EnteredOn | FromTime" order="descending" />
+                        <xsl:sort select="FromTime" order="descending" />
                         <xsl:if test="position() &lt; 4">
                           <tbody>
                             <tr>
@@ -4419,7 +4419,17 @@
                               </td>
                               <td>
                                 <content ID="{concat('apptType',position())}" >
-                                  <xsl:value-of select="Type/Description/text()" />
+                                  <xsl:choose >
+                                    <xsl:when test="boolean(Extension/Specialty)">
+                                      <xsl:value-of select="Extension/PatientStatus/text()"/> + <xsl:value-of select="Extension/Specialty/text()"/>
+                                    </xsl:when>
+                                    <xsl:when test="not(boolean(Extension/Specialty))">
+                                      <xsl:value-of select="Extension/PatientStatus/text()"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                      Unknown
+                                    </xsl:otherwise>
+                                  </xsl:choose>
                                 </content>
                               </td>
                               <td>
@@ -4862,34 +4872,7 @@
                                       <xsl:otherwise>
                                         No comment entered.
                                       </xsl:otherwise>
-                                    </xsl:choose>
-                                    <br />
-                                    <xsl:choose>
-                                      <xsl:when test="boolean(OrderedBy)">
-                                        Ordering Provider: <xsl:value-of select="OrderedBy/Description" />
-                                      </xsl:when>
-                                      <xsl:otherwise>
-                                        No Provider, they just decided to do this themselves.
-                                      </xsl:otherwise>
-                                    </xsl:choose>
-                                    <br />
-                                    <xsl:choose>
-                                      <xsl:when test="boolean(AuthorizationTime)">
-                                        Report Released Date Time: <xsl:value-of select="AuthorizationTime" />
-                                      </xsl:when>
-                                      <xsl:otherwise>
-                                        Not yet released.
-                                      </xsl:otherwise>
-                                    </xsl:choose>
-                                    <br />
-                                    <xsl:choose>
-                                      <xsl:when test="boolean(EnteredAt)">
-                                        Performing Lab: <xsl:value-of select="EnteredAt/Description" />
-                                      </xsl:when>
-                                      <xsl:otherwise>
-                                        No lab. Guy on the street did it. Free!
-                                      </xsl:otherwise>
-                                    </xsl:choose>
+                                    </xsl:choose>                                   
                                   </content>
                                 </td>
                               </tr>
@@ -5505,14 +5488,25 @@
                             <time nullFlavor="UNK" />
                             <assignedAuthor>
                               <id nullFlavor="UNK" />
-                              <representedOrganization>
-                                <xsl:comment> INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING FACILITY NBR)  </xsl:comment>
-                                <id extension="{EnteredAt/Code/text()}" root="2.16.840.1.113883.4.349" />
-                                <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
-                                <name>
-                                  <xsl:value-of select="EnteredAt/Description"/>
-                                </name>
-                              </representedOrganization>
+                              <xsl:choose>
+                                <xsl:when test="boolean(EnteredAt/Code)">
+                                  <representedOrganization>
+                                    <xsl:comment> INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING FACILITY NBR)  </xsl:comment>
+                                    <id extension="{EnteredAt/Code/text()}" root="2.16.840.1.113883.4.349" />
+                                    <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
+                                    <name>
+                                      <xsl:value-of select="EnteredAt/Description"/>
+                                    </name>
+                                  </representedOrganization>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                  <representedOrganization>
+                                    <xsl:comment> INFORMATION SOURCE FACILITY OID (ID = VA OID, EXT = TREATING FACILITY NBR)  </xsl:comment>
+                                    <id nullFlavor="NI" root="2.16.840.1.113883.4.349" />
+                                    <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
+                                  </representedOrganization>
+                                </xsl:otherwise>
+                              </xsl:choose>
                             </assignedAuthor>
                           </author>
                           <xsl:comment> CCD Smoking Status Comment Entry, Optional </xsl:comment>
