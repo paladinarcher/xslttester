@@ -552,11 +552,11 @@
                       </thead>
                       <tbody>
                         <xsl:for-each select="Documents/Document[DocumentType/Code = 'D']">
-                          <xsl:sort select="DocumentTime" />
+                          <xsl:sort select="DocumentTime" order="descending" />
                           <tr>
                             <td>
                                 <xsl:call-template name="tmpDateTemplate" >
-                                  <xsl:with-param name="date-time" select="FromTime/text()" />
+                                  <xsl:with-param name="date-time" select="DocumentTime/text()" />
                                   <xsl:with-param name="pattern" select="'MMM dd, yyyy'" />
                                 </xsl:call-template>
                             </td>

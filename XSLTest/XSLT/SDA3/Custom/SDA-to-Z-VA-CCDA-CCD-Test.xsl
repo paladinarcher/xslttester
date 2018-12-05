@@ -566,11 +566,11 @@
                       </thead>
                       <tbody>
                         <xsl:for-each select="AdvanceDirectives/AdvanceDirective">
-                          <xsl:sort select="FromTime" />
+                          <xsl:sort select="DocumentTime" order="descending" />
                           <tr>
                             <td>
                               <xsl:call-template name="tmpDateTemplate" >
-                                <xsl:with-param name="date-time" select="FromTime/text()" />
+                                <xsl:with-param name="date-time" select="DocumentTime/text()" />
                                 <xsl:with-param name="pattern" select="'MMM dd, yyyy'" />
                               </xsl:call-template>
                             </td>
