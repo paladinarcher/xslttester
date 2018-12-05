@@ -441,7 +441,7 @@
                                 <representedOrganization>
                                   <xsl:comment>5.06 HEALTH PLAN INSURANCE INFO SOURCE NAME ( Insurance Company Name), R2 </xsl:comment>
                                   <name>
-                                    <xsl:value-of select="HealthFund/HealthFund/Description/text()"/>
+                                    <xsl:value-of select="HealthFund/GroupName/text()"/>
                                   </name>
                                 </representedOrganization>
                               </assignedEntity>
@@ -531,7 +531,7 @@
               DIRECTIVE SECTION, REQUIRED ********************************************************
             </xsl:comment>
             <xsl:choose>
-              <xsl:when test="not(boolean(AdvanceDirectives/AdvanceDirective))">
+              <xsl:when test="not(boolean(Documents/Document[DocumentType/Code = 'D']))">
                 <section nullFlavor="NI">
                   <xsl:comment> C-CDA Advanced Directive Section Template Entries REQUIRED </xsl:comment>
                   <templateId root="2.16.840.1.113883.10.20.22.2.21.1" />
@@ -559,6 +559,7 @@
                         <tr>
                           <th>Date</th>
                           <th>Advance Directives</th>
+                          <th>Advance Directive Details</th>
                           <th>Provider</th>
                           <th>Source</th>
                         </tr>
@@ -584,6 +585,14 @@
                             <td>
                               <content>
                                 <xsl:attribute name="ID">
+                                  <xsl:value-of select="concat('advanceDirectiveDetails',position())" />
+                                </xsl:attribute>
+                                <xsl:value-of select="Extension/NationalTitleSubject/Description/text()" />
+                              </content>
+                            </td>
+                            <td>
+                              <content>
+                                <xsl:attribute name="ID">
                                   <xsl:value-of select="concat('advDirProvider',position())" />
                                 </xsl:attribute>
                                 <xsl:value-of select="EnteredBy/Description/text()" />
@@ -603,8 +612,8 @@
                     </table>
                   </text>
                   <xsl:comment> ADVANCED DIRECTIVES STRUCTURED DATA </xsl:comment>
-                  <xsl:for-each select="AdvanceDirectives/AdvanceDirective">
-                    <xsl:sort select="FromTime" />
+                  <xsl:for-each select="Documents/Document[DocumentType/Code = 'D']">
+                    <xsl:sort select="DocumentTime" />
                     <entry typeCode="DRIV">
                       <xsl:comment> CCD Advanced Directive Observation, R2 </xsl:comment>
                       <observation classCode="OBS" moodCode="EVN">
@@ -620,7 +629,7 @@
                         <xsl:comment>12.03 ADVANCED DIRECTIVE EFFECTIVE DATE, REQUIRED </xsl:comment>
                         <effectiveTime>
                           <xsl:comment> ADVANCED DIRECTIVE EFFECTIVE DATE low = starting time, REQUIRED </xsl:comment>
-                          <low value="{translate(FromTime/text(), 'TZ:- ', '')}"/>
+                          <low value="{translate(DocumentTime/text(), 'TZ:- ', '')}"/>
                           <xsl:comment> ADVANCED DIRECTIVE EFFECTIVE DATE high= ending time, REQUIRED </xsl:comment>
                           <high nullFlavor="NA" />
                         </effectiveTime>
@@ -712,6 +721,9 @@
                       not list allergies that were removed or entered in error. Some
                       allergies may also be reported in the Immunization section.
                     </paragraph>
+                    <!--<paragraph> pending implementation of new Allergy CR
+                      Observed represents an allergy or adverse reaction directly observed or occurring while the patient was taking or exposed to the allergen. Historical represents an allergy or adverse reaction reported by the patient as occurring in the past. No Known Allergies (NKA) indicates a completed allergy assessment and there are no known active allergies.
+                    </paragraph>-->
                     <table>
                       <thead>
                         <tr>
@@ -720,7 +732,7 @@
                           <th>Event Type</th>
                           <th>Reaction(s)</th>
                           <th>Severity</th>
-                          <th>Allergy Details</th> 
+                          <!--<th>Allergy Details</th> pending implementation of new Allergy CR -->
                           <th>Source</th>
                         </tr>
                       </thead>
@@ -766,7 +778,7 @@
                                       <xsl:value-of select="Severity/Description/text()" />
                                     </content>
                                   </td>
-                                  <td>
+                                  <!--<td>
                                     <content ID="{concat('andDetails',position())}">
                                       <xsl:value-of select="Extension/Source/text()" />
                                     </content>
@@ -779,7 +791,7 @@
                                         </xsl:for-each>
                                       </list>
                                     </xsl:if>
-                                  </td>
+                                  </td> pending implementation of new Allergy CR -->
                                   <td>
                                     <content ID="{concat('andSource',position())}">
                                       <xsl:value-of select="EnteredAt/Description/text()" />
@@ -2483,6 +2495,9 @@
                               <id nullFlavor="NI"/>
                               <addr nullFlavor="NA" />
                               <telecom nullFlavor="NA" />
+                              <assignedPerson>
+                                <name />
+                              </assignedPerson>
                               <representedOrganization>
                                 <id extension="{EnteredAt/Code/text()}" root="2.16.840.1.113883.3.1275"/>
                                 <name>
