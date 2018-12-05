@@ -605,7 +605,7 @@
                   <xsl:comment> ADVANCED DIRECTIVES STRUCTURED DATA </xsl:comment>
                   <xsl:for-each select="AdvanceDirectives/AdvanceDirective">
                     <xsl:sort select="FromTime" />
-                    <entry>
+                    <entry typeCode="DRIV">
                       <xsl:comment> CCD Advanced Directive Observation, R2 </xsl:comment>
                       <observation classCode="OBS" moodCode="EVN">
                         <templateId root="2.16.840.1.113883.10.20.22.4.48"/>
