@@ -5596,7 +5596,15 @@
           <component>
             <xsl:comment> Clinical Procedure Notes </xsl:comment>
             <xsl:choose>
-              <xsl:when test="not(boolean(Documents/Document[DocumentType/Code/text() = 'CP' and not(contains(Extension/NationalTitle/OriginalText/text(),'FIM'))]))">
+              <xsl:when test="not(boolean(
+                Documents/Document[DocumentType/Code/text() = 'CP' 
+                and not(contains(Extension/NationalTitle/OriginalText/text(),'FIM'))
+                and (
+                        contains(Extension/NationalTitleService/Description/text(), 'PROCEDURE')
+                        or contains(Extension/NationalTitleService/Description/text(), 'DIAGNOSTIC STUDY')
+                        or contains(Extension/NationalTitleService/Description/text(), 'DIAGNOSTIC INTERVENTIONAL PROCEDURE')
+                    )
+                ]))">
                 <section nullFlavor="NI">
                   <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01" />
                   <code code="28570-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Procedure Note" />
@@ -5626,7 +5634,14 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CP' and not(contains(Extension/NationalTitle/OriginalText/text(),'FIM'))]">
+                        <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CP' 
+                          and not(contains(Extension/NationalTitle/OriginalText/text(),'FIM'))
+                          and (
+                                  contains(Extension/NationalTitleService/Description/text(), 'PROCEDURE')
+                                  or contains(Extension/NationalTitleService/Description/text(), 'DIAGNOSTIC STUDY')
+                                  or contains(Extension/NationalTitleService/Description/text(), 'DIAGNOSTIC INTERVENTIONAL PROCEDURE')
+                              )
+                          ]">
                           <xsl:sort select="DocumentTime" order="descending" />
                           <xsl:if test="position() &lt; 11">
                             <tr>
@@ -5661,7 +5676,14 @@
                       </tbody>
                     </table>
                     <xsl:comment> Additional Clinical Procedure Notes </xsl:comment>
-                    <xsl:if test="count(Documents/Document[DocumentType/Code/text() = 'CP' and not(contains(Extension/NationalTitle/OriginalText/text(),'FIM'))]) &gt; 10">
+                    <xsl:if test="count(Documents/Document[DocumentType/Code/text() = 'CP' 
+                      and not(contains(Extension/NationalTitle/OriginalText/text(),'FIM'))
+                      and (
+                              contains(Extension/NationalTitleService/Description/text(), 'PROCEDURE')
+                              or contains(Extension/NationalTitleService/Description/text(), 'DIAGNOSTIC STUDY')
+                              or contains(Extension/NationalTitleService/Description/text(), 'DIAGNOSTIC INTERVENTIONAL PROCEDURE')
+                          )
+                      ]) &gt; 10">
                       <paragraph styleCode="Bold">Additional Clinical Procedure Notes</paragraph>
                       <paragraph>
                         The list of ADDITIONAL Clinical Procedure Note TITLES includes all notes signed within the last 18 months. The data comes from all VA treatment facilities.
@@ -5676,7 +5698,14 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CP' and not(contains(Extension/NationalTitle/OriginalText/text(),'FIM'))]">
+                          <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CP' 
+                            and not(contains(Extension/NationalTitle/OriginalText/text(),'FIM'))
+                            and (
+                                    contains(Extension/NationalTitleService/Description/text(), 'PROCEDURE')
+                                    or contains(Extension/NationalTitleService/Description/text(), 'DIAGNOSTIC STUDY')
+                                    or contains(Extension/NationalTitleService/Description/text(), 'DIAGNOSTIC INTERVENTIONAL PROCEDURE')
+                                )
+                            ]">
                             <xsl:sort select="DocumentTime" order="descending" />
                             <xsl:if test="position() &gt; 10">
                               <tr>
@@ -5733,7 +5762,14 @@
                     </observation>
                   </entry>
                   <xsl:comment> Note Entry </xsl:comment>
-                  <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CP' and not(contains(Extension/NationalTitle/OriginalText/text(),'FIM'))]">
+                  <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CP' 
+                    and not(contains(Extension/NationalTitle/OriginalText/text(),'FIM'))
+                    and (
+                            contains(Extension/NationalTitleService/Description/text(), 'PROCEDURE')
+                            or contains(Extension/NationalTitleService/Description/text(), 'DIAGNOSTIC STUDY')
+                            or contains(Extension/NationalTitleService/Description/text(), 'DIAGNOSTIC INTERVENTIONAL PROCEDURE')
+                        )
+                    ]">
                     <xsl:sort select="DocumentTime" order="descending" />
                     <entry>
                       <xsl:comment>Note Activity Entry </xsl:comment>
