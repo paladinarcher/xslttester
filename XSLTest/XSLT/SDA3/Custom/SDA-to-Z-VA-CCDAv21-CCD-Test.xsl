@@ -5596,7 +5596,7 @@
           <component>
             <xsl:comment> Clinical Procedure Notes </xsl:comment>
             <xsl:choose>
-              <xsl:when test="not(boolean(Documents/Document[DocumentType/Code/text() = 'CP' and not(Extension/NationalTitle/Code/text() = 217)]))">
+              <xsl:when test="not(boolean(Documents/Document[DocumentType/Code/text() = 'CP' and not(contains('FIM', Extension/NationalTitle/OriginalText/text()))]))">
                 <section nullFlavor="NI">
                   <templateId root="2.16.840.1.113883.10.20.22.2.65" extension="2016-11-01" />
                   <code code="28570-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Procedure Note" />
@@ -5626,7 +5626,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CP' and not(Extension/NationalTitle/Code/text() = 217)]">
+                        <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CP']">
                           <xsl:sort select="DocumentTime" order="descending" />
                           <xsl:if test="position() &lt; 11">
                             <tr>
@@ -5639,11 +5639,12 @@
                                 </content>
                               </td>
                               <td>
+                                <xsl:if test="contains('FIM', Extension/NationalTitle/OriginalText/text())">FIM</xsl:if>
                                 <content ID="{concat('cpnoteEncounterDescription',position())}">
                                   <xsl:call-template name="standard-insertBreaks">
                                     <xsl:with-param name="pText" select="NoteText/text()"/>
                                   </xsl:call-template>
-                                </content>
+                                </content>                              
                               </td>
                               <td>
                                 <content ID="{concat('cpnoteProvider',position())}">
@@ -5661,7 +5662,7 @@
                       </tbody>
                     </table>
                     <xsl:comment> Additional Clinical Procedure Notes </xsl:comment>
-                    <xsl:if test="count(Documents/Document[DocumentType/Code/text() = 'CP' and not(Extension/NationalTitle/Code/text() = 217)]) &gt; 10">
+                    <xsl:if test="count(Documents/Document[DocumentType/Code/text() = 'CP' and not(contains('FIM', Extension/NationalTitle/OriginalText/text()))]) &gt; 10">
                       <paragraph styleCode="Bold">Additional Clinical Procedure Notes</paragraph>
                       <paragraph>
                         The list of ADDITIONAL Clinical Procedure Note TITLES includes all notes signed within the last 18 months. The data comes from all VA treatment facilities.
