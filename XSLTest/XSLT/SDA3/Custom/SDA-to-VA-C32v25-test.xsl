@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <xsl:stylesheet version="1.0" xmlns="urn:hl7-org:v3" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sdtc="urn:hl7-org:sdtc" xmlns:isc="http://extension-functions.intersystems.com"
-  xmlns:exsl="http://exslt.org/common" xmlns:set="http://exslt.org/sets" exclude-result-prefixes="isc xsi sdtc exsl set">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sdtc="urn:hl7-org:sdtc" xmlns:isc="http://extension-functions.intersystems.com" xmlns:str="http://exslt.org/strings"
+  xmlns:exsl="http://exslt.org/common" xmlns:set="http://exslt.org/sets" xmlns:date="http://exslt.org/dates-and-times" exclude-result-prefixes="isc xsi sdtc exsl set date str">
+  <xsl:include href="DateFormatter.xsl" />
 
   <xsl:variable name="documentCreatedOn" select="isc:evaluate('timestamp')" />
   <xsl:key name="vitals" match="Observations/Observation" use="GroupId/text()" />
 
   <xsl:template match="/Container">
-    <xsl:variable name="patientBirthDate" select="Patient/BirthTime/text()" />
+    <xsl:variable name="patientBirthDate" select="translate(Patient/BirthTime/text(),'TZ:- ','')" />
     <xsl:processing-instruction name="xml-stylesheet">
       <xsl:value-of select="'type=&#34;text/xsl&#34; href=&#34;cda.xsl&#34;'"/>
     </xsl:processing-instruction>
@@ -89,7 +90,7 @@
             <!--  TODO: confirm MARITAL STATUS construct & confirm where OriginalTextMaritalStatus is valued after retrieval from ESR interface -->
             <xsl:comment>  1.08 MARITAL STATUS, Optional-R2 </xsl:comment>
             <xsl:comment> VLER SEG 1B:  Send as HL7 MaritalStatus  </xsl:comment>
-            <maritalStatusCode code="{Patient/MaritalStatus/Code/text()}" codeSystem='2.16.840.1.113883.5.1' codeSystemName='MaritalStatusCode' displayName="{Patient/MaritalStatus/Description/text()}">
+            <maritalStatusCode code="{Patient/MaritalStatus/Code/text()}" codeSystem='2.16.840.1.113883.5.2' codeSystemName='MaritalStatusCode' displayName="{Patient/MaritalStatus/Description/text()}">
               <originalText>originaltext-MARITAL STATUS</originalText>
             </maritalStatusCode>
 
@@ -265,10 +266,10 @@
             HEALTHCARE PROVIDER MODULE, OPTIONAL
             ********************************************************
           </xsl:comment>
-          <xsl:apply-templates select="Patient/Extension/CareTeamMembers/CareTeamMember[1]" mode="header-careteammembers">
+          <xsl:apply-templates select="Patient/Extension/CareTeamMembers/CareTeamMember[Description = 'PRIMARY CARE PROVIDER']" mode="header-careteammembers">
             <xsl:with-param name="number" select="'1'" />
           </xsl:apply-templates>
-          <xsl:apply-templates select="Patient/Extension/CareTeamMembers/CareTeamMember[preceding::CareTeamMember]" mode="header-careteammembers">
+          <xsl:apply-templates select="Patient/Extension/CareTeamMembers/CareTeamMember[not(Description = 'PRIMARY CARE PROVIDER')]" mode="header-careteammembers">
             <xsl:with-param name="number" select="'2'" />
           </xsl:apply-templates>
         </serviceEvent>
@@ -330,7 +331,7 @@
                         </tr>
                       </tbody>
                     </table>
-                    <table ID="allergyNarritive" border="1" width="100%">
+                    <table border="1" width="100%">
                       <thead>
                         <tr>
                           <th>Allergy</th>
@@ -351,33 +352,22 @@
                                 <xsl:variable name="allergyIndex" select="position()" />
                                 <tr>
                                   <td>
-                                    <content>
-                                      <xsl:attribute name="ID">
-                                        <xsl:value-of select="concat('andAllergy',position())" />
-                                      </xsl:attribute>
+                                    <content ID="{concat('andAllergy',position())}" >
                                       <xsl:value-of select="Allergy/Description/text()" />
                                     </content>
                                   </td>
                                   <td>
-                                    <content>
-                                      <xsl:attribute name="ID">
-                                        <xsl:value-of select="concat('andCodedAllergyName',position())" />
-                                      </xsl:attribute>
-                                      <xsl:value-of select="'Coded Allergy Name Not Available'" />
+                                    <content ID="{concat('andCodedAllergyName',position())}" >
+                                      Coded Allergy Name Not Available
                                     </content>
                                   </td>
                                   <td>
-                                    <content>
-                                      <xsl:attribute name="ID">
-                                        <xsl:value-of select="concat('andVerificationDate',position())" />
-                                      </xsl:attribute>
+                                    <content ID="{concat('andVerificationDate',position())}">
+                                      <xsl:value-of select="(VerifiedTime | EnteredOn)" />                                    
                                     </content>
                                   </td>
                                   <td>
-                                    <content>
-                                      <xsl:attribute name="ID">
-                                        <xsl:value-of select="concat('andEventType',position())" />
-                                      </xsl:attribute>
+                                    <content ID="{concat('andEventType',position())}" >
                                       <!-- TODO: get translation from VETS ? -->
                                       <xsl:value-of select="AllergyCategory/Description/text()" />
                                     </content>
@@ -386,10 +376,7 @@
                                     <list>
                                       <xsl:for-each select="Extension/Reactions/Reaction">
                                         <item>
-                                          <content>
-                                            <xsl:attribute name="ID">
-                                              <xsl:value-of select="concat('andReaction', $allergyIndex, '-', position())" />
-                                            </xsl:attribute>
+                                          <content ID="{concat('andReaction', $allergyIndex, '-', position())}" >
                                             <xsl:value-of select="Description/text()" />
                                           </content>
                                         </item>
@@ -397,18 +384,12 @@
                                     </list>
                                   </td>
                                   <td>
-                                    <content>
-                                      <xsl:attribute name="ID">
-                                        <xsl:value-of select="concat('andSeverity',position())" />
-                                      </xsl:attribute>
+                                    <content ID="{concat('andSeverity',position())}" >
                                       <xsl:value-of select="Severity/Description/text()" />
                                     </content>
                                   </td>
                                   <td>
-                                    <content>
-                                      <xsl:attribute name="ID">
-                                        <xsl:value-of select="concat('andSource',position())" />
-                                      </xsl:attribute>
+                                    <content ID="{concat('andSource',position())}" >
                                       <xsl:value-of select="EnteredAt/Description/text()" />
                                     </content>
                                   </td>
@@ -420,10 +401,7 @@
                                     <xsl:value-of select="Allergy/Description/text()" />
                                   </td>
                                   <td>
-                                    <content>
-                                      <xsl:attribute name="ID">
-                                        <xsl:value-of select="concat('andSource',position())" />
-                                      </xsl:attribute>
+                                    <content ID="{concat('andSource',position())}" >
                                       <xsl:value-of select="EnteredAt/Description/text()" />
                                     </content>
                                   </td>
@@ -457,10 +435,10 @@
                               <effectiveTime>
                                 <xsl:choose>
                                   <xsl:when test="boolean(VerifiedTime)">
-                                    <low value="{VerifiedTime/text()}" />
+                                    <low value="{translate(VerifiedTime/text(), 'TZ:- ','')}" />
                                   </xsl:when>
                                   <xsl:otherwise>
-                                    <low value="{EnteredOn/text()}" />
+                                    <low value="{translate(EnteredOn/text(),'TZ:- ','')}" />
                                   </xsl:otherwise>
                                 </xsl:choose>
                               </effectiveTime>
@@ -511,10 +489,10 @@
                                   <effectiveTime>
                                     <xsl:choose>
                                       <xsl:when test="boolean(VerifiedTime)">
-                                        <low value="{VerifiedTime/text()}" />
+                                        <low value="{translate(VerifiedTime/text(),'TZ:- ','')}" />
                                       </xsl:when>
                                       <xsl:otherwise>
-                                        <low value="{EnteredOn/text()}" />
+                                        <low value="{translate(EnteredOn/text(),'TZ:- ','')}" />
                                       </xsl:otherwise>
                                     </xsl:choose>
                                   </effectiveTime>
@@ -542,32 +520,34 @@
                                     </participantRole>
                                   </participant>
                                   <xsl:comment> SEVERITY ENTRY RELATIONSHIP BLOCK optional, 0 or 1 per Allergy </xsl:comment>
-                                  <entryRelationship typeCode="SUBJ" inversionInd="true">
-                                    <xsl:comment>Template ID for Problem Entry - Allergy Reaction Uses Same Structure</xsl:comment>
-                                    <templateId root='1.3.6.1.4.1.19376.1.5.3.1.4.6.1'/>
-                                    <observation classCode="OBS" moodCode="EVN">
-                                      <xsl:comment> SeverityTemplate ID </xsl:comment>
-                                      <templateId root="2.16.840.1.113883.10.20.1.55"/>
-                                      <xsl:comment>HITSP C32 V2.5:    Allergy Templates</xsl:comment>
-                                      <templateId root="2.16.840.1.113883.10.20.1.28"/>
-                                      <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5"/>
-                                      <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.6"/>
-                                      <xsl:comment> CCD Obs ID as nullFlavor </xsl:comment>
-                                      <id nullFlavor="UNK"/>
-                                      <code code='SEV' displayName='Severity' codeSystem='2.16.840.1.113883.5.4' codeSystemName='HL7ActCode' />
-                                      <xsl:comment> 6.07 SEVERITY-FREE TEXT, optional, Pointer to Narrative Block </xsl:comment>
-                                      <text>
-                                        <reference value="{concat('#andSeverity',position())}" />
-                                      </text>
-                                      <statusCode code="completed" />
-                                      <effectiveTime>
-                                        <low nullFlavor="UNK" />
-                                      </effectiveTime>
-                                      <xsl:comment> 6.08 SEVERITY CODED, optional, When uncoded only xsi:type="CD" allowed </xsl:comment>
-                                      <!-- TODO: Internal Translation -->
-                                      <value xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
-                                    </observation>
-                                  </entryRelationship>
+                                  <xsl:if test="boolean(Severity)">
+                                    <entryRelationship typeCode="SUBJ" inversionInd="true">
+                                      <xsl:comment>Template ID for Problem Entry - Allergy Reaction Uses Same Structure</xsl:comment>
+                                      <templateId root='1.3.6.1.4.1.19376.1.5.3.1.4.6.1'/>
+                                      <observation classCode="OBS" moodCode="EVN">
+                                        <xsl:comment> SeverityTemplate ID </xsl:comment>
+                                        <templateId root="2.16.840.1.113883.10.20.1.55"/>
+                                        <xsl:comment>HITSP C32 V2.5:    Allergy Templates</xsl:comment>
+                                        <templateId root="2.16.840.1.113883.10.20.1.28"/>
+                                        <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5"/>
+                                        <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.6"/>
+                                        <xsl:comment> CCD Obs ID as nullFlavor </xsl:comment>
+                                        <id nullFlavor="UNK"/>
+                                        <code code='SEV' displayName='Severity' codeSystem='2.16.840.1.113883.5.4' codeSystemName='HL7ActCode' />
+                                        <xsl:comment> 6.07 SEVERITY-FREE TEXT, optional, Pointer to Narrative Block </xsl:comment>
+                                        <text>
+                                          <reference value="{concat('#andSeverity',position())}" />
+                                        </text>
+                                        <statusCode code="completed" />
+                                        <effectiveTime>
+                                          <low nullFlavor="UNK" />
+                                        </effectiveTime>
+                                        <xsl:comment> 6.08 SEVERITY CODED, optional, When uncoded only xsi:type="CD" allowed </xsl:comment>
+                                        <!-- TODO: Internal Translation -->
+                                        <value xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" />
+                                      </observation>
+                                    </entryRelationship>
+                                  </xsl:if>
                                   <xsl:comment> REACTION ENTRY RELATIONSHIP BLOCK R2, repeatable </xsl:comment>
                                   <xsl:for-each select="Extension/Reactions/Reaction">
                                     <entryRelationship typeCode="MFST" inversionInd="true">
@@ -578,16 +558,22 @@
                                         <id nullFlavor="NA" />
                                         <code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="HL7ActCode"/>
                                         <statusCode code="completed" />
-                                        <effectiveTime nullFlavor="UNK" />
+                                        <effectiveTime nullFlavor="UNK" /><!-- not in DMSS? Legacy puts a low in this... -->
                                         <xsl:comment> 6.06 REACTION CODED, REQUIRED </xsl:comment>
-                                        <!-- TODO: Internal Translation -->
-                                        <value   xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
-                                          <xsl:comment> 6.05 REACTION-FREE TEXT, optional, </xsl:comment>
-                                          <originalText>
-                                            <reference value="{concat('#andReaction', $allergyIndex, '-', position())}" />
-                                          </originalText>
-                                          <translation codeSystem="2.16.840.1.113883.6.233" codeSystemName="VHA Enterprise Reference Terminology" />
-                                        </value>
+                                        <!-- TODO: DMSS says static... self closed. not null, not populated...  -->
+                                        <xsl:choose>
+                                          <xsl:when test="boolean(Code)">
+                                            <value xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                                              <xsl:comment> 6.05 REACTION-FREE TEXT, optional, </xsl:comment>
+                                              <originalText>
+                                                <reference value="{concat('#andReaction', $allergyIndex, '-', position())}" />
+                                              </originalText>
+                                            </value>
+                                          </xsl:when>
+                                          <xsl:otherwise>
+                                            <value xsi:type="CD" nullFlavor="NA" />
+                                          </xsl:otherwise>
+                                        </xsl:choose>
                                       </observation>
                                     </entryRelationship>
                                   </xsl:for-each>
@@ -767,15 +753,29 @@
                     <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2"/>
                     <xsl:comment> CCD Problem Act ID as nullFlavor  </xsl:comment>
                     <id nullFlavor="UNK"/>
-                    <code nullFlavor="NA"/>
+                    <code nullFlavor="NA" />
                     <xsl:comment> HITSP V2.5 IHE Problem Concern Templates Requires statusCode </xsl:comment>
-                    <statusCode code="completed"/>
+                    <xsl:choose>
+                      <xsl:when test="boolean(ToTime)">
+                        <statusCode code="completed"/>
+                      </xsl:when>
+                      <xsl:otherwise>
+                        <statusCode code="active"/>
+                      </xsl:otherwise>
+                    </xsl:choose>
                     <xsl:comment>  7.01 PROBLEM DATE (cda:low=Date of Onset, cda:high=Date Resolved), Optional R2 </xsl:comment>
                     <effectiveTime>
-                      <low value="{FromTime/text()}"/>
+                      <xsl:choose>
+                        <xsl:when test="boolean(FromTime)">
+                          <low value="{translate(FromTime/text(), 'TZ:- ','')}"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                          <low nullFlavor="UNK"/>
+                        </xsl:otherwise>
+                      </xsl:choose>
                       <xsl:choose>
                         <xsl:when test="boolean(ToTime)">
-                          <high value="{ToTime}"/>
+                          <high value="{translate(ToTime/text(), 'TZ:- ','')}"/>
                         </xsl:when>
                         <xsl:otherwise>
                           <high nullFlavor="UNK"/>
@@ -785,7 +785,7 @@
                     <xsl:comment> 7.05 TREATING PROVIDER id link to HealthCare Provider Entry</xsl:comment>
                     <performer typeCode="PRF">
                       <assignedEntity>
-                        <id extension="provider1" root="2.16.840.1.113883.4.349"/>
+                        <id nullFlavor="NA" root="2.16.840.1.113883.4.349"/>
                         <xsl:comment> HITSP C32 V2.5:   Address Required for assignedEntity, but VA VistA data not yet available </xsl:comment>
                         <addr/>
                         <xsl:comment> HITSP C32 V2.5:    Telecom Required for assignedEntity, but VA VistA data not yet available </xsl:comment>
@@ -804,10 +804,10 @@
                         <telecom/>
                         <representedOrganization>
                           <xsl:comment> INFORMATION SOURCE FOR FACILITY ID=VA OID, EXT= VAMC TREATING FACILITY NBR </xsl:comment>
-                          <id extension="" root="2.16.840.1.113883.4.349"/>
+                          <id extension="{EnteredAt/Code/text()}" root="2.16.840.1.113883.4.349"/>
                           <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
                           <name>
-                            <xsl:value-of select="EnteredBy/Description/text()"/>
+                            <xsl:value-of select="EnteredAt/Description/text()"/>
                           </name>
                           <xsl:comment> HITSP C32 V2.5:    Telecom Required for representedOrganization, but VA VistA data not yet available </xsl:comment>
                           <telecom/>
@@ -1972,7 +1972,6 @@
             VLER SEGMENT 1B:  IMMUNIZATION SECTION
             ********************************************************
           </xsl:comment>
-          <hkh/>
           <component>
             <xsl:comment> Component 6 </xsl:comment>
             <section>
@@ -2658,6 +2657,9 @@
           </functionCode>
         </xsl:otherwise>
       </xsl:choose>
+      <time>
+        <high nullFlavor="UNK" />
+      </time>
       <assignedEntity>
         <xsl:comment> Provider ID from Problems Module (7.05Treating Provider ID) </xsl:comment>
         <!-- <id extension="providerN" root="2.16.840.1.113883.4.349" /> -->
