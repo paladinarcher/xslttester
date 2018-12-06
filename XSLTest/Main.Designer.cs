@@ -90,7 +90,7 @@
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Location = new System.Drawing.Point(97, 13);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(1432, 21);
+            this.comboBox1.Size = new System.Drawing.Size(1511, 21);
             this.comboBox1.TabIndex = 0;
             this.comboBox1.TextChanged += new System.EventHandler(this.comboBox1_TextChanged);
             // 
@@ -106,7 +106,7 @@
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(1563, 12);
+            this.button1.Location = new System.Drawing.Point(1642, 12);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 2;
@@ -127,8 +127,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.groupBox2);
-            this.splitContainer1.Size = new System.Drawing.Size(1634, 784);
-            this.splitContainer1.SplitterDistance = 435;
+            this.splitContainer1.Size = new System.Drawing.Size(1713, 784);
+            this.splitContainer1.SplitterDistance = 456;
             this.splitContainer1.TabIndex = 3;
             // 
             // splitContainer3
@@ -145,7 +145,7 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.groupBox1);
-            this.splitContainer3.Size = new System.Drawing.Size(435, 784);
+            this.splitContainer3.Size = new System.Drawing.Size(456, 784);
             this.splitContainer3.SplitterDistance = 68;
             this.splitContainer3.TabIndex = 1;
             // 
@@ -155,7 +155,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(0, 0);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(435, 68);
+            this.groupBox3.Size = new System.Drawing.Size(456, 68);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Starting Parameters";
@@ -168,7 +168,7 @@
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(3, 16);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(429, 49);
+            this.dataGridView1.Size = new System.Drawing.Size(450, 49);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.DataSourceChanged += new System.EventHandler(this.dataGridView1_DataSourceChanged);
             this.dataGridView1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView1_RowsAdded);
@@ -181,7 +181,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(435, 712);
+            this.groupBox1.Size = new System.Drawing.Size(456, 712);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Input";
@@ -197,7 +197,7 @@
             this.richTextBox1.Lexer = ScintillaNET.Lexer.Xml;
             this.richTextBox1.Location = new System.Drawing.Point(3, 47);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(429, 665);
+            this.richTextBox1.Size = new System.Drawing.Size(450, 665);
             this.richTextBox1.TabIndex = 2;
             this.richTextBox1.Technology = ScintillaNET.Technology.DirectWrite;
             this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
@@ -207,7 +207,7 @@
             // button2
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(354, 19);
+            this.button2.Location = new System.Drawing.Point(375, 19);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 1;
@@ -222,7 +222,7 @@
             this.comboBox2.FormattingEnabled = true;
             this.comboBox2.Location = new System.Drawing.Point(4, 20);
             this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(344, 21);
+            this.comboBox2.Size = new System.Drawing.Size(365, 21);
             this.comboBox2.TabIndex = 0;
             this.comboBox2.TextChanged += new System.EventHandler(this.comboBox2_TextChanged);
             // 
@@ -232,7 +232,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Location = new System.Drawing.Point(0, 0);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(1195, 784);
+            this.groupBox2.Size = new System.Drawing.Size(1253, 784);
             this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Output";
@@ -248,7 +248,7 @@
             this.richTextBox2.Lexer = ScintillaNET.Lexer.Xml;
             this.richTextBox2.Location = new System.Drawing.Point(3, 16);
             this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.Size = new System.Drawing.Size(1189, 768);
+            this.richTextBox2.Size = new System.Drawing.Size(1247, 768);
             this.richTextBox2.TabIndex = 0;
             this.richTextBox2.Technology = ScintillaNET.Technology.DirectWrite;
             this.richTextBox2.Enter += new System.EventHandler(this.richTextBox_Enter);
@@ -265,7 +265,7 @@
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button3.BackColor = System.Drawing.SystemColors.Control;
             this.button3.Enabled = false;
-            this.button3.Location = new System.Drawing.Point(1510, 880);
+            this.button3.Location = new System.Drawing.Point(1589, 880);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(123, 23);
             this.button3.TabIndex = 4;
@@ -301,7 +301,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.splitContainer1);
-            this.splitContainer2.Size = new System.Drawing.Size(1634, 834);
+            this.splitContainer2.Size = new System.Drawing.Size(1713, 834);
             this.splitContainer2.SplitterDistance = 46;
             this.splitContainer2.TabIndex = 5;
             // 
@@ -311,7 +311,7 @@
             this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox4.Location = new System.Drawing.Point(0, 0);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(1634, 46);
+            this.groupBox4.Size = new System.Drawing.Size(1713, 46);
             this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Instructions";
@@ -324,14 +324,14 @@
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(1628, 27);
+            this.textBox1.Size = new System.Drawing.Size(1707, 27);
             this.textBox1.TabIndex = 0;
             this.textBox1.Text = resources.GetString("textBox1.Text");
             // 
             // button4
             // 
             this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button4.Location = new System.Drawing.Point(1536, 12);
+            this.button4.Location = new System.Drawing.Point(1615, 12);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(21, 23);
             this.button4.TabIndex = 6;
@@ -351,7 +351,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(1645, 915);
+            this.ClientSize = new System.Drawing.Size(1724, 915);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.splitContainer2);
             this.Controls.Add(this.button3);
