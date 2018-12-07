@@ -11,7 +11,7 @@
   
   <xsl:include href="DateFormatter.xsl" />
 
-  <xsl:variable name="documentCreatedOn" select="isc:evaluate('timestamp')" />
+  <xsl:variable name="documentCreatedOn" select="isc:evaluate('xmltimestamp', isc:evaluate('timestamp'))" />
   <xsl:key name="vitals" match="Observations/Observation" use="GroupId/text()" />
   
   <xsl:template match="/Container">
@@ -250,7 +250,7 @@
             <low value="{$patientBirthDate}" />
             <high value="{translate($documentCreatedOn,'TZ:- ','')}" />
           </effectiveTime>
-          <xsl:apply-templates select="Patient/Extension/CareTeamMembers/CareProvider[Description = 'PRIMARY CARE PROVIDER']" mode="header-careteammembers">
+          <xsl:apply-templates select="Patient/FamilyDoctor" mode="header-careteammembers">
             <xsl:with-param name="number" select="'1'" />
           </xsl:apply-templates>
           <xsl:apply-templates select="Patient/Extension/CareTeamMembers/CareProvider[not(Description = 'PRIMARY CARE PROVIDER')]" mode="header-careteammembers">
@@ -1191,7 +1191,7 @@
                       </text>
                       <statusCode code="completed"/>
                       <value xsi:type="IVL_TS">
-                        <low value="{translate(isc:evaluate('dateAdd','mm',-18,$documentCreatedOn), 'TZ:- ','')}" />
+                        <low value="{translate(isc:evaluate('dateAdd','mm',-18,translate($documentCreatedOn,'TZ',' ')), 'TZ:- ','')}" />
                         <high value="{translate($documentCreatedOn, 'TZ:- ','')}" />
                       </value>
                     </observation>
@@ -1786,7 +1786,7 @@
                         </text>
                         <statusCode code="completed" />
                         <value xsi:type="IVL_TS">
-                          <low value="{translate(isc:evaluate('dateAdd','yyyy',-3,$documentCreatedOn), 'TZ:- ','')}" />
+                          <low value="{translate(isc:evaluate('dateAdd','yyyy',-3,translate($documentCreatedOn,'TZ',' ')), 'TZ:- ','')}" />
                           <high value="{translate($documentCreatedOn, 'TZ:- ','')}" />
                         </value>
                       </observation>
@@ -3808,7 +3808,7 @@
                       </text>
                       <statusCode code="completed"/>
                       <value xsi:type="IVL_TS">
-                        <low value="{translate(isc:evaluate('dateAdd','mm',-18,$documentCreatedOn), 'TZ:- ','')}" />
+                        <low value="{translate(isc:evaluate('dateAdd','mm',-18,translate($documentCreatedOn,'TZ',' ')), 'TZ:- ','')}" />
                         <high value="{translate($documentCreatedOn, 'TZ:- ','')}" />
                       </value>
                     </observation>
@@ -4056,8 +4056,8 @@
                       </text>
                       <statusCode code="completed"/>
                       <value xsi:type="IVL_TS">
-                        <low value="{translate(isc:evaluate('dateAdd','dd',-45,$documentCreatedOn), 'TZ:- ','')}" />
-                        <high value="{translate(isc:evaluate('dateAdd','mm',6,$documentCreatedOn), 'TZ:- ','')}" />
+                        <low value="{translate(isc:evaluate('dateAdd','dd',-45,translate($documentCreatedOn,'TZ',' ')), 'TZ:- ','')}" />
+                        <high value="{translate(isc:evaluate('dateAdd','mm',6,translate($documentCreatedOn,'TZ',' ')), 'TZ:- ','')}" />
                       </value>
                     </observation>
                   </entry>
@@ -4531,7 +4531,7 @@
                       </text>
                       <statusCode code="completed" />
                       <value xsi:type="IVL_TS">
-                        <low value="{translate(isc:evaluate('dateAdd','mm',-24,$documentCreatedOn), 'TZ:- ','')}" />
+                        <low value="{translate(isc:evaluate('dateAdd','mm',-24,translate($documentCreatedOn,'TZ',' ')), 'TZ:- ','')}" />
                         <high value="{translate($documentCreatedOn, 'TZ:- ','')}" />
                       </value>
                     </observation>
@@ -5094,7 +5094,7 @@
                       </text>
                       <statusCode code="completed" />
                       <value xsi:type="IVL_TS">
-                        <low value="{translate(isc:evaluate('dateAdd','mm',-12,$documentCreatedOn), 'TZ:- ','')}" />
+                        <low value="{translate(isc:evaluate('dateAdd','mm',-12,translate($documentCreatedOn,'TZ',' ')), 'TZ:- ','')}" />
                         <high value="{translate($documentCreatedOn, 'TZ:- ','')}" />
                       </value>
                     </observation>
@@ -6061,16 +6061,8 @@
                       </text>
                       <statusCode code="completed"/>
                       <value xsi:type="IVL_TS">
-                        <xsl:choose>
-                          <xsl:when test="boolean(Documents/@cpnStartTime)">
-                            <low value="{translate(Documents/@cpnStartTime, 'TZ:- ','')}" />
-                            <high value="{translate(Documents/@cpnEndTime, 'TZ:- ','')}" />
-                          </xsl:when>
-                          <xsl:otherwise>
-                            <low nullFlavor="UNK" />
-                            <high nullFlavor="UNK" />
-                          </xsl:otherwise>
-                        </xsl:choose>
+                        <low value="{translate(isc:evaluate('dateAdd','mm',-12,translate($documentCreatedOn,'TZ',' ')), 'TZ:- ','')}" />
+                        <high value="{translate($documentCreatedOn, 'TZ:- ','')}" />
                       </value>
                     </observation>
                   </entry>
@@ -6245,7 +6237,7 @@
       <templateId root="2.16.840.1.113883.10.20.6.2.1" extension="2014-06-09" />
       <xsl:choose>
         <xsl:when test="$number=1">
-          <functionCode code="PCP" codeSystem="2.16.840.1.113883.5.88" codeSystemName="{isc:evaluate('getCodeForOID','2.16.840.1.113883.5.88','CodeSystem','ParticipationFunction')}" displayName="{Description/text()}">
+          <functionCode code="PCP" codeSystem="2.16.840.1.113883.5.88" codeSystemName="{isc:evaluate('getCodeForOID','2.16.840.1.113883.5.88','CodeSystem','ParticipationFunction')}" displayName="PRIMARY CARE PROVIDER">
             <originalText><xsl:value-of select="Description/text()" /></originalText>
           </functionCode>
         </xsl:when>
@@ -6286,9 +6278,22 @@
         </assignedPerson>
         <representedOrganization>
           <xsl:comment> INFORMATION SOURCE FOR FACILITY ID=VA OID, EXT= VAMC TREATING FACILITY NBR </xsl:comment>
-          <id nullFlavor="UNK" />
-          <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
-          <name nullFlavor="UNK" />
+          <xsl:choose>
+            <xsl:when test="$number=1">
+              <id root="2.16.840.1.113883.4.349" extension="{../EnteredAt/Code/text()}" />
+              <xsl:comment>INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME </xsl:comment>
+              <name>
+                <xsl:value-of select="../EnteredAt/Description"/>
+              </name>
+            </xsl:when>
+            <xsl:otherwise>
+              <id root="2.16.840.1.113883.4.349" extension="{../../../EnteredAt/Code/text()}" />
+              <xsl:comment>INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME </xsl:comment>
+              <name>
+                <xsl:value-of select="../../../EnteredAt/Description"/>
+              </name>
+            </xsl:otherwise>
+          </xsl:choose>
           <xsl:comment> Telecom Required for representedOrganization, but VA VistA data not yet available </xsl:comment>
           <telecom nullFlavor="UNK" />
           <xsl:comment> Address Required for representedOrganization, but VA VistA data not yet available </xsl:comment>

@@ -259,7 +259,7 @@
             <low value="{$patientBirthDate}" />
             <high value="{$documentCreatedOn}" />
           </effectiveTime>
-          <xsl:apply-templates select="Patient/Extension/CareTeamMembers/CareProvider[Description = 'PRIMARY CARE PROVIDER']" mode="header-careteammembers">
+          <xsl:apply-templates select="Patient/FamilyDoctor" mode="header-careteammembers">
             <xsl:with-param name="number" select="'1'" />
           </xsl:apply-templates>
           <xsl:apply-templates select="Patient/Extension/CareTeamMembers/CareProvider[not(Description = 'PRIMARY CARE PROVIDER')]" mode="header-careteammembers">
@@ -6014,7 +6014,7 @@
       <templateId root="2.16.840.1.113883.10.20.6.2.1" extension="2014-06-09" />
       <xsl:choose>
         <xsl:when test="$number=1">
-          <functionCode code="PCP" codeSystem="2.16.840.1.113883.5.88" codeSystemName="{isc:evaluate('getCodeForOID','2.16.840.1.113883.5.88','CodeSystem','ParticipationFunction')}" displayName="{Description/text()}">
+          <functionCode code="PCP" codeSystem="2.16.840.1.113883.5.88" codeSystemName="{isc:evaluate('getCodeForOID','2.16.840.1.113883.5.88','CodeSystem','ParticipationFunction')}" displayName="PRIMARY CARE PROVIDER">
             <originalText><xsl:value-of select="Description/text()" /></originalText>
           </functionCode>
         </xsl:when>
@@ -6055,9 +6055,22 @@
         </assignedPerson>
         <representedOrganization>
           <xsl:comment> INFORMATION SOURCE FOR FACILITY ID=VA OID, EXT= VAMC TREATING FACILITY NBR </xsl:comment>
-          <id nullFlavor="UNK" />
-          <xsl:comment> INFORMATION SOURCE FACILITY NAME (facilityName) </xsl:comment>
-          <name nullFlavor="UNK" />
+          <xsl:choose>
+            <xsl:when test="$number=1">
+              <id root="2.16.840.1.113883.4.349" extension="{../EnteredAt/Code/text()}" />
+              <xsl:comment>INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME </xsl:comment>
+              <name>
+                <xsl:value-of select="../EnteredAt/Description"/>
+              </name>
+            </xsl:when>
+            <xsl:otherwise>
+              <id root="2.16.840.1.113883.4.349" extension="{../../../EnteredAt/Code/text()}" />
+              <xsl:comment>INFORMATION SOURCE NAME, name=VAMC TREATING FACILITY NAME </xsl:comment>
+              <name>
+                <xsl:value-of select="../../../EnteredAt/Description"/>
+              </name>
+            </xsl:otherwise>
+          </xsl:choose>
           <xsl:comment> Telecom Required for representedOrganization, but VA VistA data not yet available </xsl:comment>
           <telecom nullFlavor="UNK" />
           <xsl:comment> Address Required for representedOrganization, but VA VistA data not yet available </xsl:comment>
