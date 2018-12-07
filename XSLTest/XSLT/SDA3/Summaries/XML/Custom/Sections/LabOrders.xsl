@@ -6,7 +6,7 @@
 	exclude-result-prefixes="exsl"
 	>
 
-	<xsl:param name="LabOrdersMinAge" select="0"/>
+	<xsl:param name="LabOrdersMinAge" select="-99999"/>
 	<xsl:param name="LabOrdersMaxAge" select="$_24months"/>
 
 	<xsl:param name="LabOrdersCount"  select="10"/>

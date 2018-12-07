@@ -26,7 +26,7 @@
         *********************** C-CDA R2.1 CONTINUITY OF CARE DOCUMENT (CCD) VDIF Build 1  ************************************************
       </xsl:comment>
       <realmCode code="US" />
-      <typeId root="2.16.840.1.113883.1.3" extension="POCD_HD000040" />
+      <typeId root="2.16.840.1.113883.1.3" extension="POCD_HD000040" debug="{isc:evaluate('dateAdd', 'yyyy', 5, translate(Patient/BirthTime/text(), 'TZ',' '))}"/>
 
       <templateId root="2.16.840.1.113883.10.20.22.1.1" extension="2015-08-01"/>
       <templateId root="2.16.840.1.113883.10.20.22.1.2" extension="2015-08-01"/>
@@ -37,7 +37,7 @@
       <xsl:comment> CCD Document Title </xsl:comment>
       <title>Department of Veterans Affairs Health Summary</title>
       <xsl:comment> 1.01 DOCUMENT TIMESTAMP, REQUIRED </xsl:comment>
-      <effectiveTime value="{$documentCreatedOn}" />
+      <effectiveTime value="{translate($documentCreatedOn,'TZ:- ','')}" />
       <xsl:comment>CCD Confidentiality Code, REQUIRED </xsl:comment> 
       <confidentialityCode code="R" codeSystem="2.16.840.1.113883.5.25" codeSystemName="ConfidentialityCode" />
       <xsl:comment>CCD DOCUMENT LANGUAGE, REQUIRED</xsl:comment> 
@@ -133,7 +133,7 @@
       <author>
         <templateId root="2.16.840.1.113883.10.20.22.4.119" />
         <xsl:comment>10.01 AUTHOR TIME (=Document Creation Date), REQUIRED </xsl:comment> 
-        <time value="{$documentCreatedOn}" />
+        <time value="{translate($documentCreatedOn,'TZ:- ','')}" />
         <assignedAuthor>
           <xsl:comment>10.02 AUTHOR ID (VA OID) (authorOID), REQUIIRED </xsl:comment> 
           <!--<id root="2.16.840.1.113883.4.349" /> -->
@@ -206,7 +206,7 @@
       </xsl:comment> 
       <legalAuthenticator>
         <xsl:comment>TIME OF AUTHENTICATION </xsl:comment> 
-        <time value="{$documentCreatedOn}" />
+        <time value="{translate($documentCreatedOn,'TZ:- ','')}" />
         <signatureCode code="S" />
         <assignedEntity>
           <id nullFlavor="NI" />
@@ -248,7 +248,7 @@
         <serviceEvent classCode="PCPR">
           <effectiveTime>
             <low value="{$patientBirthDate}" />
-            <high value="{$documentCreatedOn}" />
+            <high value="{translate($documentCreatedOn,'TZ:- ','')}" />
           </effectiveTime>
           <xsl:apply-templates select="Patient/Extension/CareTeamMembers/CareProvider[Description = 'PRIMARY CARE PROVIDER']" mode="header-careteammembers">
             <xsl:with-param name="number" select="'1'" />
@@ -382,7 +382,7 @@
                       <statusCode code="completed"/>
                       <value xsi:type="IVL_TS">
                         <low value="{$patientBirthDate}" />
-                        <high value="{$documentCreatedOn}" />
+                        <high value="{translate($documentCreatedOn,'TZ:- ','')}" />
                       </value>
                     </observation>
                   </entry >
@@ -600,7 +600,7 @@
                       <statusCode code="completed"/>
                       <value xsi:type="IVL_TS">
                         <low value="{$patientBirthDate}" />
-                        <high value="{$documentCreatedOn}" />
+                        <high value="{translate($documentCreatedOn,'TZ:- ','')}" />
                       </value>
                     </observation>
                   </entry>
@@ -816,7 +816,7 @@
                       <statusCode code="completed"/>
                       <value xsi:type="IVL_TS">
                         <low value="{$patientBirthDate}" />
-                        <high value="{$documentCreatedOn}" />
+                        <high value="{translate($documentCreatedOn,'TZ:- ','')}" />
                       </value>
                     </observation>
                   </entry>
@@ -1191,16 +1191,8 @@
                       </text>
                       <statusCode code="completed"/>
                       <value xsi:type="IVL_TS">
-                        <xsl:choose>
-                          <xsl:when test="boolean(Encounters/@encStartTime)">
-                            <low value="{translate(Encounters/@encStartTime, 'TZ:- ','')}" />
-                            <high value="{translate(Encounters/@encEndTime, 'TZ:- ','')}" />
-                          </xsl:when>
-                          <xsl:otherwise>
-                            <low nullFlavor="UNK" />
-                            <high nullFlavor="UNK" />
-                          </xsl:otherwise>
-                        </xsl:choose>
+                        <low value="{translate(isc:evaluate('dateAdd','mm',-18,$documentCreatedOn), 'TZ:- ','')}" />
+                        <high value="{translate($documentCreatedOn, 'TZ:- ','')}" />
                       </value>
                     </observation>
                   </entry>
@@ -1445,13 +1437,31 @@
                         </thead>
                         <xsl:for-each select="Problems/Problem[Problem/Code/text() = '408907016' and count(CustomPairs/NVPair) &gt; 19]" >
                           <xsl:sort select="FromTime" order="descending" />
+                          <xsl:variable name="leTime">
+                            
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <xsl:value-of select="FromTime" />
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <xsl:value-of select="ToTime" />
+                                </xsl:when>
+                                  <xsl:otherwise></xsl:otherwise>
+                                </xsl:choose>
+                          
+                          </xsl:variable>
                           <xsl:if test="position() &lt; 4">
                             <tbody>
                               <tr>
                                 <td>
                                   <content ID="{concat('fimAssessmentDate',position())}">
                                     <xsl:call-template name="tmpDateTemplate" >
-                                      <xsl:with-param name="date-time" select="(EnteredOn | FromTime)/text()" />
+                                      <xsl:with-param name="date-time" select="$leTime" />
                                       <xsl:with-param name="pattern" select="'MMM dd, yyyy'" />
                                     </xsl:call-template>
                                   </content>
@@ -1463,7 +1473,7 @@
                                 </td>
                                 <td>
                                   <content ID="{concat('fimAssessment',position())}">
-                                    <xsl:value-of select="Category/Description/text()" />
+                                    <xsl:value-of select="CustomPairs/NVPair[1]/Value/text()" />
                                   </content>
                                 </td>
                                 <td/>
@@ -1776,16 +1786,8 @@
                         </text>
                         <statusCode code="completed" />
                         <value xsi:type="IVL_TS">
-                        <xsl:choose>
-                          <xsl:when test="boolean(Problems/@fimStartTime)">
-                            <low value="{translate(Problems/@fimStartTime, 'TZ:- ','')}" />
-                            <high value="{translate(Problems/@fimEndTime, 'TZ:- ','')}" />
-                          </xsl:when>
-                          <xsl:otherwise>
-                            <low nullFlavor="UNK" />
-                            <high nullFlavor="UNK" />
-                          </xsl:otherwise>
-                        </xsl:choose>
+                          <low value="{translate(isc:evaluate('dateAdd','yyyy',-3,$documentCreatedOn), 'TZ:- ','')}" />
+                          <high value="{translate($documentCreatedOn, 'TZ:- ','')}" />
                         </value>
                       </observation>
                     </entry>
@@ -1805,6 +1807,26 @@
                               </originalText>
                             </code>
                             <statusCode code="completed"/>
+                            <xsl:choose>
+                            <xsl:when test="
+                              contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                              or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                              or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                              <effectiveTime>
+                                <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                              </effectiveTime>
+                            </xsl:when>
+                            <xsl:when test="
+                              contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                              or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                              <effectiveTime>
+                                <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                              </effectiveTime>
+                            </xsl:when>
+                              <xsl:otherwise>
+                                <effectiveTime nullFlavor="UNK" />
+                            </xsl:otherwise>
+                            </xsl:choose>
                             <xsl:comment> * Information Source for Functional Status, VA Facility  </xsl:comment>
                             <author>
                               <templateId root="2.16.840.1.113883.10.20.22.4.119" />
@@ -1837,9 +1859,26 @@
                                 </text>
                                 <statusCode code="completed"/>
                                 <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                                <effectiveTime>
-                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ','')}"/>
-                                </effectiveTime>
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <effectiveTime>
+                                    <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <effectiveTime>
+                                    <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                  <xsl:otherwise>
+                                    <effectiveTime nullFlavor="UNK" />
+                                </xsl:otherwise>
+                                </xsl:choose>
                                 <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                                 <value nullFlavor="NA" xsi:type="CD">
                                   <translation nullFlavor="UNK">
@@ -1873,9 +1912,26 @@
                                 </text>
                                 <statusCode code="completed"/>
                                 <xsl:comment>  Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                                <effectiveTime>
-                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                                </effectiveTime>
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <effectiveTime>
+                                    <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <effectiveTime>
+                                    <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                  <xsl:otherwise>
+                                    <effectiveTime nullFlavor="UNK" />
+                                </xsl:otherwise>
+                                </xsl:choose>
                                 <xsl:comment>   Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                                 <value nullFlavor="NA" xsi:type="CD">
                                   <translation nullFlavor="UNK">
@@ -1909,9 +1965,26 @@
                                 </text>
                                 <statusCode code="completed"/>
                                 <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                                <effectiveTime>
-                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                                </effectiveTime>
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <effectiveTime>
+                                    <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <effectiveTime>
+                                    <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                  <xsl:otherwise>
+                                    <effectiveTime nullFlavor="UNK" />
+                                </xsl:otherwise>
+                                </xsl:choose>
                                 <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                                 <value nullFlavor="NA" xsi:type="CD">
                                   <translation nullFlavor="UNK">
@@ -1945,9 +2018,26 @@
                                 </text>
                                 <statusCode code="completed"/>
                                 <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                                <effectiveTime>
-                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                                </effectiveTime>
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <effectiveTime>
+                                    <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <effectiveTime>
+                                    <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                  <xsl:otherwise>
+                                    <effectiveTime nullFlavor="UNK" />
+                                </xsl:otherwise>
+                                </xsl:choose>
                                 <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                                 <value nullFlavor="NA" xsi:type="CD">
                                   <translation nullFlavor="UNK">
@@ -1981,9 +2071,26 @@
                                 </text>
                                 <statusCode code="completed"/>
                                 <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                                <effectiveTime>
-                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                                </effectiveTime>
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <effectiveTime>
+                                    <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <effectiveTime>
+                                    <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                  <xsl:otherwise>
+                                    <effectiveTime nullFlavor="UNK" />
+                                </xsl:otherwise>
+                                </xsl:choose>
                                 <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                                 <value nullFlavor="NA" xsi:type="CD">
                                   <translation nullFlavor="UNK">
@@ -2017,9 +2124,26 @@
                                 </text>
                                 <statusCode code="completed"/>
                                 <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                                <effectiveTime>
-                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                                </effectiveTime>
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <effectiveTime>
+                                    <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <effectiveTime>
+                                    <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                  <xsl:otherwise>
+                                    <effectiveTime nullFlavor="UNK" />
+                                </xsl:otherwise>
+                                </xsl:choose>
                                 <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                                 <value nullFlavor="NA" xsi:type="CD">
                                   <translation nullFlavor="UNK">
@@ -2053,9 +2177,26 @@
                                 </text>
                                 <statusCode code="completed"/>
                                 <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                                <effectiveTime>
-                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                                </effectiveTime>
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <effectiveTime>
+                                    <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <effectiveTime>
+                                    <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                  <xsl:otherwise>
+                                    <effectiveTime nullFlavor="UNK" />
+                                </xsl:otherwise>
+                                </xsl:choose>
                                 <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                                 <value nullFlavor="NA" xsi:type="CD">
                                   <translation nullFlavor="UNK">
@@ -2089,9 +2230,26 @@
                                 </text>
                                 <statusCode code="completed"/>
                                 <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                                <effectiveTime>
-                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                                </effectiveTime>
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <effectiveTime>
+                                    <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <effectiveTime>
+                                    <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                  <xsl:otherwise>
+                                    <effectiveTime nullFlavor="UNK" />
+                                </xsl:otherwise>
+                                </xsl:choose>
                                 <xsl:comment>Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                                 <value nullFlavor="NA" xsi:type="CD">
                                   <translation nullFlavor="UNK">
@@ -2125,9 +2283,26 @@
                                 </text>
                                 <statusCode code="completed"/>
                                 <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                                <effectiveTime>
-                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                                </effectiveTime>
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <effectiveTime>
+                                    <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <effectiveTime>
+                                    <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                  <xsl:otherwise>
+                                    <effectiveTime nullFlavor="UNK" />
+                                </xsl:otherwise>
+                                </xsl:choose>
                                 <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                                 <value nullFlavor="NA" xsi:type="CD">
                                   <translation nullFlavor="UNK">
@@ -2161,9 +2336,26 @@
                                 </text>
                                 <statusCode code="completed"/>
                                 <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                                <effectiveTime>
-                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                                </effectiveTime>
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <effectiveTime>
+                                    <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <effectiveTime>
+                                    <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                  <xsl:otherwise>
+                                    <effectiveTime nullFlavor="UNK" />
+                                </xsl:otherwise>
+                                </xsl:choose>
                                 <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                                 <value nullFlavor="NA" xsi:type="CD">
                                   <translation nullFlavor="UNK">
@@ -2197,9 +2389,26 @@
                                 </text>
                                 <statusCode code="completed"/>
                                 <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                                <effectiveTime>
-                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                                </effectiveTime>
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <effectiveTime>
+                                    <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <effectiveTime>
+                                    <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                  <xsl:otherwise>
+                                    <effectiveTime nullFlavor="UNK" />
+                                </xsl:otherwise>
+                                </xsl:choose>
                                 <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                                 <value nullFlavor="NA" xsi:type="CD">
                                   <translation nullFlavor="UNK">
@@ -2233,9 +2442,26 @@
                                 </text>
                                 <statusCode code="completed"/>
                                 <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                                <effectiveTime>
-                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                                </effectiveTime>
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <effectiveTime>
+                                    <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <effectiveTime>
+                                    <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                  <xsl:otherwise>
+                                    <effectiveTime nullFlavor="UNK" />
+                                </xsl:otherwise>
+                                </xsl:choose>
                                 <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                                 <value nullFlavor="NA" xsi:type="CD">
                                   <translation nullFlavor="UNK">
@@ -2269,9 +2495,26 @@
                                 </text>
                                 <statusCode code="completed"/>
                                 <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                                <effectiveTime>
-                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                                </effectiveTime>
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <effectiveTime>
+                                    <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <effectiveTime>
+                                    <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                  <xsl:otherwise>
+                                    <effectiveTime nullFlavor="UNK" />
+                                </xsl:otherwise>
+                                </xsl:choose>
                                 <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                                 <value nullFlavor="NA" xsi:type="CD">
                                   <translation nullFlavor="UNK">
@@ -2305,9 +2548,26 @@
                                 </text>
                                 <statusCode code="completed"/>
                                 <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                                <effectiveTime>
-                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                                </effectiveTime>
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <effectiveTime>
+                                    <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <effectiveTime>
+                                    <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                  <xsl:otherwise>
+                                    <effectiveTime nullFlavor="UNK" />
+                                </xsl:otherwise>
+                                </xsl:choose>
                                 <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                                 <value nullFlavor="NA" xsi:type="CD">
                                   <translation nullFlavor="UNK">
@@ -2341,9 +2601,26 @@
                                 </text>
                                 <statusCode code="completed"/>
                                 <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                                <effectiveTime>
-                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                                </effectiveTime>
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <effectiveTime>
+                                    <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <effectiveTime>
+                                    <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                  <xsl:otherwise>
+                                    <effectiveTime nullFlavor="UNK" />
+                                </xsl:otherwise>
+                                </xsl:choose>
                                 <xsl:comment>-  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                                 <value nullFlavor="NA" xsi:type="CD">
                                   <translation nullFlavor="UNK">
@@ -2377,9 +2654,26 @@
                                 </text>
                                 <statusCode code="completed"/>
                                 <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                                <effectiveTime>
-                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                                </effectiveTime>
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <effectiveTime>
+                                    <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <effectiveTime>
+                                    <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                  <xsl:otherwise>
+                                    <effectiveTime nullFlavor="UNK" />
+                                </xsl:otherwise>
+                                </xsl:choose>
                                 <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                                 <value nullFlavor="NA" xsi:type="CD">
                                   <translation nullFlavor="UNK">
@@ -2413,9 +2707,26 @@
                                 </text>
                                 <statusCode code="completed"/>
                                 <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                                <effectiveTime>
-                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                                </effectiveTime>
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <effectiveTime>
+                                    <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <effectiveTime>
+                                    <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                  <xsl:otherwise>
+                                    <effectiveTime nullFlavor="UNK" />
+                                </xsl:otherwise>
+                                </xsl:choose>
                                 <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                                 <value nullFlavor="NA" xsi:type="CD">
                                   <translation nullFlavor="UNK">
@@ -2449,9 +2760,26 @@
                                 </text>
                                 <statusCode code="completed"/>
                                 <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                                <effectiveTime>
-                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                                </effectiveTime>
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <effectiveTime>
+                                    <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <effectiveTime>
+                                    <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                  <xsl:otherwise>
+                                    <effectiveTime nullFlavor="UNK" />
+                                </xsl:otherwise>
+                                </xsl:choose>
                                 <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                                 <value nullFlavor="NA" xsi:type="CD">
                                   <translation nullFlavor="UNK">
@@ -2485,9 +2813,26 @@
                                 </text>
                                 <statusCode code="completed"/>
                                 <xsl:comment> Functional Status Result Observation Date/Time, FIM Assessment Date/Time </xsl:comment>
-                                <effectiveTime>
-                                  <low value="{translate((EnteredOn | FromTime)/text(), 'TZ:- ', '')}"/>
-                                </effectiveTime>
+                                <xsl:choose>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Admission') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Interim') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Goals')">
+                                  <effectiveTime>
+                                    <low value="{translate(FromTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                <xsl:when test="
+                                  contains(CustomPairs/NVPair[1]/Value/text(), 'Discharge') 
+                                  or contains(CustomPairs/NVPair[1]/Value/text(), 'Followup')">
+                                  <effectiveTime>
+                                    <low value="{translate(ToTime/text(),'TZ:- ','')}" />
+                                  </effectiveTime>
+                                </xsl:when>
+                                  <xsl:otherwise>
+                                    <effectiveTime nullFlavor="UNK" />
+                                </xsl:otherwise>
+                                </xsl:choose>
                                 <xsl:comment>  Functional Status Result Observation Date/Time, FIM Skill Score </xsl:comment>
                                 <value nullFlavor="NA" xsi:type="CD">
                                   <translation nullFlavor="UNK">
@@ -2659,8 +3004,8 @@
                       </text>
                       <statusCode code="completed"/>
                       <value xsi:type="IVL_TS">
-                        <low value="{$patientBirthDate}" /><!-- TODO Date ranges-->
-                        <high value="{$documentCreatedOn}" />
+                        <low value="{$patientBirthDate}" />
+                        <high value="{translate($documentCreatedOn,'TZ:- ','')}" />
                       </value>
                     </observation>
                   </entry>
@@ -3123,7 +3468,7 @@
                       <statusCode code="completed"/>
                       <value xsi:type="IVL_TS">
                         <low value="{$patientBirthDate}" />
-                        <high value="{$documentCreatedOn}" />
+                        <high value="{translate($documentCreatedOn,'TZ:- ','')}" />
                       </value>
                     </observation>
                   </entry>
@@ -3463,16 +3808,8 @@
                       </text>
                       <statusCode code="completed"/>
                       <value xsi:type="IVL_TS">
-                        <xsl:choose>
-                          <xsl:when test="boolean(Procedures/@procStartTime)">
-                            <low value="{translate(Procedures/@procStartTime, 'TZ:- ','')}" />
-                            <high value="{translate(Procedures/@procEndTime, 'TZ:- ','')}" />
-                          </xsl:when>
-                          <xsl:otherwise>
-                            <low nullFlavor="UNK" />
-                            <high nullFlavor="UNK" />
-                          </xsl:otherwise>
-                        </xsl:choose>
+                        <low value="{translate(isc:evaluate('dateAdd','mm',-18,$documentCreatedOn), 'TZ:- ','')}" />
+                        <high value="{translate($documentCreatedOn, 'TZ:- ','')}" />
                       </value>
                     </observation>
                   </entry>
@@ -3719,16 +4056,8 @@
                       </text>
                       <statusCode code="completed"/>
                       <value xsi:type="IVL_TS">
-                        <xsl:choose>
-                          <xsl:when test="boolean(Appointments/@pocStartTime)">
-                            <low value="{translate(Appointments/@pocStartTime, 'TZ:- ','')}" />
-                            <high value="{translate(Appointments/@pocEndTime, 'TZ:- ','')}" />
-                          </xsl:when>
-                          <xsl:otherwise>
-                            <low nullFlavor="UNK" />
-                            <high nullFlavor="UNK" />
-                          </xsl:otherwise>
-                        </xsl:choose>
+                        <low value="{translate(isc:evaluate('dateAdd','dd',-45,$documentCreatedOn), 'TZ:- ','')}" />
+                        <high value="{translate(isc:evaluate('dateAdd','mm',6,$documentCreatedOn), 'TZ:- ','')}" />
                       </value>
                     </observation>
                   </entry>
@@ -3930,7 +4259,7 @@
                       <statusCode code="completed"/>
                       <value xsi:type="IVL_TS">
                         <low value="{$patientBirthDate}" />
-                        <high value="{$documentCreatedOn}" />
+                        <high value="{translate($documentCreatedOn,'TZ:- ','')}" />
                       </value>
                     </observation>
                   </entry>
@@ -4202,17 +4531,9 @@
                       </text>
                       <statusCode code="completed" />
                       <value xsi:type="IVL_TS">
-                        <xsl:choose>
-                          <xsl:when test="boolean(LabOrders/@resStartTime)">
-                            <low value="{translate(LabOrders/@resStartTime, 'TZ:- ','')}" />
-                            <high value="{translate(LabOrders/@resEndTime, 'TZ:- ','')}" />
-                          </xsl:when>
-                          <xsl:otherwise>
-                            <low nullFlavor="UNK" />
-                            <high nullFlavor="UNK" />
-                          </xsl:otherwise>
-                        </xsl:choose>
-                      </value><!-- TODO section dates-->
+                        <low value="{translate(isc:evaluate('dateAdd','mm',-24,$documentCreatedOn), 'TZ:- ','')}" />
+                        <high value="{translate($documentCreatedOn, 'TZ:- ','')}" />
+                      </value>
                     </observation>
                   </entry>
 
@@ -4499,7 +4820,7 @@
                       <statusCode code="completed"/>
                       <value xsi:type="IVL_TS">
                         <low value="{$patientBirthDate}" />
-                        <high value="{$documentCreatedOn}" />
+                        <high value="{translate($documentCreatedOn,'TZ:- ','')}" />
                       </value>
                     </observation>
                   </entry>
@@ -4773,16 +5094,8 @@
                       </text>
                       <statusCode code="completed" />
                       <value xsi:type="IVL_TS">
-                        <xsl:choose>
-                          <xsl:when test="boolean(Obervations/@vitStartTime)">
-                            <low value="{translate(Obervations/@vitStartTime, 'TZ:- ','')}" />
-                            <high value="{translate(Obervations/@vitEndTime, 'TZ:- ','')}" />
-                          </xsl:when>
-                          <xsl:otherwise>
-                            <low nullFlavor="UNK" />
-                            <high nullFlavor="UNK" />
-                          </xsl:otherwise>
-                        </xsl:choose>
+                        <low value="{translate(isc:evaluate('dateAdd','mm',-12,$documentCreatedOn), 'TZ:- ','')}" />
+                        <high value="{translate($documentCreatedOn, 'TZ:- ','')}" />
                       </value>
                     </observation>
                   </entry>
@@ -5597,7 +5910,7 @@
             <xsl:comment> Clinical Procedure Notes </xsl:comment>
             <xsl:choose>
               <xsl:when test="not(boolean(
-                Documents/Document[DocumentType/Code/text() = 'CP' 
+                Documents/Document[(DocumentType/Code/text() = 'CP' or DocumentType/Code/text() = 'PN')
                 and not(contains(Extension/NationalTitle/OriginalText/text(),'FIM'))
                 and (
                         contains(Extension/NationalTitleService/Description/text(), 'PROCEDURE')
@@ -5634,7 +5947,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CP' 
+                        <xsl:for-each select="Documents/Document[(DocumentType/Code/text() = 'CP' or DocumentType/Code/text() = 'PN')
                           and not(contains(Extension/NationalTitle/OriginalText/text(),'FIM'))
                           and (
                                   contains(Extension/NationalTitleService/Description/text(), 'PROCEDURE')
@@ -5676,7 +5989,7 @@
                       </tbody>
                     </table>
                     <xsl:comment> Additional Clinical Procedure Notes </xsl:comment>
-                    <xsl:if test="count(Documents/Document[DocumentType/Code/text() = 'CP' 
+                    <xsl:if test="count(Documents/Document[(DocumentType/Code/text() = 'CP' or DocumentType/Code/text() = 'PN')
                       and not(contains(Extension/NationalTitle/OriginalText/text(),'FIM'))
                       and (
                               contains(Extension/NationalTitleService/Description/text(), 'PROCEDURE')
@@ -5698,7 +6011,7 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CP' 
+                          <xsl:for-each select="Documents/Document[(DocumentType/Code/text() = 'CP' or DocumentType/Code/text() = 'PN')
                             and not(contains(Extension/NationalTitle/OriginalText/text(),'FIM'))
                             and (
                                     contains(Extension/NationalTitleService/Description/text(), 'PROCEDURE')
@@ -5762,7 +6075,7 @@
                     </observation>
                   </entry>
                   <xsl:comment> Note Entry </xsl:comment>
-                  <xsl:for-each select="Documents/Document[DocumentType/Code/text() = 'CP' 
+                  <xsl:for-each select="Documents/Document[(DocumentType/Code/text() = 'CP' or DocumentType/Code/text() = 'PN')
                     and not(contains(Extension/NationalTitle/OriginalText/text(),'FIM'))
                     and (
                             contains(Extension/NationalTitleService/Description/text(), 'PROCEDURE')

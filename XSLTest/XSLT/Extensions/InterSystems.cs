@@ -15,6 +15,7 @@ namespace XSLTest.XSLT.Extensions
 
         public class Helper
         {
+            public static string DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
             public string evaluate(string func)
             {
                 return evaluate(func, "");
@@ -75,6 +76,9 @@ namespace XSLTest.XSLT.Extensions
                             break;
                         case "dateDiff":
                             ret =  dateDiff(code, system, def);
+                            break;
+                        case "dateAdd":
+                            ret = dateAdd(code, system, def);
                             break;
                         case "GWtoOID":
                             ret =  GWtoOID(code, system, def);
@@ -637,13 +641,39 @@ namespace XSLTest.XSLT.Extensions
                 switch(code)
                 {
                     case "dd":
-                        return (end - start).Days.ToString();
+                        return (end - start).Days.ToString(DATE_FORMAT);
                     case "mm":
-                        return ((end.Month - start.Month) + 12 * (end.Year - start.Year)).ToString();
+                        return ((end.Month - start.Month) + 12 * (end.Year - start.Year)).ToString(DATE_FORMAT);
                     case "yy":
-                        return (end.Year - start.Year).ToString();
+                        return (end.Year - start.Year).ToString(DATE_FORMAT);
                 }
-                return (end - start).Days.ToString();
+                return (end - start).Days.ToString(DATE_FORMAT);
+            }
+
+            private string dateAdd(string code, string system, string def)
+            {
+                DateTime start;
+                try
+                {
+                    start = def.Length > 0 ? DateTime.Parse(def) : DateTime.Now;
+                }
+                catch
+                {
+                    start = DateTime.Now;
+                }
+                
+                //System.Diagnostics.Debug.WriteLine("DateDiff "+end.ToString()+" - "+start.ToString()+" = "+((end - start).Days.ToString())+" [" + MethodBase.GetCurrentMethod().Name + "([" + code + "],[" + system + "],[" + def + "])]");
+                switch (code)
+                {
+                    case "dd":
+                        return start.AddDays(Double.Parse(system)).ToString(DATE_FORMAT);
+                    case "mm":
+                        return start.AddMonths(int.Parse(system)).ToString(DATE_FORMAT);
+                    case "yy":
+                    case "yyyy":
+                        return start.AddYears(int.Parse(system)).ToString(DATE_FORMAT);
+                }
+                return start.ToString(DATE_FORMAT);
             }
 
             private string xmltimestampisbefore(string code, string system, string def)
