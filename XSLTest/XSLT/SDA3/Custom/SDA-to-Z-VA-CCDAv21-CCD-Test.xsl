@@ -891,14 +891,24 @@
                                     <participantRole classCode="MANU">
                                       <playingEntity classCode="MMAT">
                                         <xsl:comment> 6.04 PRODUCT CODED,REQUIRED </xsl:comment>
-                                        <!--DS TODO: Insert translated data from VPR, once NDS patch utility is installed Allergy/Extension/DrugProducts/DrugProduct/Code&Description -->
-                                        <code codeSystem="2.16.840.1.113883.6.88"  codeSystemName="RxNorm">
-                                          <xsl:comment> 6.03 PRODUCT FREE TEXT, R2 </xsl:comment>
-                                          <originalText>
-                                            <reference value="{concat('#andAllergy',position())}" />
-                                          </originalText><!-- TODO: Vets Translation here (RXNORM) Internal or VETS? DS: Is translation still required here if VPR is providing native data?-->
-                                          <translation codeSystem="2.16.840.1.113883.6.233" codeSystemName="VHA Enterprise Reference Terminology" />
-                                        </code>
+                                        <xsl:choose>
+                                          <xsl:when test="Allergy/SDACodingStandard/text() = 'VHAT'">
+                                            <code nullFlavor="UNK">
+                                              <xsl:comment> 6.03 PRODUCT FREE TEXT, R2 </xsl:comment>
+                                              <originalText>
+                                                <reference value="{concat('#andAllergy',position())}" />
+                                              </originalText>
+                                            </code>
+                                          </xsl:when>
+                                          <xsl:otherwise>
+                                            <code codeSystem="{isc:evaluate('getOIDForCode', Allergy/SDACodingStandard/text(), 'CodeSystemUnknown')}"  codeSystemName="{isc:evaluate('getDescriptionForOID', isc:evaluate('getOIDForCode', Allergy/SDACodingStandard/text(), 'CodeSystemUnknown'))}" code="{Allergy/Code/text()}" displayName="{Allergy/Description/text()}">
+                                              <xsl:comment> 6.03 PRODUCT FREE TEXT, R2 </xsl:comment>
+                                              <originalText>
+                                                <reference value="{concat('#andAllergy',position())}" />
+                                              </originalText>
+                                            </code>
+                                          </xsl:otherwise>
+                                        </xsl:choose>
                                       </playingEntity>
                                     </participantRole>
                                   </participant>
