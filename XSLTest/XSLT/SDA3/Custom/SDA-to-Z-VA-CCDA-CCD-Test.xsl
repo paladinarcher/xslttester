@@ -5798,7 +5798,8 @@
 
                               <td>
                                 <!-- Pulse OX -->
-                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500637]/ObservationValue" /><xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500637]/ObservationValue/ObservationValueUnits/OriginalText" />
+                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500637]/ObservationValue" />
+                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500637]/ObservationCode/ObservationValueUnits/OriginalText" />
                               </td>
 
                               <td>
