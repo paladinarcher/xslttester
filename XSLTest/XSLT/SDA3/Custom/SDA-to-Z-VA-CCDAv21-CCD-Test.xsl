@@ -5074,7 +5074,7 @@
 
                               <td>
                                 <!-- Pulse OX -->
-                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500637]/ObservationValue" /><xsl:if test="boolean(../Observation[GroupId = $grp and ObservationCode/Code = 4500637]/ObservationValue)">%</xsl:if>
+                                <xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500637]/ObservationValue" /><xsl:value-of select="../Observation[GroupId = $grp and ObservationCode/Code = 4500637]/ObservationValue/ObservationValueUnits/OriginalText" />
                               </td>
 
                               <td>
@@ -6553,11 +6553,6 @@
                               <xsl:choose>
                                 <xsl:when test="$isBMI = 'true'">
                                   <value xsi:type="PQ" unit="kg/m2" value="{$ob/Extension/BMI/text()}"></value>
-                                </xsl:when>
-                                <xsl:when test="$ob/ObservationCode/Code/text() = '4500637'">
-                                  <value xsi:type="PQ" unit="%" value="{$ob/ObservationValue}" >
-                                    <translation code="%" displayName="%" codeSystem="2.16.840.1.113883.4.349" codeSystemName="Department of Veterans Affairs VistA" />
-                                  </value>
                                 </xsl:when>
                                 <xsl:when test="$ob/ObservationCode/Code/text() = '4500635'">
                                   <value xsi:type="PQ" nullFlavor="NA" value="{$ob/ObservationValue}" >
