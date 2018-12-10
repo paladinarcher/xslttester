@@ -26,7 +26,7 @@
         *********************** C-CDA R2.1 CONTINUITY OF CARE DOCUMENT (CCD) VDIF Build 1  ************************************************
       </xsl:comment>
       <realmCode code="US" />
-      <typeId root="2.16.840.1.113883.1.3" extension="POCD_HD000040" debug="{isc:evaluate('dateAdd', 'yyyy', 5, translate(Patient/BirthTime/text(), 'TZ',' '))}"/>
+      <typeId root="2.16.840.1.113883.1.3" extension="POCD_HD000040"/>
 
       <templateId root="2.16.840.1.113883.10.20.22.1.1" extension="2015-08-01"/>
       <templateId root="2.16.840.1.113883.10.20.22.1.2" extension="2015-08-01"/>
@@ -1108,7 +1108,9 @@
                             </td>
                             <td>
                               <content ID="{concat('endReason',position())}">
-                                <xsl:value-of select="concat($diags/Diagnosis/Description/text(), ' ', $diags/Diagnosis/SDACodingStandard/text(), ' ', $diags/Diagnosis/Code/text(), ' with Provider Comments: ', $diags/Diagnosis/OriginalText/text())" />
+                                <xsl:if test="boolean($diags)">
+                                  <xsl:value-of select="concat($diags/Diagnosis/Description/text(), ' ', $diags/Diagnosis/SDACodingStandard/text(), ' ', $diags/Diagnosis/Code/text(), ' with Provider Comments: ', $diags/Diagnosis/OriginalText/text())" />
+                                </xsl:if>
                               </content>
                             </td>
                             <td>
