@@ -1107,8 +1107,8 @@
                               </content>
                             </td>
                             <td>
-                              <content ID="{concat('endReason',position())}"><!-- TODO: Where da reason comments, yo? -->
-                                <xsl:value-of select="concat($diags/Diagnosis/Description/text(), ' ', $diags/Diagnosis/SDACodingStandard/text(), ' ', $diags/Diagnosis/Code/text(), '')" />
+                              <content ID="{concat('endReason',position())}">
+                                <xsl:value-of select="concat($diags/Diagnosis/Description/text(), ' ', $diags/Diagnosis/SDACodingStandard/text(), ' ', $diags/Diagnosis/Code/text(), ' with Provider Comments: ', $diags/Diagnosis/OriginalText/text())" />
                               </content>
                             </td>
                             <td>
