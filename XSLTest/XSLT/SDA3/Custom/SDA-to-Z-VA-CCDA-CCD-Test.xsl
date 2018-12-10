@@ -2356,7 +2356,13 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('fimLocomWalkDetail',position())}">Locomotion</content>
+                                  <content ID="{concat('fimLocomWalkDetail',position())}">Locomotion
+                                  <xsl:choose>
+                                    <xsl:when test="CustomPairs/NVPair[Name = 'walkMode']/Value = 'W'">, Walk</xsl:when>
+                                    <xsl:when test="CustomPairs/NVPair[Name = 'walkMode']/Value = 'C'">, Wheelchair</xsl:when>
+                                    <xsl:when test="CustomPairs/NVPair[Name = 'walkMode']/Value = 'B'">, Walk and Wheelchair</xsl:when>
+                                    <xsl:otherwise></xsl:otherwise>
+                                  </xsl:choose></content>
                               </td>
                             </tr>
                             <tr>
@@ -2386,7 +2392,13 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('fimComprehendDetail',position())}">Communication</content>
+                                  <content ID="{concat('fimComprehendDetail',position())}">Communication
+                                  <xsl:choose>
+                                    <xsl:when test="CustomPairs/NVPair[Name = 'comprehendMode']/Value = 'A'">, Auditory</xsl:when>
+                                    <xsl:when test="CustomPairs/NVPair[Name = 'comprehendMode']/Value = 'V'">, Visual</xsl:when>
+                                    <xsl:when test="CustomPairs/NVPair[Name = 'comprehendMode']/Value = 'B'">, Auditory and Visual</xsl:when>
+                                    <xsl:otherwise></xsl:otherwise>
+                                  </xsl:choose></content>
                               </td>
                             </tr>
                             <tr>
@@ -2401,7 +2413,13 @@
                                 </content>
                               </td>
                               <td>
-                                <content ID="{concat('fimExpressDetail',position())}">Communication</content>
+                                  <content ID="{concat('fimExpressDetail',position())}">Communication
+                                  <xsl:choose>
+                                    <xsl:when test="CustomPairs/NVPair[Name = 'expressMode']/Value = 'V'">, Vocal</xsl:when>
+                                    <xsl:when test="CustomPairs/NVPair[Name = 'expressMode']/Value = 'N'">, Non-vocal</xsl:when>
+                                    <xsl:when test="CustomPairs/NVPair[Name = 'expressMode']/Value = 'B'">, Vocal and Non-vocal</xsl:when>
+                                    <xsl:otherwise></xsl:otherwise>
+                                  </xsl:choose></content>
                               </td>
                             </tr>
                             <tr>
@@ -2478,7 +2496,7 @@
                   </text>
                   <xsl:comment>  FUNCTIONAL STATUS STRUCTURED ENTRIES </xsl:comment>
                   <xsl:for-each select="Problems/Problem[Problem/Code/text() = '408907016' and count(CustomPairs/NVPair) &gt; 19]" >
-                    <xsl:sort select="EnteredOn | FromTime" order="descending" />
+                    <xsl:sort select="FromTime" order="descending" />
                     <xsl:if test="position() &lt; 4">
                       <entry typeCode="DRIV">
                         <organizer classCode="CLUSTER" moodCode="EVN">
