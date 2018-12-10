@@ -899,7 +899,7 @@
                                                 <reference value="{concat('#andAllergy',position())}" />
                                               </originalText>
                                             </code>
-                                          </xsl:when>
+                                          </xsl:when><!-- TODO: either make sure this works or do manually -->
                                           <xsl:otherwise>
                                             <code codeSystem="{isc:evaluate('getOIDForCode', Allergy/SDACodingStandard/text(), 'CodeSystemUnknown')}"  codeSystemName="{isc:evaluate('getDescriptionForOID', isc:evaluate('getOIDForCode', Allergy/SDACodingStandard/text(), 'CodeSystemUnknown'))}" code="{Allergy/Code/text()}" displayName="{Allergy/Description/text()}">
                                               <xsl:comment> 6.03 PRODUCT FREE TEXT, R2 </xsl:comment>
@@ -1041,7 +1041,7 @@
           <component>
 <xsl:comment> ******************************************************** ENCOUNTER SECTION, Optional ******************************************************** </xsl:comment>
             <xsl:choose><!-- TODO Encounters filterings? -->
-              <xsl:when test="not(boolean(Encounters/Encounter))">
+              <xsl:when test="not(boolean(Encounters/Encounter[not(EncounterType = 'I')]))">
                 <section nullFlavor="NI">
                   <templateId root="2.16.840.1.113883.10.20.22.2.22.1" extension="2015-08-01"/>
                   <templateId root="2.16.840.1.113883.10.20.22.2.22" />
@@ -1069,7 +1069,7 @@
                       The list of VA Outpatient Encounters shows all Encounter dates within the requested date range. If no date range was provided, the list of VA Outpatient Encounters shows all Encounter dates within the last 18 months. Follow-up visits related to the VA Encounter are not included. The data comes from all VA treatment facilities.
                     </paragraph>
 
-                    <xsl:for-each select="Encounters/Encounter">
+                    <xsl:for-each select="Encounters/Encounter[not(EncounterType = 'I')]">
                       <xsl:sort select="FromTime" order="descending" />
                       <xsl:variable name="index" select="position()" />
                       <xsl:variable name="eid" select="EncounterNumber/text()" />
@@ -1206,7 +1206,7 @@
                       </value>
                     </observation>
                   </entry>
-                  <xsl:for-each select="Encounters/Encounter">
+                  <xsl:for-each select="Encounters/Encounter[not(EncounterType = 'I')]">
                     <xsl:sort select="FromTime" order="descending" />
                     <xsl:variable name="index" select="position()" />
                     <xsl:variable name="eid" select="EncounterNumber/text()" />
@@ -3448,18 +3448,13 @@
                             </td>
                             <td>
                               <content ID="{concat('indComments', position())}" >
-                                <xsl:choose>
-                                  <xsl:when test="Extension/IsContraindicated/text() = 'false' and boolean(Administrations/Administration/AdministrationNotes/Description)">
-                                    <xsl:value-of select="Administrations/Administration/AdministrationNotes/Description/text()" />
-                                  </xsl:when>
-                                  <xsl:when test="Extension/IsContraindicated/text() = 'true' and boolean(Administrations/Administration/AdministrationNotes/Description)">
-                                    <xsl:value-of select="Administrations/Administration/AdministrationNotes/Description/text()" /><br /><br />
+                                <xsl:if test="boolean(Comments)">
+                                  <xsl:value-of select="Comments/text()" />
+                                  <xsl:if test="Extension/IsContraindicated/text() = 'true'">
+                                    <br /><br />
                                     CONTRAINDICATION=DO NOT REPEAT THIS VACCINE
-                                  </xsl:when>
-                                  <xsl:otherwise>
-                                    <xsl:value-of select="Comments/text()" />
-                                  </xsl:otherwise>
-                                </xsl:choose>
+                                  </xsl:if>
+                                </xsl:if>
                               </content>
                             </td>
                           </tr>
