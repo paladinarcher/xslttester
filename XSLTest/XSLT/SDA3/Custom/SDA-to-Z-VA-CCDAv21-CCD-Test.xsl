@@ -891,7 +891,8 @@
                                     <participantRole classCode="MANU">
                                       <playingEntity classCode="MMAT">
                                         <xsl:comment> 6.04 PRODUCT CODED,REQUIRED </xsl:comment>
-                                        <xsl:choose>
+                                        <xsl:choose><!-- TODO: if SDACodingStandard = RxNorm, NDF-RT, SNOMED CT, or UNII, then populate coded element
+                                          and use Allergy/Description in displayName. If not, nullFlavor code and <originalText> pointer to narrative block-->
                                           <xsl:when test="Allergy/SDACodingStandard/text() = 'VHAT'">
                                             <code nullFlavor="UNK">
                                               <xsl:comment> 6.03 PRODUCT FREE TEXT, R2 </xsl:comment>
@@ -923,7 +924,8 @@
                                         <effectiveTime nullFlavor="UNK" />
 
                                         <xsl:comment> 6.06 REACTION CODED, REQUIRED </xsl:comment>
-                                          <!-- TODO: Internal Translation -->
+                                          <!-- TODO: Reaction is not always being returned in SNOMED from VPR. If SNOMED, populate accordingly. 
+                                                If not SNOMED, <value xsi:type="CD" /> with pointer to narrative block -->
                                             <xsl:choose>
                                             <xsl:when test="boolean(Extension/Reactions/Reaction)">
                                             <value code="{Code/text()}" displayName="{Description/text()}" xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
@@ -1109,7 +1111,7 @@
                             <td>
                               <content ID="{concat('endReason',position())}">
                                 <xsl:if test="boolean($diags)">
-                                  <xsl:value-of select="concat($diags/Diagnosis/Description/text(), ' ', $diags/Diagnosis/SDACodingStandard/text(), ' ', $diags/Diagnosis/Code/text(), ' with Provider Comments: ', $diags/Diagnosis/OriginalText/text())" />
+                                  <xsl:value-of select="concat($diags/Diagnosis/SDACodingStandard/text(), ' ', $diags/Diagnosis/Code/text(), ' ', $diags/Diagnosis/Description/text(), ' with Provider Comments: ', $diags/Diagnosis/OriginalText/text())" />
                                 </xsl:if>
                               </content>
                             </td>
@@ -1313,7 +1315,9 @@
                             <xsl:comment> Is this for only outpatient? </xsl:comment>
                             <statusCode code="completed" />
                             <value xsi:type="CD" >
-                              <originalText> <!-- TODO: Internal translation ICD to Sno -->
+                              <originalText> <!-- TODO: If VPR returns ICD-10-CM, map in as-is, no <originalText>
+                                            If ICD-9 and translation is successful, map SNOMED code in and add <translation> with no <originalText>
+                                            If ICD-9 with no translation, leave <value xsi:type="CD" /> and reference narrative block in <originalText>-->
                                 <reference value="{concat('endReason',position())}" />
                               </originalText>
                               <translation codeSystem='2.16.840.1.113883.6.103' codeSystemName='ICD-9-CM' />
@@ -1425,7 +1429,7 @@
                     <title>Functional Status: Functional Independence Measurement (FIM) Scores</title>
                     <text>
                       <paragraph>
-                        <content ID="functionalTime">This section contains a list of the Functional Independence Measurement (FIM) assessments on record at VA for the patient. It shows the FIM scores that were recorded within the requested date range. If no date range was provided, it shows the 3 most recent assessment scores that were completed within the last 3 years. The data comes from all VA treatment facilities.</content>
+                        <content ID="functionalTime">This section contains a list of the Functional Independence Measurement (FIM) assessments on record at VA for the patient. It shows the FIM scores that were recorded within the requested date range. If no date range was provided, it shows the 3 most recent assessment scores that were completed within the last 3 years. Data comes from all VA treatment facilities.</content>
                       </paragraph>
                       <paragraph>
                         <content styleCode='Underline'>FIM Scale</content>:
@@ -1670,13 +1674,7 @@
                                   </content>
                                 </td>
                                 <td>
-                                  <content ID="{concat('fimLocomWalkDetail',position())}">Locomotion
-                                  <xsl:choose>
-                                    <xsl:when test="CustomPairs/NVPair[Name = 'walkMode']/Value = 'W'">, Walk</xsl:when>
-                                    <xsl:when test="CustomPairs/NVPair[Name = 'walkMode']/Value = 'C'">, Wheelchair</xsl:when>
-                                    <xsl:when test="CustomPairs/NVPair[Name = 'walkMode']/Value = 'B'">, Walk and Wheelchair</xsl:when>
-                                    <xsl:otherwise></xsl:otherwise>
-                                  </xsl:choose></content>
+                                  <content ID="{concat('fimLocomWalkDetail',position())}">Locomotion<xsl:choose><xsl:when test="CustomPairs/NVPair[Name = 'walkMode']/Value = 'W'">, Walk</xsl:when><xsl:when test="CustomPairs/NVPair[Name = 'walkMode']/Value = 'C'">, Wheelchair</xsl:when><xsl:when test="CustomPairs/NVPair[Name = 'walkMode']/Value = 'B'">, Walk and Wheelchair</xsl:when><xsl:otherwise></xsl:otherwise></xsl:choose></content>
                                 </td>
                               </tr>
                               <tr>
@@ -1706,13 +1704,7 @@
                                   </content>
                                 </td>
                                 <td>
-                                  <content ID="{concat('fimComprehendDetail',position())}">Communication
-                                  <xsl:choose>
-                                    <xsl:when test="CustomPairs/NVPair[Name = 'comprehendMode']/Value = 'A'">, Auditory</xsl:when>
-                                    <xsl:when test="CustomPairs/NVPair[Name = 'comprehendMode']/Value = 'V'">, Visual</xsl:when>
-                                    <xsl:when test="CustomPairs/NVPair[Name = 'comprehendMode']/Value = 'B'">, Auditory and Visual</xsl:when>
-                                    <xsl:otherwise></xsl:otherwise>
-                                  </xsl:choose></content>
+                                  <content ID="{concat('fimComprehendDetail',position())}">Communication<xsl:choose><xsl:when test="CustomPairs/NVPair[Name = 'comprehendMode']/Value = 'A'">, Auditory</xsl:when><xsl:when test="CustomPairs/NVPair[Name = 'comprehendMode']/Value = 'V'">, Visual</xsl:when><xsl:when test="CustomPairs/NVPair[Name = 'comprehendMode']/Value = 'B'">, Auditory and Visual</xsl:when><xsl:otherwise></xsl:otherwise></xsl:choose></content>
                                 </td>
                               </tr>
                               <tr>
@@ -1727,13 +1719,7 @@
                                   </content>
                                 </td>
                                 <td>
-                                  <content ID="{concat('fimExpressDetail',position())}">Communication
-                                  <xsl:choose>
-                                    <xsl:when test="CustomPairs/NVPair[Name = 'expressMode']/Value = 'V'">, Vocal</xsl:when>
-                                    <xsl:when test="CustomPairs/NVPair[Name = 'expressMode']/Value = 'N'">, Non-vocal</xsl:when>
-                                    <xsl:when test="CustomPairs/NVPair[Name = 'expressMode']/Value = 'B'">, Vocal and Non-vocal</xsl:when>
-                                    <xsl:otherwise></xsl:otherwise>
-                                  </xsl:choose></content>
+                                  <content ID="{concat('fimExpressDetail',position())}">Communication<xsl:choose><xsl:when test="CustomPairs/NVPair[Name = 'expressMode']/Value = 'V'">, Vocal</xsl:when><xsl:when test="CustomPairs/NVPair[Name = 'expressMode']/Value = 'N'">, Non-vocal</xsl:when><xsl:when test="CustomPairs/NVPair[Name = 'expressMode']/Value = 'B'">, Vocal and Non-vocal</xsl:when><xsl:otherwise></xsl:otherwise></xsl:choose></content>
                                 </td>
                               </tr>
                               <tr>
@@ -4504,7 +4490,6 @@
                                       Specimen Type: Not Available.
                                     </xsl:otherwise>
                                   </xsl:choose>
-                                  <br />
                                   <xsl:choose>
                                     <xsl:when test="boolean(Result/Comments)">
                                       Comment: <xsl:value-of select="Result/Comments" />
@@ -4764,9 +4749,10 @@
                               </td>
                               <td>
                                 <content ID="{concat('hfSeverity',position())}">
-                                  <xsl:value-of select="SocialHabitSeverity/text()" />
+                                  <xsl:if test="boolean(CustomPairs/NVPair/Name = 'Severity')">
+                                    Severity= <xsl:value-of select="CustomPairs/NVPair/Value/text()" />
+                                  </xsl:if>
                                 </content>
-                                <!-- TODO: I made this one up-->
                                 <br/>
                                 <content ID="{concat('hfComment',position())}">
                                   <xsl:value-of select="SocialHabitComments/text()" />
@@ -4817,9 +4803,10 @@
                               </td>
                               <td>
                                 <content ID="{concat('hfSeverity',position())}">
-                                  <xsl:value-of select="SocialHabitSeverity/text()" />
+                                  <xsl:if test="boolean(CustomPairs/NVPair/Name = 'Severity')">
+                                    Severity= <xsl:value-of select="CustomPairs/NVPair/Value/text()" />
+                                  </xsl:if>
                                 </content>
-                                <!-- TODO: I made this one up-->
                                 <br/>
                                 <content ID="{concat('hfComment',position())}">
                                   <xsl:value-of select="SocialHabitComments/text()" />
@@ -5189,11 +5176,13 @@
                                 <xsl:with-param name="grp" select="$grp" />
                                 <xsl:with-param name="ob" select="." />
                               </xsl:call-template>
-                              <xsl:call-template name="standard-vitalsStink">
-                                <xsl:with-param name="grp" select="$grp" />
-                                <xsl:with-param name="ob" select="." />
-                                <xsl:with-param name="isBMI" select="'true'" />
-                              </xsl:call-template>
+                              <xsl:if test="boolean(Extension/BMI)">
+                                <xsl:call-template name="standard-vitalsStink">
+                                  <xsl:with-param name="grp" select="$grp" />
+                                  <xsl:with-param name="ob" select="." />
+                                  <xsl:with-param name="isBMI" select="'true'" />
+                                </xsl:call-template>
+                              </xsl:if>
                             </xsl:when>
                             <xsl:otherwise>
                               <xsl:call-template name="standard-vitalsStink">
@@ -6265,7 +6254,7 @@
       <xsl:choose>
         <xsl:when test="$number=1">
           <functionCode code="PCP" codeSystem="2.16.840.1.113883.5.88" codeSystemName="{isc:evaluate('getCodeForOID','2.16.840.1.113883.5.88','CodeSystem','ParticipationFunction')}" displayName="PRIMARY CARE PROVIDER">
-            <originalText><xsl:value-of select="Description/text()" /></originalText>
+            <originalText>Primary Care Provider</originalText>
           </functionCode>
         </xsl:when>
         <xsl:otherwise>
