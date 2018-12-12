@@ -25,5 +25,4 @@
                <xsl:param name="LabOrdersMaxAge" select="$_12months"/>
                <xsl:param name="LabOrdersCount"  select="25"/>
 
-
 </xsl:stylesheet>

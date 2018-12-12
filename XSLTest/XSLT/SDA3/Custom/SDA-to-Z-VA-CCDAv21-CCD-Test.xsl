@@ -1372,7 +1372,7 @@
                             <act classCode="ACT" moodCode="EVN">
                               <templateId root="2.16.840.1.113883.10.20.22.4.202" extension="2016-11-01" />
                               <code code="34109-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Note">
-                                <translation codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" code="{($code)[1]/node()[1]/text()}" displayName="{($code)[1]/node()[2]/text()}" />                              </code>
+                                <translation codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" code="{$code/LOINC/text()}" displayName="{$code/Name/text()}" />                              </code>
                               <text>
                                 <reference value="{concat('#anNoteEncounterDescription', $index, '-', position())}"/>
                               </text>

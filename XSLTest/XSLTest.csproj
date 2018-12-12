@@ -33,7 +33,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GotDotNet.Exslt">
+    <Reference Include="GotDotNet.Exslt, Version=1.0.1453.21095, Culture=neutral, PublicKeyToken=c1ff19fe43792f26">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>.\GotDotNet.Exslt.dll</HintPath>
     </Reference>
     <Reference Include="ScintillaNET">
