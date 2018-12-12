@@ -6253,7 +6253,7 @@
       <templateId root="2.16.840.1.113883.10.20.6.2.1" extension="2014-06-09" />
       <xsl:choose>
         <xsl:when test="$number=1">
-          <functionCode code="PCP" codeSystem="2.16.840.1.113883.5.88" codeSystemName="{isc:evaluate('getCodeForOID','2.16.840.1.113883.5.88','CodeSystem','ParticipationFunction')}" displayName="PRIMARY CARE PROVIDER">
+          <functionCode code="PCP" codeSystem="2.16.840.1.113883.5.88" codeSystemName="{isc:evaluate('getCodeForOID','2.16.840.1.113883.5.88','CodeSystem','HL7ParticipationFunction')}" displayName="PRIMARY CARE PROVIDER">
             <originalText>Primary Care Provider</originalText>
           </functionCode>
         </xsl:when>
