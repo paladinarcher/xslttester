@@ -892,6 +892,8 @@
                                       <playingEntity classCode="MMAT">
                                         <xsl:comment> 6.04 PRODUCT CODED,REQUIRED </xsl:comment>
                                         <xsl:choose>
+                                          <!-- TODO: if SDACodingStandard = RxNorm, NDF-RT, SNOMED CT, or UNII, then populate coded element
+                                          and use Allergy/Description in displayName. If not, nullFlavor code and <originalText> pointer to narrative block-->
                                           <xsl:when test="Allergy/SDACodingStandard/text() = 'VHAT'">
                                             <code nullFlavor="UNK">
                                               <xsl:comment> 6.03 PRODUCT FREE TEXT, R2 </xsl:comment>
@@ -921,7 +923,8 @@
                                         <code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="HL7ActCode"/>
                                         <statusCode code="completed" />
                                         <xsl:comment> 6.06 REACTION CODED, REQUIRED </xsl:comment>
-                                        <!-- DS TODO: This will be provided by the VPR once NDS patch utility is applied -->
+                                        <!-- TODO: Reaction is not always being returned in SNOMED from VPR. If SNOMED, populate accordingly. 
+                                                If not SNOMED, <value xsi:type="CD" /> with pointer to narrative block -->
                                         <xsl:choose>
                                           <xsl:when test="boolean(Extension/Reactions/Reaction)">
                                             <value code="{Code/text()}" displayName="{Description/text()}" xsi:type="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
@@ -1115,7 +1118,7 @@
                             <td>
                               <content ID="{concat('endReason',position())}">
                                 <xsl:if test="boolean($diags)">
-                                  <xsl:value-of select="concat($diags/Diagnosis/Description/text(), ' ', $diags/Diagnosis/SDACodingStandard/text(), ' ', $diags/Diagnosis/Code/text(), ' with Provider Comments: ', $diags/Diagnosis/OriginalText/text())" />
+                                  <xsl:value-of select="concat($diags/Diagnosis/SDACodingStandard/text(), ' ', $diags/Diagnosis/Code/text(), ' ', $diags/Diagnosis/Description/text(), ' with Provider Comments: ', $diags/Diagnosis/OriginalText/text())" />
                                 </xsl:if>
                               </content>
                             </td>
@@ -1572,7 +1575,9 @@
                             <statusCode code="completed" />
                             <value xsi:type="CD" >
                               <originalText>
-                                <!-- TODO: Internal translation ICD to Sno -->
+                                <!-- TODO: If VPR returns ICD-10-CM, map in as-is, no <originalText>
+                                            If ICD-9 and translation is successful, map SNOMED code in and add <translation> with no <originalText>
+                                            If ICD-9 with no translation, leave <value xsi:type="CD" /> and reference narrative block in <originalText>-->
                                 <reference value="{concat('endReason',position())}" />
                               </originalText>
                               <translation codeSystem='2.16.840.1.113883.6.103' codeSystemName='ICD-9-CM' />
@@ -1591,7 +1596,7 @@
                             <xsl:comment> CCD ENCOUNTER DIAGNOSIS PROBLEM CODE, REQURIED, SNOMED CT </xsl:comment>
                             <entryRelationship typeCode="SUBJ" inversionInd="false">
                               <observation classCode="OBS" moodCode="EVN" negationInd="false">
-                                <templateId root="2.16.840.1.113883.10.20.22.4.4" extension="2015-08-01" />
+                                <templateId root="2.16.840.1.113883.10.20.22.4.4" />
                                 <xsl:comment> Problem Observation </xsl:comment>
                                 <id nullFlavor="UNK" />
                                 <code nullFlavor="UNK">
@@ -2133,7 +2138,7 @@
                   <title>Functional Status</title>
                   <text>
                     <paragraph >
-                      This section includes the 3 most recent Functional Independence Measurement (FIM) assessment scores from the last 3 years. The data comes from all VA treatment facilities.
+                      This section contains a list of the Functional Independence Measurement (FIM) assessments on record at VA for the patient. It shows the FIM scores that were recorded within the requested date range. If no date range was provided, it shows the 3 most recent assessment scores that were completed within the last 3 years. Data comes from all VA treatment facilities.
                     </paragraph>
                     <paragraph>
                       <content styleCode='Underline'>FIM Scale</content>:
@@ -2359,12 +2364,7 @@
                               </td>
                               <td>
                                   <content ID="{concat('fimLocomWalkDetail',position())}">Locomotion
-                                  <xsl:choose>
-                                    <xsl:when test="CustomPairs/NVPair[Name = 'walkMode']/Value = 'W'">, Walk</xsl:when>
-                                    <xsl:when test="CustomPairs/NVPair[Name = 'walkMode']/Value = 'C'">, Wheelchair</xsl:when>
-                                    <xsl:when test="CustomPairs/NVPair[Name = 'walkMode']/Value = 'B'">, Walk and Wheelchair</xsl:when>
-                                    <xsl:otherwise></xsl:otherwise>
-                                  </xsl:choose></content>
+                                  <xsl:choose><xsl:when test="CustomPairs/NVPair[Name = 'walkMode']/Value = 'W'">, Walk</xsl:when><xsl:when test="CustomPairs/NVPair[Name = 'walkMode']/Value = 'C'">, Wheelchair</xsl:when><xsl:when test="CustomPairs/NVPair[Name = 'walkMode']/Value = 'B'">, Walk and Wheelchair</xsl:when><xsl:otherwise></xsl:otherwise></xsl:choose></content>
                               </td>
                             </tr>
                             <tr>
@@ -2394,13 +2394,7 @@
                                 </content>
                               </td>
                               <td>
-                                  <content ID="{concat('fimComprehendDetail',position())}">Communication
-                                  <xsl:choose>
-                                    <xsl:when test="CustomPairs/NVPair[Name = 'comprehendMode']/Value = 'A'">, Auditory</xsl:when>
-                                    <xsl:when test="CustomPairs/NVPair[Name = 'comprehendMode']/Value = 'V'">, Visual</xsl:when>
-                                    <xsl:when test="CustomPairs/NVPair[Name = 'comprehendMode']/Value = 'B'">, Auditory and Visual</xsl:when>
-                                    <xsl:otherwise></xsl:otherwise>
-                                  </xsl:choose></content>
+                                  <content ID="{concat('fimComprehendDetail',position())}">Communication<xsl:choose><xsl:when test="CustomPairs/NVPair[Name = 'comprehendMode']/Value = 'A'">, Auditory</xsl:when><xsl:when test="CustomPairs/NVPair[Name = 'comprehendMode']/Value = 'V'">, Visual</xsl:when><xsl:when test="CustomPairs/NVPair[Name = 'comprehendMode']/Value = 'B'">, Auditory and Visual</xsl:when><xsl:otherwise></xsl:otherwise></xsl:choose></content>
                               </td>
                             </tr>
                             <tr>
@@ -2415,13 +2409,7 @@
                                 </content>
                               </td>
                               <td>
-                                  <content ID="{concat('fimExpressDetail',position())}">Communication
-                                  <xsl:choose>
-                                    <xsl:when test="CustomPairs/NVPair[Name = 'expressMode']/Value = 'V'">, Vocal</xsl:when>
-                                    <xsl:when test="CustomPairs/NVPair[Name = 'expressMode']/Value = 'N'">, Non-vocal</xsl:when>
-                                    <xsl:when test="CustomPairs/NVPair[Name = 'expressMode']/Value = 'B'">, Vocal and Non-vocal</xsl:when>
-                                    <xsl:otherwise></xsl:otherwise>
-                                  </xsl:choose></content>
+                                  <content ID="{concat('fimExpressDetail',position())}">Communication<xsl:choose><xsl:when test="CustomPairs/NVPair[Name = 'expressMode']/Value = 'V'">, Vocal</xsl:when><xsl:when test="CustomPairs/NVPair[Name = 'expressMode']/Value = 'N'">, Non-vocal</xsl:when><xsl:when test="CustomPairs/NVPair[Name = 'expressMode']/Value = 'B'">, Vocal and Non-vocal</xsl:when><xsl:otherwise></xsl:otherwise></xsl:choose></content>
                               </td>
                             </tr>
                             <tr>
@@ -2610,7 +2598,7 @@
                           <component>
                             <xsl:comment> Functional Status Result Observation  </xsl:comment>
                             <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
+                              <templateId root="2.16.840.1.113883.10.20.22.4.67" />
                               <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                               <id nullFlavor="NI" />
                               <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
@@ -2646,7 +2634,7 @@
                           <component>
                             <xsl:comment> Functional Status Result Observation  </xsl:comment>
                             <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
+                              <templateId root="2.16.840.1.113883.10.20.22.4.67" />
                               <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                               <id nullFlavor="NI" />
                               <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
@@ -2682,7 +2670,7 @@
                           <component>
                             <xsl:comment> Functional Status Result Observation  </xsl:comment>
                             <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
+                              <templateId root="2.16.840.1.113883.10.20.22.4.67" />
                               <xsl:comment> Functional Status Result Observation ID </xsl:comment>
                               <id nullFlavor="NI" />
                               <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
@@ -2718,7 +2706,7 @@
                           <component>
                             <xsl:comment> Functional Status Result Observation  </xsl:comment>
                             <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
+                              <templateId root="2.16.840.1.113883.10.20.22.4.67" />
                               <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                               <id nullFlavor="NI" />
                               <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
@@ -2754,7 +2742,7 @@
                           <component>
                             <xsl:comment> Functional Status Result Observation  </xsl:comment>
                             <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
+                              <templateId root="2.16.840.1.113883.10.20.22.4.67" />
                               <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                               <id nullFlavor="NI" />
                               <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
@@ -2790,7 +2778,7 @@
                           <component>
                             <xsl:comment> Functional Status Result Observation  </xsl:comment>
                             <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.67" extension="2014-06-09" />
+                              <templateId root="2.16.840.1.113883.10.20.22.4.67" />
                               <xsl:comment> Functional Status Result Observation ID  </xsl:comment>
                               <id nullFlavor="NI" />
                               <xsl:comment>  Functional Status Result Observation Code, ICF or SNOMED CT, FIM Skill  </xsl:comment>
@@ -3472,7 +3460,7 @@
                             <xsl:comment> CCD Medication Supply Order Entry, REQUIRED </xsl:comment>
                             <entryRelationship typeCode='REFR'>
                               <supply classCode="SPLY" moodCode="INT">
-                                <templateId root="2.16.840.1.113883.10.20.22.4.17" extension="2014-06-09"/>
+                                <templateId root="2.16.840.1.113883.10.20.22.4.17" />
                                 <xsl:comment> VLER SEG 1B: 8.26 ORDER NUMBER, Optional-R2 </xsl:comment>
                                 <id extension="{PlacerId/text()}" root="2.16.840.1.113883.4.349" />
                                 <statusCode code="completed" />
@@ -3956,7 +3944,7 @@
                         <xsl:comment> IMMUNIZATION REACTION </xsl:comment>
                         <entryRelationship typeCode="CAUS" inversionInd="true">
                           <observation classCode="OBS" moodCode="EVN">
-                            <templateId root="2.16.840.1.113883.10.20.22.4.9" extension="2014-06-09" />
+                            <templateId root="2.16.840.1.113883.10.20.22.4.9" />
                             <id nullFlavor="NA" />
                             <code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" />
                             <text>
@@ -3985,7 +3973,7 @@
               <xsl:when test="not(boolean(Procedures/Procedure))">
                 <section nullFlavor="NI">
                   <xsl:comment> CCD Procedures Section Entries REQUIRED </xsl:comment>
-                  <templateId root="2.16.840.1.113883.10.20.22.2.7.1" extension="2014-06-09"/>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.7.1" />
                   <code code="47519-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="History of procedures" />
                   <title>Procedures</title>
                   <xsl:comment> PROCEDURE NARRATIVE BLOCK </xsl:comment>
@@ -3995,7 +3983,7 @@
               <xsl:otherwise>
                 <section>
                   <xsl:comment> CCD Procedures Section Entries REQUIRED </xsl:comment>
-                  <templateId root="2.16.840.1.113883.10.20.22.2.7.1" extension="2014-06-09"/>
+                  <templateId root="2.16.840.1.113883.10.20.22.2.7.1"/>
                   <code code="47519-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="History of procedures" />
                   <title>Procedures</title>
                   <xsl:comment> PROCEDURE NARRATIVE BLOCK </xsl:comment>
@@ -4274,7 +4262,7 @@
                     <xsl:variable name="pid" select="position()" />
                     <entry typeCode="DRIV">
                       <procedure classCode="PROC" moodCode="EVN">
-                        <templateId root="2.16.840.1.113883.10.20.22.4.14" extension="2014-06-09"/>
+                        <templateId root="2.16.840.1.113883.10.20.22.4.14" />
                         <id nullFlavor="NI" />
                         <xsl:comment> 17.02-PROCEDURE TYPE, REQUIRED, LOINC, SNOMED CT or CPT, 4 </xsl:comment>
                         <xsl:choose>
@@ -4343,7 +4331,7 @@
                         <xsl:if test="position() &lt; 6">
                           <entry typeCode="DRIV">
                             <procedure classCode="PROC" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.14" extension="2014-06-09"/>
+                              <templateId root="2.16.840.1.113883.10.20.22.4.14" />
                               <id nullFlavor="NI" />
                               <xsl:comment> 17.02-PROCEDURE TYPE, REQUIRED, LOINC, SNOMED CT or CPT, 4 </xsl:comment>
                                   <code code="99499" displayName="Unlisted Evaluation and Management Service" codeSystem="2.16.840.1.113883.6.12" codeSystemName="CPT-4">
@@ -4399,7 +4387,7 @@
                     <xsl:sort select="DocumentTime" order="descending" />
                     <entry typeCode="DRIV">
                       <procedure classCode="PROC" moodCode="EVN">
-                        <templateId root="2.16.840.1.113883.10.20.22.4.14" extension="2014-06-09"/>
+                        <templateId root="2.16.840.1.113883.10.20.22.4.14" />
                         <id nullFlavor="NI" />
                         <xsl:comment> 17.02-PROCEDURE TYPE, REQUIRED, LOINC, SNOMED CT or CPT, 4 </xsl:comment>
                         <code code="99499" displayName="Unlisted Evaluation and Management Service" codeSystem="2.16.840.1.113883.6.12" codeSystemName="CPT-4">
@@ -4572,7 +4560,7 @@
                   <xsl:for-each select="$planOfCare[self::Appointment]">
                     <entry>
                       <encounter classCode="ENC" moodCode="INT">
-                        <templateId root="2.16.840.1.113883.10.20.22.4.40" extension="2014-06-09"/>
+                        <templateId root="2.16.840.1.113883.10.20.22.4.40"/>
                         <!-- <id root="2.16.840.1.113883.4.349" /> -->
                         <id nullFlavor="UNK"/>
                         <code nullFlavor="UNK">
@@ -4595,7 +4583,7 @@
                         </participant>
                         <entryRelationship inversionInd="true" typeCode='SUBJ'>
                           <act classCode="ACT" moodCode="INT">
-                            <templateId root="2.16.840.1.113883.10.20.22.4.20" extension="2014-06-09" />
+                            <templateId root="2.16.840.1.113883.10.20.22.4.20"  />
                             <code xsi:type="CE" code="409073007" codeSystem="2.16.840.1.113883.6.96" displayName="Instruction" codeSystemName="SNOMED CT" />
                             <text>
                               <reference value="{concat('#apptType',position())}"/>
@@ -4975,7 +4963,6 @@
                                         Specimen Type: Not Available.
                                       </xsl:otherwise>
                                     </xsl:choose>
-                                    <br />
                                     <xsl:choose>
                                       <xsl:when test="boolean(Result/Comments)">
                                         Comment: <xsl:value-of select="Result/Comments" />
@@ -5498,9 +5485,10 @@
                               </td>
                               <td>
                                 <content ID="{concat('hfSeverity',position())}">
-                                  <xsl:value-of select="SocialHabitSeverity/text()" />
+                                  <xsl:if test="boolean(CustomPairs/NVPair/Name = 'Severity')">
+                                    Severity= <xsl:value-of select="CustomPairs/NVPair/Value/text()" />
+                                  </xsl:if>
                                 </content>
-                                <!-- TODO: I made this one up-->
                                 <br/>
                                 <content ID="{concat('hfComment',position())}">
                                   <xsl:value-of select="SocialHabitComments/text()" />
@@ -5549,9 +5537,10 @@
                               </td>
                               <td>
                                 <content ID="{concat('hfSeverity',position())}">
-                                  <xsl:value-of select="SocialHabitSeverity/text()" />
+                                  <xsl:if test="boolean(CustomPairs/NVPair/Name = 'Severity')">
+                                    Severity= <xsl:value-of select="CustomPairs/NVPair/Value/text()" />
+                                  </xsl:if>
                                 </content>
-                                <!-- TODO: I made this one up-->
                                 <br/>
                                 <content ID="{concat('hfComment',position())}">
                                   <xsl:value-of select="SocialHabitComments/text()" />
@@ -5899,11 +5888,13 @@
                                   <xsl:with-param name="grp" select="$grp" />
                                   <xsl:with-param name="ob" select="." />
                                 </xsl:call-template>
-                                <xsl:call-template name="standard-vitalsStink">
-                                  <xsl:with-param name="grp" select="$grp" />
-                                  <xsl:with-param name="ob" select="." />
-                                  <xsl:with-param name="isBMI" select="'true'" />
-                                </xsl:call-template>
+                                <xsl:if test="boolean(Extension/BMI)">
+                                  <xsl:call-template name="standard-vitalsStink">
+                                    <xsl:with-param name="grp" select="$grp" />
+                                    <xsl:with-param name="ob" select="." />
+                                    <xsl:with-param name="isBMI" select="'true'" />
+                                  </xsl:call-template>
+                                </xsl:if>
                               </xsl:when>
                               <xsl:otherwise>
                                 <xsl:call-template name="standard-vitalsStink">
@@ -6034,11 +6025,11 @@
     <performer typeCode="PRF">
       <xsl:comment> ****** PRIMARY HEALTHCARE PROVIDER MODULE, Optional ********* </xsl:comment>
       <xsl:comment> 4.02 PROVIDER ROLE CODED, optional </xsl:comment>
-      <templateId root="2.16.840.1.113883.10.20.6.2.1" extension="2014-06-09" />
+      <templateId root="2.16.840.1.113883.10.20.6.2.1"  />
       <xsl:choose>
         <xsl:when test="$number=1">
-          <functionCode code="PCP" codeSystem="2.16.840.1.113883.5.88" codeSystemName="{isc:evaluate('getCodeForOID','2.16.840.1.113883.5.88','CodeSystem','ParticipationFunction')}" displayName="PRIMARY CARE PROVIDER">
-            <originalText><xsl:value-of select="Description/text()" /></originalText>
+          <functionCode code="PCP" codeSystem="2.16.840.1.113883.5.88" codeSystemName="{isc:evaluate('getCodeForOID','2.16.840.1.113883.5.88','CodeSystem','HL7ParticipationFunction')}" displayName="PRIMARY CARE PROVIDER">
+            <originalText>Primary Care Provider</originalText>
           </functionCode>
         </xsl:when>
         <xsl:otherwise>
@@ -6273,7 +6264,7 @@
   <xsl:param name="ob" />
                           <component>
                             <observation classCode="OBS" moodCode="EVN">
-                              <templateId root="2.16.840.1.113883.10.20.22.4.27" extension="2014-06-09"/>
+                              <templateId root="2.16.840.1.113883.10.20.22.4.27" />
                               <xsl:comment>14.01-VITAL SIGN RESULT ID, REQUIRED </xsl:comment>
                               <id root="2.16.840.1.113883.4.349" extension="{concat('.8716-3.',$ob/EnteredBy/Code/text(),$grp)}"/>
                               <xsl:comment>14.03-VITAL SIGN RESULT TYPE, REQUIRED, LOINC </xsl:comment>
