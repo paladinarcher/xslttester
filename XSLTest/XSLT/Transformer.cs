@@ -28,7 +28,10 @@ namespace XSLTest.XSLT
 
             settings = new XmlWriterSettings
             {
-                Indent = true
+                Indent = true//,
+                //ConformanceLevel = ConformanceLevel.Auto,
+                //OmitXmlDeclaration = true,
+                //CloseOutput = false
             };
 
             xslArgs = new XsltArgumentList();
