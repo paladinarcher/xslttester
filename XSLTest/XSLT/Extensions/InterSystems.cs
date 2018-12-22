@@ -16,19 +16,13 @@ namespace XSLTest.XSLT.Extensions
         public class Helper
         {
             public static string DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-            public string evaluate(string func)
-            {
-                return evaluate(func, "");
-            }
-            public string evaluate(string func, string code)
-            {
-                return evaluate(func, code, "");
-            }
-            public string evaluate(string func, string code, string system)
-            {
-                return evaluate(func, code, system, "");
-            }
-            public string evaluate(string func, string code, string system, string def)
+            public string evaluate(string func) { return evaluate(func, ""); }
+            public string evaluate(string func, string code) { return evaluate(func, code, ""); }
+            public string evaluate(string func, string code, string system) { return evaluate(func, code, system, ""); }
+            public string evaluate(string func, string code, string system, string def) { return evaluate(func, code, system, def, ""); }
+            public string evaluate(string func, string code, string system, string def, string param1) { return evaluate(func, code, system, def, param1, ""); }
+            public string evaluate(string func, string code, string system, string def, string param1, string param2) { return evaluate(func, code, system, def, param1, param2, ""); }
+            public string evaluate(string func, string code, string system, string def, string param1, string param2, string param3)
             {
                 string ret;
                 try
@@ -275,6 +269,9 @@ namespace XSLTest.XSLT.Extensions
                         case "xmltimestampToLocal":
                             ret =  xmltimestampToLocal(code, system, def);
                             break;
+                        case "stsTranslate":
+                            ret = stsTranslate(code, system, def, param1);
+                            break;
                         default:
                             throw new NotImplementedException(func + " is an unknown function");
                     }
@@ -285,6 +282,14 @@ namespace XSLTest.XSLT.Extensions
                 }
                 //System.Diagnostics.Debug.WriteLine(func + "(" + code + ", " + system + ", " + def + ") == "+ret);
                 return ret;
+            }
+            private string serializeOthers(string[] others, int start)
+            {
+                return String.Join(",", others, start);
+            }
+            private string stsTranslate(string code, string system, string def, string param1)
+            {
+                return " STS_Translating[" + MethodBase.GetCurrentMethod().Name + "([" + code + "],[" + system + "],[" + def + "],["+param1+"])]";
             }
 
             private string xmltimestampToLocal(string code, string system, string def)
