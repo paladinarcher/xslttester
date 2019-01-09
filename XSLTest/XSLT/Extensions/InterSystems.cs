@@ -646,13 +646,14 @@ namespace XSLTest.XSLT.Extensions
                 switch(code)
                 {
                     case "dd":
-                        return (end - start).Days.ToString(DATE_FORMAT);
+                        return (end - start).Days.ToString();
                     case "mm":
-                        return ((end.Month - start.Month) + 12 * (end.Year - start.Year)).ToString(DATE_FORMAT);
+                        return ((end.Month - start.Month) + 12 * (end.Year - start.Year)).ToString();
                     case "yy":
-                        return (end.Year - start.Year).ToString(DATE_FORMAT);
+                    case "yyyy":
+                        return (end.Year - start.Year).ToString();
                 }
-                return (end - start).Days.ToString(DATE_FORMAT);
+                return (end - start).Days.ToString();
             }
 
             private string dateAdd(string code, string system, string def)
