@@ -711,13 +711,13 @@ namespace XSLTest.XSLT.Extensions
                 return DateTime.Now.ToString("yyyyMMddHHmmss");
             }
 
-            private string decode(string code, string system, string def)
+            private string encode(string code, string system, string def)
             {
                 var plainTextBytes = Encoding.UTF8.GetBytes(code);
                 return Convert.ToBase64String(plainTextBytes);
             }
 
-            private string encode(string code, string system, string def)
+            private string decode(string code, string system, string def)
             {
                 var base64EncodedBytes = Convert.FromBase64String(code);
                 return Encoding.UTF8.GetString(base64EncodedBytes);
