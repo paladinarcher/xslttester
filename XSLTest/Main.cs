@@ -14,6 +14,7 @@ using XSLTest.XSLT;
 using XSLTest.Query;
 using ScintillaNET;
 using ScintillaNET_FindReplaceDialog;
+using System.Diagnostics;
 
 namespace XSLTest
 {
@@ -21,6 +22,10 @@ namespace XSLTest
     {
         private Transformer transformer;
         private QueryManager queryManager;
+        private Stopwatch stopWatch;
+        private int count = 0;
+        private long totalMilliseconds = 0;
+
         public Main()
         {
             InitializeComponent();
@@ -34,6 +39,7 @@ namespace XSLTest
             scintillaStyles();
             findReplace1.Scintilla = richTextBox1;
             findReplace1.KeyPressed += FindReplace1_KeyPressed;
+            stopWatch = new Stopwatch();
         }
 
         private void FindReplace1_KeyPressed(object sender, KeyEventArgs e)
@@ -148,6 +154,13 @@ namespace XSLTest
                     MethodInvoker d = delegate ()
                     {
                         richTextBox1.Text += r.ReadOuterXml();
+                        totalMilliseconds = 0;
+                        count = 0;
+
+                        lblCount.Text = count.ToString();
+                        lblLastTime.Text = totalMilliseconds.ToString("N");
+                        lblTotal.Text = totalMilliseconds.ToString("N");
+                        lblAvg.Text = totalMilliseconds.ToString("N");
                     };
                     if (InvokeRequired)
                     {
@@ -305,11 +318,21 @@ namespace XSLTest
                 StringBuilder sb = new StringBuilder();
                 MemoryStream outStream = new MemoryStream();
 
+                count++;
+                stopWatch.Reset();
+                stopWatch.Start();
                 transformer.TransformXML(inStream, outStream);
+                stopWatch.Stop();
+                long millis = stopWatch.ElapsedMilliseconds;
+                totalMilliseconds += millis;
 
                 MethodInvoker d = delegate ()
                 {
                     richTextBox2.Text = Encoding.UTF8.GetString(outStream.ToArray());
+                    lblCount.Text = count.ToString();
+                    lblLastTime.Text = millis.ToString("N");
+                    lblTotal.Text = totalMilliseconds.ToString("N");
+                    lblAvg.Text = (totalMilliseconds / count).ToString("N");
                 };
                 if(InvokeRequired)
                 {
@@ -351,6 +374,7 @@ namespace XSLTest
 
         private void bwTransformOpener_DoWork(object sender, DoWorkEventArgs e)
         {
+            string text = "";
             try
             {
                 transformer.AddExtension(new XSLT.Extensions.InterSystems());
@@ -361,17 +385,26 @@ namespace XSLTest
                 transformer.SetSourceXSLT(e.Argument as string);
             } catch (Exception er)
             {
-                MethodInvoker d = delegate ()
-                {
-                    richTextBox2.Text = er.ToString();
-                };
-                if(InvokeRequired)
-                {
-                    Invoke(d);
-                } else
-                {
-                    d();
-                }
+                text = er.ToString();
+            }
+            MethodInvoker d = delegate ()
+            {
+                richTextBox2.Text = text;
+                totalMilliseconds = 0;
+                count = 0;
+
+                lblCount.Text = count.ToString();
+                lblLastTime.Text = totalMilliseconds.ToString("N");
+                lblTotal.Text = totalMilliseconds.ToString("N");
+                lblAvg.Text = totalMilliseconds.ToString("N");
+            };
+            if (InvokeRequired)
+            {
+                Invoke(d);
+            }
+            else
+            {
+                d();
             }
         }
 
