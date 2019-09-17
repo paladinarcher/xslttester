@@ -33,9 +33,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Attachmate.Reflection, Version=1.2.0.0, Culture=neutral, PublicKeyToken=13bff1b6907eadcf" />
+    <Reference Include="Attachmate.Reflection.Emulation.OpenSystems, Version=1.2.0.0, Culture=neutral, PublicKeyToken=13bff1b6907eadcf" />
+    <Reference Include="Attachmate.Reflection.Framework, Version=1.2.0.0, Culture=neutral, PublicKeyToken=13bff1b6907eadcf" />
+    <Reference Include="Attachmate.Reflection.UserControl.OpenSystems, Version=1.2.0.0, Culture=neutral, PublicKeyToken=13bff1b6907eadcf, processorArchitecture=MSIL" />
+    <Reference Include="AxR2AXCTRLLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=13bff1b6907eadcf" />
     <Reference Include="GotDotNet.Exslt, Version=1.0.1453.21095, Culture=neutral, PublicKeyToken=c1ff19fe43792f26">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\GotDotNet.Exslt.dll</HintPath>
+    </Reference>
+    <Reference Include="Reflection2, Version=2.0.0.0, Culture=neutral, PublicKeyToken=13bff1b6907eadcf">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="ScintillaNET">
       <HintPath>.\ScintillaNET.dll</HintPath>
