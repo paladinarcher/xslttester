@@ -62,5 +62,38 @@
     <Setting Name="AssigningAuthority" Type="System.String" Scope="Application">
       <Value Profile="(Default)">2.16.840.1.113883.4.349</Value>
     </Setting>
+    <Setting Name="_VHIE_MHV_HoldTime_EncounterNotes" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="_VHIE_MHV_HoldTime_ConsultNotes" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="_VHIE_MHV_HoldTime_DischargeNotes" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="_VHIE_MHV_HoldTime_HPNotes" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="_VHIE_MHV_HoldTime_LabResults" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="_VHIE_MHV_HoldTime_ClinicalProcNotes" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="_VHIE_MHV_HoldTime_Problems" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="_VHIE_MHV_HoldTime_RadiologyNotes" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">14</Value>
+    </Setting>
+    <Setting Name="_VHIE_MHV_HoldTime_PathologyNotes" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="_VHIE_MHV_HoldTime_SurgeryNotes" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="_VHIE_MHV_HoldTime_CompPenNotes" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

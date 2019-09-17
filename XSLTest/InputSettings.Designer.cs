@@ -12,7 +12,7 @@ namespace XSLTest {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.8.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.9.0.0")]
     internal sealed partial class InputSettings : global::System.Configuration.ApplicationSettingsBase {
         
         private static InputSettings defaultInstance = ((InputSettings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new InputSettings())));
@@ -210,6 +210,105 @@ namespace XSLTest {
         public string AssigningAuthority {
             get {
                 return ((string)(this["AssigningAuthority"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public string _VHIE_MHV_HoldTime_EncounterNotes {
+            get {
+                return ((string)(this["_VHIE_MHV_HoldTime_EncounterNotes"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public string _VHIE_MHV_HoldTime_ConsultNotes {
+            get {
+                return ((string)(this["_VHIE_MHV_HoldTime_ConsultNotes"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public string _VHIE_MHV_HoldTime_DischargeNotes {
+            get {
+                return ((string)(this["_VHIE_MHV_HoldTime_DischargeNotes"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public string _VHIE_MHV_HoldTime_HPNotes {
+            get {
+                return ((string)(this["_VHIE_MHV_HoldTime_HPNotes"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public string _VHIE_MHV_HoldTime_LabResults {
+            get {
+                return ((string)(this["_VHIE_MHV_HoldTime_LabResults"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public string _VHIE_MHV_HoldTime_ClinicalProcNotes {
+            get {
+                return ((string)(this["_VHIE_MHV_HoldTime_ClinicalProcNotes"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public string _VHIE_MHV_HoldTime_Problems {
+            get {
+                return ((string)(this["_VHIE_MHV_HoldTime_Problems"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("14")]
+        public string _VHIE_MHV_HoldTime_RadiologyNotes {
+            get {
+                return ((string)(this["_VHIE_MHV_HoldTime_RadiologyNotes"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public string _VHIE_MHV_HoldTime_PathologyNotes {
+            get {
+                return ((string)(this["_VHIE_MHV_HoldTime_PathologyNotes"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public string _VHIE_MHV_HoldTime_SurgeryNotes {
+            get {
+                return ((string)(this["_VHIE_MHV_HoldTime_SurgeryNotes"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public string _VHIE_MHV_HoldTime_CompPenNotes {
+            get {
+                return ((string)(this["_VHIE_MHV_HoldTime_CompPenNotes"]));
             }
         }
     }
